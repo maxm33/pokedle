@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <link rel="icon" href="/public/images/favicon.png" />
+    <link rel="stylesheet" href="/public/stylesheets/style.css" />
+    <link
+      rel="manifest"
+      type="application/manifest+json"
+      href="/app.webmanifest"
+    />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <title>Error</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo">
+        <a href="/"><img alt="" src="/public/images/pokedle-logo.webp" /></a>
+      </div>
+      <div id="subtitle">
+        <h1><%= error.status %> - <%= message %></h1>
+        <p>
+          Ti sei perso? Fai click <a href="/">qui</a> per tornare alla home.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

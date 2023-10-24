@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <link rel="icon" href="/public/images/favicon.png" />
+    <link rel="stylesheet" href="/public/stylesheets/style.css" />
+    <link
+      rel="manifest"
+      type="application/manifest+json"
+      href="/app.webmanifest"
+    />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <title>Pokédle</title>
+  </head>
+  <body>
+    <div class="topnav">
+      <div id="authref">
+        <p>Created by <a href="https://github.com/MaxM33">Massimo Monai</a></p>
+      </div>
+      <input type="button" value="Log In" id="loginButton" class="coolbutton" />
+      <input
+        type="button"
+        value="Rankings"
+        id="rankingsButton"
+        class="coolbutton"
+      />
+      <input
+        type="button"
+        value="Pokédex"
+        id="pokedexButton"
+        class="coolbutton"
+      />
+      <input
+        type="button"
+        value="Profile"
+        id="profileButton"
+        class="coolbutton"
+      />
+    </div>
+    <div class="container">
+      <div class="logo">
+        <a href="/"><img alt="" src="/public/images/pokedle-logo.webp" /></a>
+      </div>
+      <div id="subtitle">
+        Sto pensando ad un Pokémon ... riesci ad indovinarlo?
+      </div>
+      <div>
+        <div id="autocomplete" style="width: 240px">
+          <input
+            id="myInput"
+            type="text"
+            name="pokemon"
+            placeholder="Digita il nome del Pokémon..."
+          />
+        </div>
+        <button id="myButton" class="button-bouncy" type="submit">Send</button>
+      </div>
+      <div id="menu-container">
+        <div id="answer-titles">
+          <div class="titles">
+            <p>Pokémon</p>
+          </div>
+          <div class="titles">
+            <p>Habitat</p>
+          </div>
+          <div class="titles">
+            <p>Color(s)</p>
+          </div>
+          <div class="titles">
+            <p>Type(s)</p>
+          </div>
+          <div class="titles">
+            <p>Fully Evolved?</p>
+          </div>
+          <div class="titles">
+            <p>Evolution Level</p>
+          </div>
+        </div>
+        <div id="answer-container"></div>
+      </div>
+    </div>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="module" src="/public/js/main.js"></script>
+  </body>
+</html>
