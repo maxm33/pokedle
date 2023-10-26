@@ -25,7 +25,7 @@ var index = 0; // index of winners array
 var winners = []; // to store uuid of players who have won the current round
 var timestamp; // to store the time when pokemon is generated
 var generatedPokemon; // to store the generated pokemon
-var generateInterval = 180; // in seconds
+var generateInterval = 300; // in seconds
 
 // picks a random pokemon from db
 async function generatePokemon() {

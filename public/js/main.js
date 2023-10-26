@@ -152,7 +152,7 @@ let profileButton = document.getElementById("profileButton");
 let pokedexButton = document.getElementById("pokedexButton");
 let rankingsButton = document.getElementById("rankingsButton");
 let sendButton = document.getElementById("myButton");
-
+let timer = document.getElementById("timer");
 let subtitle = document.getElementById("subtitle");
 let textbar = document.getElementById("autocomplete");
 
@@ -171,8 +171,9 @@ onAuthStateChanged(auth, (user) => {
 // get userID
 appState.getSavedID();
 
-// check if user can play
+// sends a request to the server to retrieve various information
 axios.get("/id/status/" + appState.getID()).then((response) => {
+  // checks if user can play or not
   if (response.data[0]) {
     sendButton.style.visibility = "hidden";
     textbar.style.visibility = "hidden";
@@ -180,10 +181,11 @@ axios.get("/id/status/" + appState.getID()).then((response) => {
   } else {
     sendButton.style.visibility = "visible";
     textbar.style.visibility = "visible";
-    subtitle.textContent =
-      "Sto pensando ad un Pokémon ... riesci ad indovinarlo?";
+    subtitle.textContent = "Sto pensando ad un Pokémon, riesci ad indovinarlo?";
   }
+  // this is the creation timestamp of the current state of the game
   var timestamp = appState.getTimestamp();
+  // response.data[1] is the timestamp of the pokemon generation
   if (timestamp == null || timestamp < response.data[1]) {
     appState.removeState(); // state expired, discard
     appState.removeTimestamp();
@@ -196,10 +198,23 @@ axios.get("/id/status/" + appState.getID()).then((response) => {
       appState.showTitles();
     }
   }
-  // updates automatically when the new pokemon is generated
+  var remainingTime = response.data[1] + 300 * 1000 - Date.now();
+  // reloads page automatically when the new pokemon is generated
   setTimeout(function () {
     window.location.reload();
-  }, response.data[1] + 180 * 1000 - Date.now());
+  }, remainingTime);
+  // set up timer to inform user about new generation
+  var minutes = Math.floor(remainingTime / 60000);
+  var seconds = ((remainingTime % 60000) / 1000).toFixed(0);
+  setInterval(function () {
+    if (minutes <= 0 && seconds <= 0) return;
+    if (minutes >= 1 && seconds == 0) {
+      minutes--;
+      seconds = 59;
+    } else seconds--;
+    timer.textContent =
+      "Nuovo Pokémon in " + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+  }, 1000);
 });
 
 loginButton.addEventListener("click", () => {
@@ -254,6 +269,7 @@ sendButton.addEventListener("click", () => {
     .then(function (response) {
       // hint categories will be shown
       appState.showTitles();
+      // if this is the first attempt, saves the timestamp in localStorage
       if (appState.getGuesses().length == 0)
         window.localStorage.setItem("timestamp", JSON.stringify(Date.now()));
       // forward to appState to generate the hints on the guess

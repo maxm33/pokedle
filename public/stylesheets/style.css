@@ -81,9 +81,18 @@ body {
 }
 
 #subtitle {
-  margin-top: 100px;
+  margin-top: 50px;
   margin-bottom: 35px;
   color: white;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+#timer {
+  margin-top: 10px;
+  color: lightgreen;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   font-size: 1.3rem;

@@ -12,7 +12,7 @@ These hints are represented by colors:
 
 If you want to keep track of your game stats, make sure to login with Google.
 
-Pokémon to guess changes every **_3 minutes_**.
+Pokémon to guess changes every **_5 minutes_**.
 
 Have fun guessin' 'em all!<br><br>
 Visit Pokédle [here](https://pokedle.onrender.com/).<br>
