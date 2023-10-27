@@ -1,7 +1,7 @@
 const CACHE_NAME = "Pokédle-Cache";
 const STATIC_CACHE_URLS = [
   "/views/offline.html",
-  "/public/images/favicon.png",
+  "/public/images/favicon.ico",
   "/public/stylesheets/style.css",
   "/public/images/pokedle-logo.webp",
   "/public/images/background.webp",
