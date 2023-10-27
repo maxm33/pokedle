@@ -7,8 +7,10 @@ The main goal of this game is to guess a secret pokémon.<br>
 
 All pokémons are represented by some features such as habitat where they live, their colors, their types, their evolutions.<br>
 You will be given hints on each of these categories for the pokémon you guess.<br>
-These hints are represented by colors:
-<code style="color : green">green</code> is an exact match on that same category of the secret pokémon, whereas <code style="color : gold">yellow</code> is a partial match (meaning that one value of the two is right). Lastly, <code style="color : red">red</code> means there's no match at all.<br>
+These hints are represented by colors:<br>
+- `green` is an exact match on that same category of the secret pokémon;<br>
+- `yellow` is a partial match (meaning that one value of the two is right);<br>
+- `red` means there's no match at all.<br>
 
 If you want to keep track of your game stats, make sure to login with Google.
 
@@ -32,12 +34,7 @@ npm install
 npm start
 ```
 
-**Note**: Server is listening on port 3000, so make sure to visit
+**Note**: Locally, server is available at `localhost:3000` (you can change port value in `bin/www`).<br>
+**Note 2**: Currently, this web application is nowhere near to be mobile-friendly, this might change in the future.<br>
 
-```
-localhost:3000
-```
 
-If port 3000 is occupied, you can change the port by editing its value in
-
-> bin/www
