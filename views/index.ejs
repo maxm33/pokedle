@@ -14,9 +14,14 @@
   <body>
     <div class="topnav">
       <div id="authref">
-        <p>Created by <a href="https://github.com/MaxM33">Massimo Monai</a></p>
+        <p>Created by <a href="https://github.com/maxm33">maxm33</a></p>
       </div>
-      <input type="button" value="Log In" id="loginButton" class="coolbutton" />
+      <input
+        type="button"
+        value="Login with Google"
+        id="loginButton"
+        class="coolbutton"
+      />
       <input
         type="button"
         value="Rankings"
@@ -24,12 +29,14 @@
         class="coolbutton"
       />
       <input
+        style="visibility: hidden"
         type="button"
         value="Pokédex"
         id="pokedexButton"
         class="coolbutton"
       />
       <input
+        style="visibility: hidden"
         type="button"
         value="Profile"
         id="profileButton"
@@ -41,11 +48,9 @@
         <a href="/"><img alt="" src="/public/images/pokedle-logo.webp" /></a>
       </div>
       <div id="timer">Nuovo Pokémon in ...</div>
-      <div id="subtitle">
-        Sto pensando ad un Pokémon, riesci ad indovinarlo?
-      </div>
-      <div>
-        <div id="autocomplete" style="width: 240px">
+      <div id="subtitle"></div>
+      <div id="bar-container" style="visibility: hidden">
+        <div id="autocomplete">
           <input
             id="myInput"
             type="text"

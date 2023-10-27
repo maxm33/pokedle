@@ -1,7 +1,6 @@
 html,
 body {
   height: 100%;
-  overflow-x: hidden;
 }
 
 html {
@@ -10,11 +9,12 @@ html {
   background-size: cover;
   background-color: #000;
   overflow-y: hidden;
+  overflow-x: hidden;
 }
 
 body {
+  margin: 0.5em;
   background-color: transparent !important;
-  margin: 8px;
   overflow-y: auto;
 }
 
@@ -24,41 +24,33 @@ body {
 }
 
 #authref {
-  float: left;
   color: white;
+  float: left;
+  font-size: 1em;
+  font-weight: 600;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
 }
 
 .coolbutton {
-  float: right;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-right: 20px;
-  padding-left: 20px;
-  margin: 4px;
   color: white;
   background-color: #333;
+  float: right;
+  font-size: 1.2em;
+  font-weight: 800;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  padding-right: 1em;
+  padding-left: 1em;
+  margin: 0.22em;
   border: none;
-  border-radius: 16px;
-  font-size: large;
+  border-radius: 0.8em;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-  font-weight: 800;
 }
 
 .coolbutton:hover {
   background-color: rgba(255, 255, 255, 0.3);
-}
-
-#pokedexButton {
-  visibility: hidden;
-}
-
-#profileButton {
-  visibility: hidden;
 }
 
 .container {
@@ -71,8 +63,8 @@ body {
 .logo {
   display: flex;
   justify-content: center;
-  height: 170px;
-  width: 395px;
+  height: 8em;
+  width: 15em;
   transition: all 0.2s ease-in-out;
 }
 
@@ -81,22 +73,23 @@ body {
 }
 
 #subtitle {
-  margin-top: 50px;
-  margin-bottom: 35px;
   color: white;
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  animation: fadeIn 1s;
+  margin-top: 2.5em;
+  margin-bottom: 1.75em;
   font-size: 1.3rem;
   font-weight: 600;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
 #timer {
-  margin-top: 10px;
   color: lightgreen;
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  margin-top: 3em;
   font-size: 1.3rem;
   font-weight: 600;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
 a:link {
@@ -119,13 +112,13 @@ a:active {
 }
 
 body {
-  font: 16px Arial;
+  font: 0.95em Arial;
 }
 
 #autocomplete {
   position: relative;
   display: inline-block;
-  margin-left: 70px;
+  margin-left: 3.5em;
 }
 
 .shake {
@@ -133,22 +126,25 @@ body {
 }
 
 input[type="text"] {
-  border: 1px solid transparent;
-  border-radius: 10px;
   color: white;
   background-color: #333;
-  padding: 10px;
-  font-size: 16px;
   width: 100%;
+  border: 0.05em solid transparent;
+  border-radius: 0.7em;
+  padding: 0.65em;
+  font-size: 1.05em;
 }
 
 input[type="hidden"] {
   background-color: transparent !important;
 }
 
+#autocomplete {
+  width: 16em;
+}
+
 .autocomplete-items {
   position: absolute;
-  border-radius: 6px;
   border-bottom: none;
   border-top: none;
   z-index: 99;
@@ -156,7 +152,7 @@ input[type="hidden"] {
   left: 0;
   right: 0;
   box-sizing: border-box;
-  max-height: 480px;
+  max-height: 27.7em;
   overflow-y: scroll;
 }
 
@@ -164,13 +160,14 @@ input[type="hidden"] {
   display: flex;
   align-items: center;
   border-radius: 0.36em;
+  font-size: 1.1em;
+  font-weight: 100;
 }
 
 .autocomplete-items div {
-  cursor: pointer;
   color: white;
   background-color: #333;
-  border-bottom: 1px solid #d4d4d4;
+  cursor: pointer;
   border: none;
 }
 
@@ -180,7 +177,7 @@ input[type="hidden"] {
 }
 
 .autocomplete-items::-webkit-scrollbar {
-  width: 8px;
+  width: 0.5em;
 }
 
 .autocomplete-items::-webkit-scrollbar-track {
@@ -189,31 +186,31 @@ input[type="hidden"] {
 
 .autocomplete-items::-webkit-scrollbar-thumb {
   background-color: #d3d3d3;
-  border-radius: 20px;
-  border: 3px solid transparent;
+  border: 0.15em solid transparent;
+  border-radius: 1em;
 }
 
 .button-bouncy {
-  display: inline-block;
   position: relative;
+  display: inline-block;
+  color: white;
+  background-color: transparent;
+  margin: 0em 0.3em 0.3em 0;
   padding: 0.35em 1.2em;
   border: 0.1em solid #ffffff;
-  margin: 0 0.3em 0.3em 0;
   border-radius: 0.96em;
   box-sizing: border-box;
-  text-decoration: none;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-weight: 600;
-  color: white;
   text-align: center;
-  background-color: transparent;
+  text-decoration: none;
+  font-weight: 600;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
   transition: all 0.2s;
   animation: bouncy 3s infinite linear;
 }
 
 .button-bouncy:hover {
-  background-color: white;
   color: black;
+  background-color: white;
 }
 
 #answer-container {
@@ -225,17 +222,18 @@ input[type="hidden"] {
 #answer-titles {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
-  visibility: hidden;
-  width: 580px;
-  height: 50px;
+  margin-top: 0.6em;
+  margin-bottom: 0.8em;
+  width: 36em;
+  height: 3em;
   animation: fadeIn 1s;
+  visibility: hidden;
 }
 
 .titles {
-  width: 80px;
-  margin: 6px;
   color: white;
+  margin: 0.1em;
+  width: 6em;
   font-weight: bold;
 }
 
@@ -243,137 +241,125 @@ input[type="hidden"] {
   display: flex;
   flex-direction: row;
   align-items: center;
-  box-sizing: border-box;
-  height: 100px;
-  width: 580px;
+  margin-top: 0.8em;
+  width: 36em;
+  height: 5em;
 }
 
 .wrong {
-  text-align: center;
-  word-wrap: break-word;
-  height: 70px;
-  width: 81px;
-  margin: 4px;
-  border-radius: 10px;
-  background-color: red;
+  position: relative;
   color: white;
+  background-color: red;
+  text-align: center;
+  margin-left: 0.2em;
+  margin-right: 0.2em;
+  padding-top: 0.6em;
+  height: 4.5em;
+  width: 5.5em;
+  border-radius: 0.8em;
   font-weight: bold;
   animation: fadeIn 1.5s;
-  position: relative;
-  border: 1px solid hsla(0, 0%, 100%, 0.59);
-  box-sizing: border-box;
 }
 
 .correct {
-  text-align: center;
-  word-wrap: break-word;
-  height: 70px;
-  width: 81px;
-  margin: 4px;
-  border-radius: 10px;
-  background-color: #008000;
+  position: relative;
   color: white;
+  background-color: #008000;
+  text-align: center;
+  margin-left: 0.2em;
+  margin-right: 0.2em;
+  padding-top: 0.6em;
+  height: 4.5em;
+  width: 5.5em;
+  border-radius: 0.8em;
   font-weight: bold;
   animation: fadeIn 1.5s;
-  position: relative;
-  border: 1px solid hsla(0, 0%, 100%, 0.59);
-  box-sizing: border-box;
 }
 
 .partial {
-  text-align: center;
-  word-wrap: break-word;
-  height: 70px;
-  width: 81px;
-  margin: 4px;
-  border-radius: 10px;
-  background-color: #cc7722;
+  position: relative;
   color: white;
+  background-color: #cc7722;
+  text-align: center;
+  margin-left: 0.2em;
+  margin-right: 0.2em;
+  padding-top: 0.6em;
+  height: 4.5em;
+  width: 5.5em;
+  border-radius: 0.8em;
   font-weight: bold;
   animation: fadeIn 1.5s;
-  position: relative;
-  border: 1px solid hsla(0, 0%, 100%, 0.59);
-  box-sizing: border-box;
 }
 
 #victory-ad {
   position: absolute;
+  color: #fff;
+  background-color: #333;
   display: flex;
   flex-direction: column;
   z-index: 2400;
-  width: 450px;
-  height: 630px;
-  border-radius: 6px;
-  background-color: #000;
-  color: #fff;
-  opacity: 0.925;
-  animation: fadeInCustom 2s;
+  width: 26em;
+  height: 36em;
+  border-radius: 3em;
+  animation: fadeIn 2s;
 }
 
 .victory-button {
-  background-color: dodgerblue;
-  border-radius: 8px;
-  border-width: 0;
+  color: black;
+  background-color: white;
   cursor: pointer;
-  font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial,
-    sans-serif;
-  color: white;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 20px;
-  list-style: none;
   margin: 0;
-  padding: 10px 12px;
+  padding: 0.8em;
+  border-radius: 3em;
+  border-width: 0;
+  font-size: 1em;
+  font-weight: bold;
+  line-height: 1em;
+  list-style: none;
   text-align: center;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
 #pokedex-title {
   color: white;
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  margin-top: 2em;
+  margin-bottom: 2em;
   font-size: 1.3rem;
   font-weight: 600;
-  margin-bottom: 40px;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
 .pokemon-guessed {
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: 120px;
-  width: 600px;
   background-color: blanchedalmond;
-  border-radius: 36px;
-  margin-bottom: 20px;
+  height: 7.5em;
+  width: 32em;
+  margin-bottom: 1em;
+  border-radius: 1.8em;
   animation: fadeIn 1s;
 }
 
 .pokedex-bold {
-  margin-left: 20px;
-  margin-right: 20px;
   color: black;
+  margin-left: 1em;
+  margin-right: 1em;
+  font-size: 1em;
+  font-weight: 600;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
 }
 
 .pokedex-text {
-  margin: 50px;
   color: black;
+  margin: 2.5em;
+  font-size: 1em;
+  font-weight: 600;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-@keyframes fadeInCustom {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 0.925;
-  }
 }
 
 @keyframes fadeIn {
@@ -390,13 +376,13 @@ input[type="hidden"] {
     transform: translateX(0);
   }
   25% {
-    transform: translateX(5px);
+    transform: translateX(0.25em);
   }
   50% {
-    transform: translateX(-5px);
+    transform: translateX(-0.25em);
   }
   75% {
-    transform: translateX(5px);
+    transform: translateX(0.25em);
   }
   100% {
     transform: translateX(0);

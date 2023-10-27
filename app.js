@@ -22,12 +22,12 @@ const firebaseApp = initializeApp(firebaseConfig);
 const db = Firestore.getFirestore(firebaseApp);
 
 var index = 0; // index of winners array
-var winners = []; // to store uuid of players who have won the current round
+var winners = []; // to store unique id of players who have won the current game
 var timestamp; // to store the time when pokemon is generated
 var generatedPokemon; // to store the generated pokemon
-var generateInterval = 300; // in seconds
+var generateInterval = 300; // in seconds, the interval between each generation
 
-// picks a random pokemon from db
+// generate random pokemon from db
 async function generatePokemon() {
   index = 0;
   winners.length = 0;
@@ -39,7 +39,7 @@ async function generatePokemon() {
   console.log("!!! Current Pokemon: " + generatedPokemon.name + " !!!");
 }
 
-// function to verify the client's guess
+// verify the client's guess, generate hints based on it
 function verifyGuess(guess, answer) {
   var response = {
     hasWon: true,
@@ -84,14 +84,14 @@ function verifyGuess(guess, answer) {
   return response;
 }
 
-// function to get a user from db given its id
+// get a user from db given his id
 async function getUserById(id) {
   var userRef = Firestore.doc(db, "users", id);
   var userDoc = await Firestore.getDoc(userRef);
   return userDoc.data();
 }
 
-// Invoked when a logged user wins a game, to update his statistics
+// update user's statistics
 async function updateStatsOnWinning(id, pokemon, tries) {
   // get user statistics
   var user = await getUserById(id);
@@ -115,9 +115,9 @@ async function updateStatsOnWinning(id, pokemon, tries) {
   Firestore.setDoc(userRef, user);
 }
 
-// the first pokemon is generated here
+// first pokemon is generated here
 generatePokemon();
-setInterval(() => generatePokemon(), generateInterval * 1000); // and from now on a new pokemon will be generated every 3 minutes
+setInterval(() => generatePokemon(), generateInterval * 1000); // new pokemon will be generated every 5 minutes
 
 var app = express();
 
@@ -129,12 +129,12 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "")));
 
-// renders home page
+// render home page
 app.get("/", (req, res) => {
   res.render("index");
 });
 
-// When a user guesses, checks if user has won and updates stats if user is logged in.
+// generate hints based on user's guess, check if user has won and, if so, call an update to his stats
 app.post("/", async (req, res) => {
   // make a query to get data about guessed pokémon
   var q = Firestore.query(
@@ -144,22 +144,22 @@ app.post("/", async (req, res) => {
   pokemonDoc = await Firestore.getDocs(q);
   pokemonDoc.forEach((doc) => {
     var guess = doc.data();
-    // confronting guess with answer, this function returns the hints to help user's guesses
+    // confronting guess with answer, returns the hints to help user's guesses
     var response = verifyGuess(guess, generatedPokemon);
     if (response.hasWon) {
       // winners won't be able to play until a new pokemon is generated
       winners[index] = req.body.uid;
       index++;
-      if (req.body.googleID != null) {
-        // means that user is logged in.
+      // means that user is logged in
+      if (req.body.googleID != null)
         updateStatsOnWinning(req.body.googleID, req.body.guess, req.body.tries);
-      }
     }
+    res.status(201);
     res.send([guess, response]);
   });
 });
 
-// renders rankings page, top 10 users
+// render rankings page with top 10 users
 app.get("/rankings", async (req, res) => {
   var userRef = Firestore.collection(db, "users");
   const q = Firestore.query(
@@ -178,25 +178,25 @@ app.get("/rankings", async (req, res) => {
     topTen[i] = obj;
     i++;
   });
+  res.status(200);
   res.render("rankings", { rankingData: topTen });
 });
 
-// renders profile data about requested user
+// render profile data about requested user
 app.get("/profile/:id", async (req, res, next) => {
-  // user.uid is always a 28 characters string
   if (req.params.id.length != 28) next();
-  // check if user actually exists
   var answer = await getUserById(req.params.id);
   if (answer == null) next();
   else {
     res.locals.name = answer.name;
     res.locals.wins = answer.wins;
     res.locals.avgTries = Math.round(answer.avgTries * 100) / 100;
+    res.status(200);
     res.render("profile");
   }
 });
 
-// Invoked on login, creates a document if user is not existent
+// create a document for a first-login user
 app.put("/profile/:id", async (req, res) => {
   if (req.params.id.length != 28 || req.body.name == null)
     res.status(400).end();
@@ -210,34 +210,34 @@ app.put("/profile/:id", async (req, res) => {
     };
     var userRef = Firestore.doc(db, "users", req.params.id);
     Firestore.setDoc(userRef, answer);
-    // end request-response cycle
     res.status(201).end();
   } else res.status(304).end();
 });
 
-// renders requested user's pokedex page
+// render requested user's pokedex page
 app.get("/profile/:id/pokedex", async (req, res, next) => {
-  // user.uid is always a 28 characters string
   if (req.params.id.length != 28) next();
-  // check if user actually exists
   var answer = await getUserById(req.params.id);
   if (answer == null) next();
-  else res.render("pokedex", { name: answer.name, history: answer.history });
+  else {
+    res.status(200);
+    res.render("pokedex", { name: answer.name, history: answer.history });
+  }
 });
 
-// generates new uuid for user
+// generate new unique id for user
 app.get("/id", (req, res) => {
-  // user has no ID, so generate userID and pokemonID
-  var id = uuidv4();
-  res.send(id);
+  res.status(201);
+  res.send(uuidv4());
 });
 
-// sends a boolean that states if user can play right now and a timestamp of when the current word has been generated
+// send a boolean that states if user can play current game and a timestamp of the current pokemon generation
 app.get("/id/status/:id", (req, res) => {
+  res.status(200);
   res.send([winners.includes(req.params.id), timestamp]);
 });
 
-// catches 404 and forwards to error handler
+// catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
 });

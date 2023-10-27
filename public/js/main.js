@@ -18,7 +18,7 @@ const firebaseConfig = {
   measurementId: "G-TBRPL5L80L",
 };
 
-// initialize Firebase
+// initialize Firebase Authentication
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const provider = new GoogleAuthProvider();
@@ -27,7 +27,7 @@ class AppState {
   constructor() {
     this.guesses = [];
     this.tries = 0;
-    this.userid = "";
+    this.uuid = "";
   }
   setGuesses(guesses) {
     this.guesses = guesses;
@@ -45,27 +45,21 @@ class AppState {
     this.tries++;
   }
   setID(id) {
-    this.userid = id;
+    this.uuid = id;
   }
   getID() {
-    return this.userid;
+    return this.uuid;
   }
   getSavedID() {
-    var userid = JSON.parse(window.localStorage.getItem("userID"));
-    // if userID is not been set already
-    if (userid == null) {
-      // asks server to generate an uuid
-      axios
-        .get("/id")
-        .then(function (response) {
-          userid = response.data;
-          window.localStorage.setItem("userID", JSON.stringify(userid));
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+    var uuid = JSON.parse(window.localStorage.getItem("uuid"));
+    // if uuid is not been set already
+    if (uuid == null) {
+      // ask server to generate a unique id
+      axios.get("/id").then(function (response) {
+        window.localStorage.setItem("uuid", JSON.stringify(response.data));
+      });
     }
-    this.userid = userid;
+    this.uuid = uuid;
   }
   getSavedState() {
     var guesses = JSON.parse(window.localStorage.getItem("state"));
@@ -127,6 +121,7 @@ class AppState {
     window.localStorage.removeItem("timestamp");
   }
 }
+
 /*
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function () {
@@ -134,6 +129,8 @@ if ("serviceWorker" in navigator) {
   });
 }
 */
+
+// request for browser notifications
 Notification.requestPermission((permission) => {
   if (permission != "granted") {
     console.log("Permission for notifications was not granted.");
@@ -142,68 +139,60 @@ Notification.requestPermission((permission) => {
   }
 });
 
-// initializing app state
-var appState = new AppState();
-// autocomplete textbar
-autocomplete(document.getElementById("myInput"), pokemons);
-// get all buttons to manage if user is logged in
+var appState = new AppState(); // initializing app state
+autocomplete(document.getElementById("myInput"), pokemons); // initializing autocomplete textbar
+// get all important html elements to manage
 let loginButton = document.getElementById("loginButton");
 let profileButton = document.getElementById("profileButton");
 let pokedexButton = document.getElementById("pokedexButton");
 let rankingsButton = document.getElementById("rankingsButton");
 let sendButton = document.getElementById("myButton");
 let timer = document.getElementById("timer");
+let containerbar = document.getElementById("bar-container");
 let subtitle = document.getElementById("subtitle");
-let textbar = document.getElementById("autocomplete");
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    loginButton.value = "Sign Out";
+    loginButton.value = "Logout";
     profileButton.style.visibility = "visible";
     pokedexButton.style.visibility = "visible";
   } else {
-    loginButton.value = "Log In";
+    loginButton.value = "Login with Google";
     profileButton.style.visibility = "hidden";
     pokedexButton.style.visibility = "hidden";
   }
 });
 
-// get userID
-appState.getSavedID();
-
-// sends a request to the server to retrieve various information
+appState.getSavedID(); // get the saved unique id (or request it to server if not present)
+// send a request to server to retrieve various info
 axios.get("/id/status/" + appState.getID()).then((response) => {
-  // checks if user can play or not
+  // check if user can play or not
   if (response.data[0]) {
-    sendButton.style.visibility = "hidden";
-    textbar.style.visibility = "hidden";
     subtitle.textContent = "You can't make anymore tries... Come back later...";
   } else {
-    sendButton.style.visibility = "visible";
-    textbar.style.visibility = "visible";
+    containerbar.style.animation = "fadeIn 1s";
+    containerbar.style.visibility = "visible";
     subtitle.textContent = "Sto pensando ad un Pokémon, riesci ad indovinarlo?";
   }
-  // this is the creation timestamp of the current state of the game
-  var timestamp = appState.getTimestamp();
-  // response.data[1] is the timestamp of the pokemon generation
+  var timestamp = appState.getTimestamp(); // timestamp of the generation of current state
+  // second index of response is the timestamp of the pokemon generation
   if (timestamp == null || timestamp < response.data[1]) {
     appState.removeState(); // state expired, discard
     appState.removeTimestamp();
   } else {
-    // get state in localStorage
-    appState.getSavedState();
-    // render previous state if not null
+    appState.getSavedState(); // get state in localStorage
+    // render previous state if present
     if (appState.getGuesses().length != 0) {
       appState.renderAll();
       appState.showTitles();
     }
   }
   var remainingTime = response.data[1] + 300 * 1000 - Date.now();
-  // reloads page automatically when the new pokemon is generated
+  // reload page automatically when the new pokemon is generated
   setTimeout(function () {
     window.location.reload();
   }, remainingTime);
-  // set up timer to inform user about new generation
+  // set up the timer to inform user about new pokemon generation
   var minutes = Math.floor(remainingTime / 60000);
   var seconds = ((remainingTime % 60000) / 1000).toFixed(0);
   setInterval(function () {
@@ -267,19 +256,18 @@ sendButton.addEventListener("click", () => {
       uid: appState.getID(),
     })
     .then(function (response) {
-      // hint categories will be shown
-      appState.showTitles();
+      appState.showTitles(); // hint categories will be shown
       // if this is the first attempt, saves the timestamp in localStorage
       if (appState.getGuesses().length == 0)
         window.localStorage.setItem("timestamp", JSON.stringify(Date.now()));
       // forward to appState to generate the hints on the guess
       appState.add(response.data);
       if (response.data[1].hasWon) {
+        inp.disabled = true; // textbar is disabled
         setTimeout(() => {
           onVictory(appState.getTries(), response.data[0].name);
         }, 1000);
-        // no need to maintain state of a won game, resetting
-        appState.removeState();
+        appState.removeState(); // resetting the state
         appState.removeTimestamp();
       }
     })
@@ -298,12 +286,12 @@ function onVictory(tries, pokename) {
   audio.play();
   setTimeout(() => {
     div.innerHTML = `<div><br><br><br><br><b>Congratulazioni!</b><br><br><br><br></div>
-    <div><b>Era proprio ${pokename}!</b></div><div><img src='/public/images/sprites/${pokename}.png' width='200px' height='200px'>
-    </div><div><br><br><b>E ci sei riuscito in ${tries} tentativo/i</b></div><div><br><br><b>Pensi di poter fare di meglio? Scopriamolo!</b>
+    <div><b>Era proprio ${pokename}!</b></div><div><img src='/public/images/sprites/${pokename}.png' width='180px' height='180px'>
+    </div><div><br><br><b>E ci sei riuscito in ${tries} tentativo/i</b></div><div><br><br><b>Pensi di poter fare di meglio? Capiamo!</b>
     <br><br></div><div><br><a href='/'><button class='victory-button'>Continua</button></a></div>`;
   }, 1500);
 }
-
+// sends notifications on login/logout, if enabled
 function sendNotification(message) {
   if (!("Notification" in window)) {
     alert("This browser does not support desktop notifications!");
@@ -335,7 +323,7 @@ function autocomplete(inp, arr) {
         b.className = "list-option";
         b.innerHTML = `<img src='/public/images/sprites/${
           arr[i]
-        }.png' width='60px' height='60px'>
+        }.png' width='70px' height='70px'>
           <strong>${arr[i].substr(0, val.length)}</strong>${arr[i].substr(
           val.length
         )}
