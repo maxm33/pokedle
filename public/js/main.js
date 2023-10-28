@@ -83,7 +83,6 @@ class AppState {
   add(guess) {
     this.guesses.unshift(guess);
     this.saveState();
-    this.showTitles();
     this.render(this.guesses[0]);
   }
   render(guess) {
@@ -109,10 +108,6 @@ class AppState {
     for (var i = this.guesses.length - 1; i >= 0; i--) {
       this.render(this.guesses[i]);
     }
-  }
-  showTitles() {
-    var titles = document.getElementById("answer-titles");
-    titles.style.visibility = "visible";
   }
   getTimestamp() {
     return JSON.parse(window.localStorage.getItem("timestamp"));
@@ -146,10 +141,11 @@ let loginButton = document.getElementById("loginButton");
 let profileButton = document.getElementById("profileButton");
 let pokedexButton = document.getElementById("pokedexButton");
 let rankingsButton = document.getElementById("rankingsButton");
-let sendButton = document.getElementById("myButton");
+let sendButton = document.getElementById("bouncyButton");
 let timer = document.getElementById("timer");
 let containerbar = document.getElementById("bar-container");
 let subtitle = document.getElementById("subtitle");
+var titles = document.getElementById("category-titles");
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
@@ -170,7 +166,7 @@ axios.get("/id/status/" + appState.getID()).then((response) => {
   if (response.data[0]) {
     subtitle.textContent = "You can't make anymore tries... Come back later...";
   } else {
-    containerbar.style.animation = "fadeIn 1s";
+    containerbar.style.animation = "fadeIn 1.5s";
     containerbar.style.visibility = "visible";
     subtitle.textContent = "Sto pensando ad un Pokémon, riesci ad indovinarlo?";
   }
@@ -184,7 +180,7 @@ axios.get("/id/status/" + appState.getID()).then((response) => {
     // render previous state if present
     if (appState.getGuesses().length != 0) {
       appState.renderAll();
-      appState.showTitles();
+      titles.style.visibility = "visible";
     }
   }
   var remainingTime = response.data[1] + 300 * 1000 - Date.now();
@@ -256,10 +252,11 @@ sendButton.addEventListener("click", () => {
       uid: appState.getID(),
     })
     .then(function (response) {
-      appState.showTitles(); // hint categories will be shown
       // if this is the first attempt, saves the timestamp in localStorage
-      if (appState.getGuesses().length == 0)
+      if (appState.getGuesses().length == 0) {
         window.localStorage.setItem("timestamp", JSON.stringify(Date.now()));
+        titles.style.visibility = "visible"; // hint categories will be shown as well
+      }
       // forward to appState to generate the hints on the guess
       appState.add(response.data);
       if (response.data[1].hasWon) {
@@ -288,7 +285,7 @@ function onVictory(tries, pokename) {
     div.innerHTML = `<div><br><br><br><br><b>Congratulazioni!</b><br><br><br><br></div>
     <div><b>Era proprio ${pokename}!</b></div><div><img src='/public/images/sprites/${pokename}.png' width='180px' height='180px'>
     </div><div><br><br><b>E ci sei riuscito in ${tries} tentativo/i</b></div><div><br><br><b>Pensi di poter fare di meglio? Capiamo!</b>
-    <br><br></div><div><br><a href='/'><button class='victory-button'>Continua</button></a></div>`;
+    <br><br></div><div><br><a href='/'><button id='victoryButton'>Continua</button></a></div>`;
   }, 1500);
 }
 // sends notifications on login/logout, if enabled

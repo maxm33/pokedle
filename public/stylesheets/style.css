@@ -1,6 +1,7 @@
 html,
 body {
   height: 100%;
+  overflow-x: hidden;
 }
 
 html {
@@ -9,16 +10,16 @@ html {
   background-size: cover;
   background-color: #000;
   overflow-y: hidden;
-  overflow-x: hidden;
 }
 
 body {
   margin: 0.5em;
   background-color: transparent !important;
   overflow-y: auto;
+  font: 0.95em Arial;
 }
 
-.topnav {
+#topnav {
   background-color: transparent;
   overflow: hidden;
 }
@@ -62,22 +63,23 @@ body {
   visibility: hidden;
 }
 
-.container {
+#container {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
 }
 
-.logo {
+#logo {
   display: flex;
   justify-content: center;
-  height: 8em;
-  width: 15em;
+  height: 9em;
+  width: 26em;
+  margin-top: 1em;
   transition: all 0.2s ease-in-out;
 }
 
-.logo:hover {
+#logo:hover {
   transform: scale(1.1);
 }
 
@@ -120,20 +122,6 @@ a:active {
   box-sizing: border-box;
 }
 
-body {
-  font: 0.95em Arial;
-}
-
-#autocomplete {
-  position: relative;
-  display: inline-block;
-  margin-left: 3.5em;
-}
-
-.shake {
-  animation: horizontal-shaking 0.35s;
-}
-
 input[type="text"] {
   color: white;
   background-color: #333;
@@ -149,6 +137,9 @@ input[type="hidden"] {
 }
 
 #autocomplete {
+  position: relative;
+  display: inline-block;
+  margin-left: 3.5em;
   width: 16em;
 }
 
@@ -199,7 +190,7 @@ input[type="hidden"] {
   border-radius: 1em;
 }
 
-.button-bouncy {
+#bouncyButton {
   position: relative;
   display: inline-block;
   color: white;
@@ -217,7 +208,7 @@ input[type="hidden"] {
   animation: bouncy 3s infinite linear;
 }
 
-.button-bouncy:hover {
+#bouncyButton:hover {
   color: black;
   background-color: white;
 }
@@ -228,7 +219,7 @@ input[type="hidden"] {
   align-items: center;
 }
 
-#answer-titles {
+#category-titles {
   display: flex;
   flex-direction: row;
   margin-top: 0.6em;
@@ -313,7 +304,7 @@ input[type="hidden"] {
   animation: fadeIn 2s;
 }
 
-.victory-button {
+#victoryButton {
   color: black;
   background-color: white;
   cursor: pointer;
@@ -352,16 +343,6 @@ input[type="hidden"] {
   animation: fadeIn 1.5s;
 }
 
-.pokedex-bold {
-  color: black;
-  margin-left: 1em;
-  margin-right: 1em;
-  font-size: 1em;
-  font-weight: 600;
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-}
-
 .pokedex-text {
   color: black;
   margin: 2.5em;
@@ -369,6 +350,10 @@ input[type="hidden"] {
   font-weight: 600;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+
+.shake {
+  animation: horizontal-shaking 0.35s;
 }
 
 @keyframes fadeIn {
@@ -419,5 +404,64 @@ input[type="hidden"] {
   }
   100% {
     top: 0em;
+  }
+}
+
+@media (max-width: 800px) {
+  #logo,
+  #logo a img {
+    height: 7em;
+    width: 20em;
+  }
+  #timer {
+    font-size: 0.9em;
+  }
+  #subtitle {
+    font-size: 0.9em;
+  }
+  #autocomplete {
+    margin-left: 0;
+  }
+  #authref {
+    font-size: 0.7em;
+  }
+  .coolbutton {
+    font-size: 0.9em;
+    font-weight: 800;
+    padding-top: 0.35em;
+    padding-bottom: 0.35em;
+    padding-right: 0.55em;
+    padding-left: 0.55em;
+    margin: 0.15em;
+  }
+  #menu-container {
+    max-width: 26em;
+  }
+  #category-titles {
+    max-width: 26em;
+  }
+  .titles {
+    font-size: 0.8em;
+    margin: 0.2em;
+  }
+  .answer {
+    max-width: 26em;
+  }
+  .answer img {
+    width: 4em;
+    height: 4em;
+  }
+  .wrong,
+  .correct,
+  .partial {
+    word-wrap: break-word;
+    max-width: 4em;
+  }
+  .pokemon-guessed {
+    max-width: 25em;
+  }
+  .pokedex-text {
+    font-size: 0.9em;
+    margin: 1.3em;
   }
 }
