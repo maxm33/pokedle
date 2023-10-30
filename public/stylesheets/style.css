@@ -83,20 +83,20 @@ body {
   transform: scale(1.1);
 }
 
-#subtitle {
-  color: white;
-  animation: fadeIn 1.5s;
-  margin-top: 2.5em;
-  margin-bottom: 1.75em;
+#timer {
+  color: lightgreen;
+  margin-top: 3em;
   font-size: 1.3rem;
   font-weight: 600;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
-#timer {
-  color: lightgreen;
-  margin-top: 3em;
+#subtitle {
+  color: white;
+  animation: fadeIn 1.5s;
+  margin-top: 2.5em;
+  margin-bottom: 1.75em;
   font-size: 1.3rem;
   font-weight: 600;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
@@ -213,12 +213,6 @@ input[type="hidden"] {
   background-color: white;
 }
 
-#answer-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 #category-titles {
   display: flex;
   flex-direction: row;
@@ -235,6 +229,12 @@ input[type="hidden"] {
   margin: 0.1em;
   width: 6em;
   font-weight: bold;
+}
+
+#answer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .answer {
@@ -407,7 +407,19 @@ input[type="hidden"] {
   }
 }
 
-@media (max-width: 800px) {
+@media (min-width: 410px) and (max-width: 650px) {
+  #authref {
+    font-size: 0.7em;
+  }
+  .coolbutton {
+    font-size: 0.9em;
+    font-weight: 800;
+    padding-top: 0.35em;
+    padding-bottom: 0.35em;
+    padding-right: 0.55em;
+    padding-left: 0.55em;
+    margin: 0.15em;
+  }
   #logo,
   #logo a img {
     height: 7em;
@@ -421,18 +433,6 @@ input[type="hidden"] {
   }
   #autocomplete {
     margin-left: 0;
-  }
-  #authref {
-    font-size: 0.7em;
-  }
-  .coolbutton {
-    font-size: 0.9em;
-    font-weight: 800;
-    padding-top: 0.35em;
-    padding-bottom: 0.35em;
-    padding-right: 0.55em;
-    padding-left: 0.55em;
-    margin: 0.15em;
   }
   #menu-container {
     max-width: 26em;
@@ -459,6 +459,69 @@ input[type="hidden"] {
   }
   .pokemon-guessed {
     max-width: 25em;
+  }
+  .pokedex-text {
+    font-size: 0.9em;
+    margin: 1.3em;
+  }
+}
+
+@media (max-width: 409px) {
+  body {
+    margin: 0.3em;
+  }
+  #authref {
+    font-size: 0.7em;
+  }
+  .coolbutton {
+    font-size: 0.8em;
+    font-weight: 800;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    padding-right: 0.45em;
+    padding-left: 0.45em;
+    margin: 0.15em;
+    margin-top: 0.5em;
+  }
+  #logo,
+  #logo a img {
+    height: 5.83em;
+    width: 16.66em;
+  }
+  #timer {
+    font-size: 0.9em;
+  }
+  #subtitle {
+    font-size: 0.9em;
+  }
+  #autocomplete {
+    margin-left: 0;
+  }
+  #menu-container {
+    max-width: 23em;
+  }
+  #category-titles {
+    max-width: 23em;
+  }
+  .titles {
+    font-size: 0.8em;
+    margin: 0.2em;
+  }
+  .answer {
+    max-width: 23em;
+  }
+  .answer img {
+    width: 4em;
+    height: 4em;
+  }
+  .wrong,
+  .correct,
+  .partial {
+    word-wrap: break-word;
+    max-width: 4em;
+  }
+  .pokemon-guessed {
+    max-width: 22em;
   }
   .pokedex-text {
     font-size: 0.9em;
