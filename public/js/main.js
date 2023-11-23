@@ -7,6 +7,7 @@ import {
   signOut,
 } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import { pokemons } from "./pokemon.js";
+import { AppState } from "./appState.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBkHJGjV3MdHdqX54BwTrCkKuQt3tmzEhQ",
@@ -22,100 +23,6 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const provider = new GoogleAuthProvider();
-
-class AppState {
-  constructor() {
-    this.guesses = [];
-    this.tries = 0;
-    this.uuid = "";
-  }
-  setGuesses(guesses) {
-    this.guesses = guesses;
-  }
-  getGuesses() {
-    return this.guesses;
-  }
-  setTries(tries) {
-    this.tries = tries;
-  }
-  getTries() {
-    return this.tries;
-  }
-  incrementTries() {
-    this.tries++;
-  }
-  setID(id) {
-    this.uuid = id;
-  }
-  getID() {
-    return this.uuid;
-  }
-  getSavedID() {
-    var uuid = JSON.parse(window.localStorage.getItem("uuid"));
-    // if uuid is not been set already
-    if (uuid == null) {
-      // ask server to generate a unique id
-      axios.get("/id").then(function (response) {
-        window.localStorage.setItem("uuid", JSON.stringify(response.data));
-      });
-    }
-    this.uuid = uuid;
-  }
-  getSavedState() {
-    var guesses = JSON.parse(window.localStorage.getItem("state"));
-    var tries = JSON.parse(window.localStorage.getItem("tries"));
-    if (guesses != null && tries != null) {
-      this.guesses = guesses;
-      this.tries = tries;
-      return console.log("State has been restored from localStorage");
-    }
-    return console.log("State is not present");
-  }
-  saveState() {
-    this.removeState();
-    window.localStorage.setItem("state", JSON.stringify(this.guesses));
-    window.localStorage.setItem("tries", JSON.stringify(this.tries));
-  }
-  removeState() {
-    window.localStorage.removeItem("state");
-    window.localStorage.removeItem("tries");
-  }
-  add(guess) {
-    this.guesses.unshift(guess);
-    this.saveState();
-    this.render(this.guesses[0]);
-  }
-  render(guess) {
-    var menucontainer = document.getElementById("answer-container");
-    var menuoption = document.createElement("DIV");
-    menuoption.setAttribute("class", "answer");
-    menuoption.innerHTML = `<img src='/public/images/sprites/${guess[0].name}.png' width='100px' height='100px'>`;
-    for (var prop in guess[1]) {
-      if (
-        Object.hasOwnProperty.call(guess[1], prop) &&
-        guess[1][prop] != true &&
-        guess[1][prop] != false
-      ) {
-        var card = document.createElement("DIV");
-        card.setAttribute("class", guess[1][prop]);
-        card.innerHTML = `<p>${guess[0][prop]}</p>`;
-        menuoption.appendChild(card);
-      }
-    }
-    menucontainer.insertAdjacentElement("afterbegin", menuoption);
-  }
-  renderAll() {
-    for (var i = this.guesses.length - 1; i >= 0; i--) {
-      this.render(this.guesses[i]);
-    }
-  }
-  getTimestamp() {
-    return JSON.parse(window.localStorage.getItem("timestamp"));
-  }
-  removeTimestamp() {
-    window.localStorage.removeItem("timestamp");
-  }
-}
 
 /*
 if ("serviceWorker" in navigator) {
@@ -159,7 +66,7 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-appState.getSavedID(); // get the saved unique id (or request it to server if not present)
+appState.setSavedID(); // set the saved unique id from localStorage (or request it to server if not present)
 // send a request to server to retrieve various info
 axios.get("/id/status/" + appState.getID()).then((response) => {
   // check if user can play or not
@@ -168,7 +75,7 @@ axios.get("/id/status/" + appState.getID()).then((response) => {
   } else {
     containerbar.style.animation = "fadeIn 1.5s";
     containerbar.style.visibility = "visible";
-    subtitle.textContent = "Sto pensando ad un Pokémon, riesci ad indovinarlo?";
+    subtitle.textContent = "I'm thinking of a Pokémon, can you guess it?";
   }
   var timestamp = appState.getTimestamp(); // timestamp of the generation of current state
   // second index of response is the timestamp of the pokemon generation
@@ -176,7 +83,7 @@ axios.get("/id/status/" + appState.getID()).then((response) => {
     appState.removeState(); // state expired, discard
     appState.removeTimestamp();
   } else {
-    appState.getSavedState(); // get state in localStorage
+    appState.setSavedState(); // set state from localStorage
     // render previous state if present
     if (appState.getGuesses().length != 0) {
       appState.renderAll();
@@ -198,7 +105,7 @@ axios.get("/id/status/" + appState.getID()).then((response) => {
       seconds = 59;
     } else seconds--;
     timer.textContent =
-      "Nuovo Pokémon in " + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+      "New Pokémon in " + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
   }, 1000);
 });
 
@@ -282,10 +189,10 @@ function onVictory(tries, pokename) {
   audio.volume = 0.1;
   audio.play();
   setTimeout(() => {
-    div.innerHTML = `<div><br><br><br><br><b>Congratulazioni!</b><br><br><br><br></div>
-    <div><b>Era proprio ${pokename}!</b></div><div><img src='/public/images/sprites/${pokename}.png' width='180px' height='180px'>
-    </div><div><br><br><b>E ci sei riuscito in ${tries} tentativo/i</b></div><div><br><br><b>Pensi di poter fare di meglio? Capiamo!</b>
-    <br><br></div><div><br><a href='/'><button id='victoryButton'>Continua</button></a></div>`;
+    div.innerHTML = `<div><br><br><br><br><b>GG!</b><br><br><br><br></div>
+    <div><b>It was ${pokename} indeed!</b></div><div><img src='/public/images/sprites/${pokename}.png' width='180px' height='180px'>
+    </div><div><br><br><b>You guessed it in ${tries} tries...</b></div><div><br><br><b>Think you can do better? Let's see!</b>
+    <br><br></div><div><br><a href='/'><button id='victoryButton'>Continue</button></a></div>`;
   }, 1500);
 }
 // sends notifications on login/logout, if enabled
@@ -303,7 +210,7 @@ function sendNotification(message) {
     }
   });
 }
-
+// management of autocomplete text bar
 function autocomplete(inp, arr) {
   inp.addEventListener("input", function (e) {
     var a, b;

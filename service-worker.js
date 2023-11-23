@@ -1,3 +1,6 @@
+// service worker is no longer available due to unexpected slowdown of the website, even though
+// the best practices to load the service worker are implemented already.
+
 const CACHE_NAME = "Pokédle-Cache";
 const STATIC_CACHE_URLS = [
   "/views/offline.html",
