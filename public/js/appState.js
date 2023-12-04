@@ -1,14 +1,12 @@
 export class AppState {
-  constructor() {
-    this.guesses = [];
-    this.tries = 0;
-    this.uuid = "";
-  }
-  getGuesses() {
-    return this.guesses;
+  guesses = [];
+  uuid = "";
+
+  isPresent() {
+    return this.guesses.length != 0 ? true : false;
   }
   getTries() {
-    return this.tries;
+    return this.guesses.length;
   }
   getID() {
     return this.uuid;
@@ -18,9 +16,6 @@ export class AppState {
   }
   removeTimestamp() {
     window.localStorage.removeItem("timestamp");
-  }
-  incrementTries() {
-    this.tries++;
   }
   setSavedID() {
     var uuid = JSON.parse(window.localStorage.getItem("uuid"));
@@ -35,20 +30,16 @@ export class AppState {
   }
   setSavedState() {
     var guesses = JSON.parse(window.localStorage.getItem("state"));
-    var tries = JSON.parse(window.localStorage.getItem("tries"));
-    if (guesses != null && tries != null) {
+    if (guesses != null) {
       this.guesses = guesses;
-      this.tries = tries;
       console.log("State has been restored from localStorage");
     } else console.log("State is not present");
   }
   saveState() {
     window.localStorage.setItem("state", JSON.stringify(this.guesses));
-    window.localStorage.setItem("tries", JSON.stringify(this.tries));
   }
   removeState() {
     window.localStorage.removeItem("state");
-    window.localStorage.removeItem("tries");
   }
   add(guess) {
     this.guesses.unshift(guess);

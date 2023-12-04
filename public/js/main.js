@@ -85,7 +85,7 @@ axios.get("/id/status/" + appState.getID()).then((response) => {
   } else {
     appState.setSavedState(); // set state from localStorage
     // render previous state if present
-    if (appState.getGuesses().length != 0) {
+    if (appState.isPresent()) {
       appState.renderAll();
       titles.style.visibility = "visible";
     }
@@ -148,19 +148,19 @@ sendButton.addEventListener("click", () => {
     textbox.classList.add("shake");
     return;
   }
-  appState.incrementTries();
+  var updatedTries = appState.getTries() + 1;
   if (auth.currentUser != null) var uid = auth.currentUser.uid;
   else var uid = null;
   axios
     .post("/", {
       googleID: uid,
       guess: myGuess,
-      tries: appState.getTries(),
+      tries: updatedTries,
       uid: appState.getID(),
     })
     .then(function (response) {
       // if this is the first attempt, saves the timestamp in localStorage
-      if (appState.getGuesses().length == 0) {
+      if (!appState.isPresent()) {
         window.localStorage.setItem("timestamp", JSON.stringify(Date.now()));
         titles.style.visibility = "visible"; // hint categories will be shown as well
       }
@@ -169,7 +169,7 @@ sendButton.addEventListener("click", () => {
       if (response.data[1].hasWon) {
         inp.disabled = true; // textbar is disabled
         setTimeout(() => {
-          onVictory(appState.getTries(), response.data[0].name);
+          onVictory(updatedTries, response.data[0].name);
         }, 1000);
         appState.removeState(); // resetting the state
         appState.removeTimestamp();
