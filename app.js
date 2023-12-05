@@ -1,11 +1,11 @@
 const initializeApp = require("firebase/app").initializeApp;
-const Firestore = require("firebase/firestore");
+const firestore = require("firebase/firestore");
+const { v4: uuidv4 } = require("uuid");
+
 var createError = require("http-errors");
 var logger = require("morgan");
 var path = require("path");
 var express = require("express");
-
-const { v4: uuidv4 } = require("uuid");
 
 const firebaseConfig = {
   apiKey: "AIzaSyBkHJGjV3MdHdqX54BwTrCkKuQt3tmzEhQ",
@@ -19,7 +19,7 @@ const firebaseConfig = {
 
 // initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
-const db = Firestore.getFirestore(firebaseApp);
+const db = firestore.getFirestore(firebaseApp);
 
 var index = 0; // index of winners array
 var winners = []; // to store unique id of players who have won the current game
@@ -33,8 +33,8 @@ async function generatePokemon() {
   winners.length = 0;
   timestamp = Date.now();
   var id = Math.floor(Math.random() * 151 + 1);
-  var pokemonRef = Firestore.doc(db, "pokemons", id.toString());
-  var pokemonDoc = await Firestore.getDoc(pokemonRef);
+  var pokemonRef = firestore.doc(db, "pokemons", id.toString());
+  var pokemonDoc = await firestore.getDoc(pokemonRef);
   generatedPokemon = pokemonDoc.data();
   console.log("!!! Current Pokemon: " + generatedPokemon.name + " !!!");
 }
@@ -86,33 +86,43 @@ function verifyGuess(guess, answer) {
 
 // get a user from db given his id
 async function getUserById(id) {
-  var userRef = Firestore.doc(db, "users", id);
-  var userDoc = await Firestore.getDoc(userRef);
-  return userDoc.data();
+  var userRef = firestore.doc(db, "users", id);
+  var userDoc = await firestore.getDoc(userRef);
+  if (userDoc.exists()) return userDoc.data();
+  else return null;
 }
 
-// update user's statistics
-async function updateStatsOnWinning(id, pokemon, tries) {
-  // get user statistics
+// update user's statistics on winning
+async function updateStatsOnWinning(id, name, pokemon, tries) {
   var user = await getUserById(id);
-  // update with new statistics
-  user.avgTries = (user.wins * user.avgTries + tries) / (user.wins + 1);
-  user.wins++;
-  // updating the pokedex
-  var found = false;
-  for (var i = 0; i < user.history.length; i++) {
-    if (user.history[i].pokemon == pokemon) {
-      user.history[i].timesGuessed++;
-      found = true;
-      break;
+  if (user == null) {
+    // create a document if is a first-login user
+    user = {
+      name: name,
+      wins: 1,
+      avgTries: tries,
+      history: [{ pokemon: pokemon, timesGuessed: 1 }],
+    };
+  } else {
+    // update with new statistics
+    user.avgTries = (user.wins * user.avgTries + tries) / (user.wins + 1);
+    user.wins++;
+    // updating the pokedex
+    var found = false;
+    for (var i = 0; i < user.history.length; i++) {
+      if (user.history[i].pokemon == pokemon) {
+        user.history[i].timesGuessed++;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      user.history.push({ pokemon: pokemon, timesGuessed: 1 });
     }
   }
-  if (!found) {
-    user.history.push({ pokemon: pokemon, timesGuessed: 1 });
-  }
   // update the document
-  var userRef = Firestore.doc(db, "users", id);
-  Firestore.setDoc(userRef, user);
+  var userRef = firestore.doc(db, "users", id);
+  firestore.setDoc(userRef, user);
 }
 
 // first pokemon is generated here
@@ -137,11 +147,11 @@ app.get("/", (req, res) => {
 // generate hints based on user's guess, check if user has won and, if so, call an update to his stats
 app.post("/", async (req, res) => {
   // make a query to get data about guessed pokémon
-  var q = Firestore.query(
-    Firestore.collection(db, "pokemons"),
-    Firestore.where("name", "==", req.body.guess)
+  var q = firestore.query(
+    firestore.collection(db, "pokemons"),
+    firestore.where("name", "==", req.body.guess)
   );
-  pokemonDoc = await Firestore.getDocs(q);
+  pokemonDoc = await firestore.getDocs(q);
   pokemonDoc.forEach((doc) => {
     var guess = doc.data();
     // confronting guess with answer, returns the hints to help user's guesses
@@ -152,22 +162,53 @@ app.post("/", async (req, res) => {
       index++;
       // means that user is logged in
       if (req.body.googleID != null)
-        updateStatsOnWinning(req.body.googleID, req.body.guess, req.body.tries);
+        updateStatsOnWinning(
+          req.body.googleID,
+          req.body.googleName,
+          req.body.guess,
+          req.body.tries
+        );
     }
     res.status(201);
     res.send([guess, response]);
   });
 });
 
+// render profile data about requested user
+app.get("/profile/:id", async (req, res, next) => {
+  var answer = await getUserById(req.params.id);
+  if (answer == null)
+    next(createError("This user does not exist or has not played yet!"));
+  else {
+    res.status(200);
+    res.render("profile", {
+      name: answer.name,
+      wins: answer.wins,
+      avgTries: Math.round(answer.avgTries * 100) / 100,
+    });
+  }
+});
+
+// render requested user's pokedex page
+app.get("/profile/:id/pokedex", async (req, res, next) => {
+  var answer = await getUserById(req.params.id);
+  if (answer == null)
+    next(createError("This user does not exist or has not played yet!"));
+  else {
+    res.status(200);
+    res.render("pokedex", { name: answer.name, history: answer.history });
+  }
+});
+
 // render rankings page with top 10 users
 app.get("/rankings", async (req, res) => {
-  var userRef = Firestore.collection(db, "users");
-  const q = Firestore.query(
+  var userRef = firestore.collection(db, "users");
+  const q = firestore.query(
     userRef,
-    Firestore.orderBy("wins", "desc"),
-    Firestore.limit(10)
+    firestore.orderBy("wins", "desc"),
+    firestore.limit(10)
   );
-  var userDocs = await Firestore.getDocs(q);
+  var userDocs = await firestore.getDocs(q);
   var i = 0;
   var topTen = [];
   userDocs.forEach((doc) => {
@@ -180,49 +221,6 @@ app.get("/rankings", async (req, res) => {
   });
   res.status(200);
   res.render("rankings", { rankingData: topTen });
-});
-
-// render profile data about requested user
-app.get("/profile/:id", async (req, res, next) => {
-  if (req.params.id.length != 28) next();
-  var answer = await getUserById(req.params.id);
-  if (answer == null) next();
-  else {
-    res.locals.name = answer.name;
-    res.locals.wins = answer.wins;
-    res.locals.avgTries = Math.round(answer.avgTries * 100) / 100;
-    res.status(200);
-    res.render("profile");
-  }
-});
-
-// create a document for a first-login user
-app.put("/profile/:id", async (req, res) => {
-  if (req.params.id.length != 28 || req.body.name == null)
-    res.status(400).end();
-  var answer = await getUserById(req.params.id);
-  if (answer == null) {
-    answer = {
-      name: req.body.name,
-      wins: 0,
-      avgTries: 0,
-      history: [],
-    };
-    var userRef = Firestore.doc(db, "users", req.params.id);
-    Firestore.setDoc(userRef, answer);
-    res.status(201).end();
-  } else res.status(304).end();
-});
-
-// render requested user's pokedex page
-app.get("/profile/:id/pokedex", async (req, res, next) => {
-  if (req.params.id.length != 28) next();
-  var answer = await getUserById(req.params.id);
-  if (answer == null) next();
-  else {
-    res.status(200);
-    res.render("pokedex", { name: answer.name, history: answer.history });
-  }
 });
 
 // generate new unique id for user
@@ -247,7 +245,6 @@ app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
-  // render the error page
   res.status(err.status || 500);
   res.render("error");
 });

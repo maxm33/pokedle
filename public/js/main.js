@@ -41,8 +41,23 @@ Notification.requestPermission((permission) => {
   }
 });
 
-var appState = new AppState(); // initializing app state
-autocomplete(document.getElementById("myInput"), pokemons); // initializing autocomplete textbar
+// sends notifications on login/logout, if enabled
+function sendNotification(message) {
+  if (!("Notification" in window)) {
+    alert("This browser does not support desktop notifications!");
+    return;
+  }
+  Notification.requestPermission().then((permission) => {
+    if (permission === "granted") {
+      new Notification("Pokédle", {
+        body: message,
+        icon: "/public/images/icon-192x192.png",
+      });
+    }
+  });
+}
+
+let appState = new AppState(); // initializing app state
 // get all important html elements to manage
 let loginButton = document.getElementById("loginButton");
 let profileButton = document.getElementById("profileButton");
@@ -52,7 +67,9 @@ let sendButton = document.getElementById("bouncyButton");
 let timer = document.getElementById("timer");
 let containerbar = document.getElementById("bar-container");
 let subtitle = document.getElementById("subtitle");
-var titles = document.getElementById("category-titles");
+let titles = document.getElementById("category-titles");
+let inp = document.getElementById("myInput");
+autocomplete(inp, pokemons); // initializing autocomplete textbar
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
@@ -112,9 +129,6 @@ axios.get("/id/status/" + appState.getID()).then((response) => {
 loginButton.addEventListener("click", () => {
   if (auth.currentUser == null) {
     signInWithPopup(auth, provider).then(() => {
-      axios.put("/profile/" + auth.currentUser.uid, {
-        name: auth.currentUser.displayName,
-      });
       sendNotification("Welcome back, " + auth.currentUser.displayName + "!");
     });
   } else {
@@ -137,7 +151,6 @@ rankingsButton.addEventListener("click", () => {
 });
 
 sendButton.addEventListener("click", () => {
-  var inp = document.getElementById("myInput");
   var myGuess = inp.value;
   inp.value = "";
   // in case of some types of errors, textbox will shake to notify the user
@@ -149,11 +162,17 @@ sendButton.addEventListener("click", () => {
     return;
   }
   var updatedTries = appState.getTries() + 1;
-  if (auth.currentUser != null) var uid = auth.currentUser.uid;
-  else var uid = null;
+  if (auth.currentUser != null) {
+    var uid = auth.currentUser.uid;
+    var name = auth.currentUser.displayName;
+  } else {
+    var uid = null;
+    var name = null;
+  }
   axios
     .post("/", {
       googleID: uid,
+      googleName: name,
       guess: myGuess,
       tries: updatedTries,
       uid: appState.getID(),
@@ -181,10 +200,9 @@ sendButton.addEventListener("click", () => {
 });
 
 function onVictory(tries, pokename) {
-  var sub = document.getElementById("subtitle");
   var div = document.createElement("DIV");
   div.setAttribute("id", "victory-ad");
-  sub.insertAdjacentElement("afterend", div);
+  subtitle.insertAdjacentElement("afterend", div);
   var audio = new Audio("public/audio/victory-sound.mp3");
   audio.volume = 0.1;
   audio.play();
@@ -195,24 +213,10 @@ function onVictory(tries, pokename) {
     <br><br></div><div><br><a href='/'><button id='victoryButton'>Continue</button></a></div>`;
   }, 1500);
 }
-// sends notifications on login/logout, if enabled
-function sendNotification(message) {
-  if (!("Notification" in window)) {
-    alert("This browser does not support desktop notifications!");
-    return;
-  }
-  Notification.requestPermission().then((permission) => {
-    if (permission === "granted") {
-      const notification = new Notification("Pokédle", {
-        body: message,
-        icon: "/public/images/icon-192x192.png",
-      });
-    }
-  });
-}
+
 // management of autocomplete text bar
-function autocomplete(inp, arr) {
-  inp.addEventListener("input", function (e) {
+function autocomplete(input, arr) {
+  input.addEventListener("input", function (e) {
     var a, b;
     var val = this.value;
     closeAllLists();
@@ -233,7 +237,7 @@ function autocomplete(inp, arr) {
         )}
       <input type='hidden' value='${arr[i]}'>`;
         b.addEventListener("click", function (e) {
-          inp.value = this.getElementsByTagName("input")[0].value;
+          input.value = this.getElementsByTagName("input")[0].value;
           closeAllLists();
         });
         a.appendChild(b);
@@ -244,7 +248,7 @@ function autocomplete(inp, arr) {
   function closeAllLists(elmnt) {
     var x = document.getElementsByClassName("autocomplete-items");
     for (var i = 0; i < x.length; i++) {
-      if (elmnt != x[i] && elmnt != inp) {
+      if (elmnt != x[i] && elmnt != input) {
         x[i].parentNode.removeChild(x[i]);
       }
     }
