@@ -24,14 +24,6 @@ const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const provider = new GoogleAuthProvider();
 
-/*
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function () {
-    navigator.serviceWorker.register("/service-worker.js");
-  });
-}
-*/
-
 // request for browser notifications
 Notification.requestPermission((permission) => {
   if (permission != "granted") {
