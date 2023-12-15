@@ -27,13 +27,12 @@ var timestamp; // to store the time when pokemon is generated
 var generatedPokemon; // to store the generated pokemon
 var generateInterval = 300; // in seconds, the interval between each generation
 
-// generate random pokemon from db
 async function generatePokemon() {
   index = 0;
   winners.length = 0;
   timestamp = Date.now();
-  var id = Math.floor(Math.random() * 151 + 1);
-  var pokemonRef = firestore.doc(db, "pokemons", id.toString());
+  var pokemonID = Math.floor(Math.random() * 151 + 1);
+  var pokemonRef = firestore.doc(db, "pokemons", pokemonID.toString());
   var pokemonDoc = await firestore.getDoc(pokemonRef);
   generatedPokemon = pokemonDoc.data();
   console.log("!!! Current Pokemon: " + generatedPokemon.name + " !!!");
@@ -50,6 +49,7 @@ function verifyGuess(guess, answer) {
     evolutionLevel: "correct",
   };
   var count = 0;
+
   if (guess.name != answer.name) {
     response.hasWon = false;
     if (guess.fullyEvolved != answer.fullyEvolved)
@@ -59,11 +59,8 @@ function verifyGuess(guess, answer) {
     if (guess.habitat != answer.habitat) response.habitat = "wrong";
 
     var guessColors = guess.color.split(", ");
-    for (var i = 0; i < guessColors.length; i++) {
-      if (answer.color.includes(guessColors[i])) {
-        count++;
-      }
-    }
+    for (var i = 0; i < guessColors.length; i++)
+      if (answer.color.includes(guessColors[i])) count++;
     var colors = answer.color.split(", ");
     if (count == 0) response.color = "wrong";
     else if (colors.length != count || guessColors.length != count)
@@ -71,11 +68,8 @@ function verifyGuess(guess, answer) {
     count = 0;
 
     var guessTypes = guess.type.split(", ");
-    for (var i = 0; i < guessTypes.length; i++) {
-      if (answer.type.includes(guessTypes[i])) {
-        count++;
-      }
-    }
+    for (var i = 0; i < guessTypes.length; i++)
+      if (answer.type.includes(guessTypes[i])) count++;
     var types = answer.type.split(", ");
     if (count == 0) response.type = "wrong";
     else if (types.length != count || guessTypes.length != count)
@@ -84,7 +78,7 @@ function verifyGuess(guess, answer) {
   return response;
 }
 
-// get a user from db given his id
+// get a user from database given his id
 async function getUserById(id) {
   var userRef = firestore.doc(db, "users", id);
   var userDoc = await firestore.getDoc(userRef);
@@ -92,11 +86,11 @@ async function getUserById(id) {
   else return null;
 }
 
-// update user's statistics on winning
+// update user's stats and pokedex on winning
 async function updateStatsOnWinning(id, name, pokemon, tries) {
   var user = await getUserById(id);
   if (user == null) {
-    // create a document if is a first-login user
+    // if is a first-login user, set up a fresh document
     user = {
       name: name,
       wins: 1,
@@ -104,7 +98,7 @@ async function updateStatsOnWinning(id, name, pokemon, tries) {
       history: [{ pokemon: pokemon, timesGuessed: 1 }],
     };
   } else {
-    // update with new statistics
+    // updating stats
     user.avgTries = (user.wins * user.avgTries + tries) / (user.wins + 1);
     user.wins++;
     // updating the pokedex
@@ -116,17 +110,14 @@ async function updateStatsOnWinning(id, name, pokemon, tries) {
         break;
       }
     }
-    if (!found) {
-      user.history.push({ pokemon: pokemon, timesGuessed: 1 });
-    }
+    if (!found) user.history.push({ pokemon: pokemon, timesGuessed: 1 });
   }
-  // update the document
+  // update (or create) the document
   var userRef = firestore.doc(db, "users", id);
   firestore.setDoc(userRef, user);
 }
 
-// first pokemon is generated here
-generatePokemon();
+generatePokemon(); // first pokemon is generated here
 setInterval(() => generatePokemon(), generateInterval * 1000); // new pokemon will be generated every 5 minutes
 
 var app = express();
@@ -146,13 +137,12 @@ app.get("/", (req, res) => {
 
 // generate hints based on user's guess, check if user has won and, if so, call an update to his stats
 app.post("/", async (req, res) => {
-  // make a query to get data about guessed pokémon
-  var q = firestore.query(
+  var query = firestore.query(
     firestore.collection(db, "pokemons"),
     firestore.where("name", "==", req.body.guess)
   );
-  pokemonDoc = await firestore.getDocs(q);
-  pokemonDoc.forEach((doc) => {
+  var pokemonDocs = await firestore.getDocs(query);
+  pokemonDocs.forEach((doc) => {
     var guess = doc.data();
     // confronting guess with answer, returns the hints to help user's guesses
     var response = verifyGuess(guess, generatedPokemon);
@@ -160,7 +150,7 @@ app.post("/", async (req, res) => {
       // winners won't be able to play until a new pokemon is generated
       winners[index] = req.body.uid;
       index++;
-      // means that user is logged in
+      // if user is logged in, update his stats
       if (req.body.googleID != null)
         updateStatsOnWinning(
           req.body.googleID,
@@ -176,39 +166,38 @@ app.post("/", async (req, res) => {
 
 // render profile data about requested user
 app.get("/profile/:id", async (req, res, next) => {
-  var answer = await getUserById(req.params.id);
-  if (answer == null)
+  var user = await getUserById(req.params.id);
+  if (user == null)
     next(createError("This user does not exist or has not played yet!"));
   else {
     res.status(200);
     res.render("profile", {
-      name: answer.name,
-      wins: answer.wins,
-      avgTries: Math.round(answer.avgTries * 100) / 100,
+      name: user.name,
+      wins: user.wins,
+      avgTries: Math.round(user.avgTries * 100) / 100,
     });
   }
 });
 
 // render requested user's pokedex page
 app.get("/profile/:id/pokedex", async (req, res, next) => {
-  var answer = await getUserById(req.params.id);
-  if (answer == null)
+  var user = await getUserById(req.params.id);
+  if (user == null)
     next(createError("This user does not exist or has not played yet!"));
   else {
     res.status(200);
-    res.render("pokedex", { name: answer.name, history: answer.history });
+    res.render("pokedex", { name: user.name, history: user.history });
   }
 });
 
 // render rankings page with top 10 users
 app.get("/rankings", async (req, res) => {
-  var userRef = firestore.collection(db, "users");
-  const q = firestore.query(
-    userRef,
+  var query = firestore.query(
+    firestore.collection(db, "users"),
     firestore.orderBy("wins", "desc"),
     firestore.limit(10)
   );
-  var userDocs = await firestore.getDocs(q);
+  var userDocs = await firestore.getDocs(query);
   var i = 0;
   var topTen = [];
   userDocs.forEach((doc) => {
@@ -242,9 +231,8 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  res.locals.error = err;
   res.status(err.status || 500);
   res.render("error");
 });

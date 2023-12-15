@@ -3,7 +3,6 @@ body {
   height: 100%;
   overflow-x: hidden;
 }
-
 html {
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url("/public/images/background.webp") no-repeat 50% fixed;
@@ -11,19 +10,16 @@ html {
   background-color: #000;
   overflow-y: hidden;
 }
-
 body {
   margin: 0.5em;
   background-color: transparent !important;
   overflow-y: auto;
   font: 0.95em Arial;
 }
-
 #topnav {
   background-color: transparent;
   overflow: hidden;
 }
-
 #authref {
   color: white;
   float: left;
@@ -32,7 +28,6 @@ body {
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
-
 .coolbutton {
   color: white;
   background-color: #333;
@@ -50,26 +45,21 @@ body {
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   animation: fadeIn 1.5s;
 }
-
 .coolbutton:hover {
   background-color: rgba(255, 255, 255, 0.3);
 }
-
 #profileButton {
   visibility: hidden;
 }
-
 #pokedexButton {
   visibility: hidden;
 }
-
 #container {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
 }
-
 #logo {
   display: flex;
   justify-content: center;
@@ -78,11 +68,9 @@ body {
   margin-top: 1em;
   transition: all 0.2s ease-in-out;
 }
-
 #logo:hover {
   transform: scale(1.1);
 }
-
 #timer {
   color: lightgreen;
   margin-top: 3em;
@@ -91,7 +79,6 @@ body {
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
-
 #subtitle {
   color: white;
   animation: fadeIn 1.5s;
@@ -102,7 +89,6 @@ body {
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
-
 a:link {
   color: greenyellow;
   background-color: transparent;
@@ -117,11 +103,9 @@ a:active {
   color: yellow;
   background-color: transparent;
 }
-
 * {
   box-sizing: border-box;
 }
-
 input[type="text"] {
   color: white;
   background-color: #333;
@@ -131,18 +115,15 @@ input[type="text"] {
   padding: 0.65em;
   font-size: 1.05em;
 }
-
 input[type="hidden"] {
   background-color: transparent !important;
 }
-
 #autocomplete {
   position: relative;
   display: inline-block;
   margin-left: 3.5em;
   width: 16em;
 }
-
 .autocomplete-items {
   position: absolute;
   border-bottom: none;
@@ -155,7 +136,6 @@ input[type="hidden"] {
   max-height: 27.7em;
   overflow-y: scroll;
 }
-
 .list-option {
   display: flex;
   align-items: center;
@@ -163,33 +143,27 @@ input[type="hidden"] {
   font-size: 1.1em;
   font-weight: 100;
 }
-
 .autocomplete-items div {
   color: white;
   background-color: #333;
   cursor: pointer;
   border: none;
 }
-
 .autocomplete-items div:hover {
   transition: all 0.2s;
   background-color: #404040;
 }
-
 .autocomplete-items::-webkit-scrollbar {
   width: 0.5em;
 }
-
 .autocomplete-items::-webkit-scrollbar-track {
   background: transparent;
 }
-
 .autocomplete-items::-webkit-scrollbar-thumb {
   background-color: #d3d3d3;
   border: 0.15em solid transparent;
   border-radius: 1em;
 }
-
 #bouncyButton {
   position: relative;
   display: inline-block;
@@ -207,12 +181,10 @@ input[type="hidden"] {
   transition: all 0.2s;
   animation: bouncy 3s infinite linear;
 }
-
 #bouncyButton:hover {
   color: black;
   background-color: white;
 }
-
 #category-titles {
   display: flex;
   flex-direction: row;
@@ -223,20 +195,17 @@ input[type="hidden"] {
   animation: fadeIn 1.5s;
   visibility: hidden;
 }
-
 .titles {
   color: white;
   margin: 0.1em;
   width: 6em;
   font-weight: bold;
 }
-
 #answer-container {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-
 .answer {
   display: flex;
   flex-direction: row;
@@ -245,7 +214,6 @@ input[type="hidden"] {
   width: 36em;
   height: 5em;
 }
-
 .wrong {
   position: relative;
   color: white;
@@ -260,7 +228,6 @@ input[type="hidden"] {
   font-weight: bold;
   animation: fadeIn 1.5s;
 }
-
 .correct {
   position: relative;
   color: white;
@@ -275,7 +242,6 @@ input[type="hidden"] {
   font-weight: bold;
   animation: fadeIn 1.5s;
 }
-
 .partial {
   position: relative;
   color: white;
@@ -290,7 +256,6 @@ input[type="hidden"] {
   font-weight: bold;
   animation: fadeIn 1.5s;
 }
-
 #victory-ad {
   position: absolute;
   color: #fff;
@@ -303,7 +268,6 @@ input[type="hidden"] {
   border-radius: 3em;
   animation: fadeIn 2s;
 }
-
 #victoryButton {
   color: black;
   background-color: white;
@@ -320,7 +284,22 @@ input[type="hidden"] {
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
-
+#pokeprof-button {
+  color: black;
+  background-color: white;
+  cursor: pointer;
+  margin: 0;
+  padding: 0.8em;
+  border-radius: 3em;
+  border-width: 0;
+  font-size: 0.7em;
+  font-weight: bold;
+  line-height: 1em;
+  list-style: none;
+  text-align: center;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
 #pokedex-title {
   color: white;
   margin-top: 2em;
@@ -330,7 +309,6 @@ input[type="hidden"] {
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
-
 .pokemon-guessed {
   display: flex;
   flex-direction: row;
@@ -342,7 +320,6 @@ input[type="hidden"] {
   border-radius: 1.8em;
   animation: fadeIn 1.5s;
 }
-
 .pokedex-text {
   color: black;
   margin: 2.5em;
@@ -351,11 +328,9 @@ input[type="hidden"] {
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
-
 .shake {
   animation: horizontal-shaking 0.35s;
 }
-
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -364,7 +339,6 @@ input[type="hidden"] {
     opacity: 1;
   }
 }
-
 @keyframes horizontal-shaking {
   0% {
     transform: translateX(0);
@@ -382,7 +356,6 @@ input[type="hidden"] {
     transform: translateX(0);
   }
 }
-
 @keyframes bouncy {
   0% {
     top: 0em;
@@ -429,7 +402,7 @@ input[type="hidden"] {
     font-size: 0.9em;
   }
   #subtitle {
-    font-size: 0.9em;
+    font-size: 1.2em;
   }
   #autocomplete {
     margin-left: 0;
@@ -492,7 +465,7 @@ input[type="hidden"] {
     font-size: 0.9em;
   }
   #subtitle {
-    font-size: 0.9em;
+    font-size: 1.1em;
   }
   #autocomplete {
     margin-left: 0;

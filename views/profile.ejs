@@ -19,8 +19,15 @@
       <div id="subtitle">
         <h1><%= name %></h1>
         Wins: <%= wins %> <br />
-        Average Tries: <%= avgTries %>
+        Average Tries: <%= avgTries %> <br /><br />
+        <button id="pokeprof-button">View Pokédex</button>
       </div>
     </div>
+    <script>
+      let pokeprofButton = document.getElementById("pokeprof-button");
+      pokeprofButton.addEventListener("click", () => {
+        window.location.href = window.location.href + "/pokedex";
+      });
+    </script>
   </body>
 </html>

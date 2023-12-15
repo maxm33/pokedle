@@ -26,27 +26,23 @@ const provider = new GoogleAuthProvider();
 
 // request for browser notifications
 Notification.requestPermission((permission) => {
-  if (permission != "granted") {
+  if (permission != "granted")
     console.log("Permission for notifications was not granted.");
-  } else {
-    console.log("Notifications enabled.");
-  }
+  else console.log("Notifications enabled.");
 });
 
 // sends notifications on login/logout, if enabled
 function sendNotification(message) {
-  if (!("Notification" in window)) {
-    alert("This browser does not support desktop notifications!");
-    return;
+  if ("Notification" in window) {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        new Notification("Pokédle", {
+          body: message,
+          icon: "/public/images/icon-192x192.png",
+        });
+      }
+    });
   }
-  Notification.requestPermission().then((permission) => {
-    if (permission === "granted") {
-      new Notification("Pokédle", {
-        body: message,
-        icon: "/public/images/icon-192x192.png",
-      });
-    }
-  });
 }
 
 let appState = new AppState(); // initializing app state
@@ -79,9 +75,9 @@ appState.setSavedID(); // set the saved unique id from localStorage (or request 
 // send a request to server to retrieve various info
 axios.get("/id/status/" + appState.getID()).then((response) => {
   // check if user can play or not
-  if (response.data[0]) {
+  if (response.data[0])
     subtitle.textContent = "You can't make anymore tries... Come back later...";
-  } else {
+  else {
     containerbar.style.animation = "fadeIn 1.5s";
     containerbar.style.visibility = "visible";
     subtitle.textContent = "I'm thinking of a Pokémon, can you guess it?";
@@ -101,13 +97,13 @@ axios.get("/id/status/" + appState.getID()).then((response) => {
   }
   var remainingTime = response.data[1] + 300 * 1000 - Date.now();
   // reload page automatically when the new pokemon is generated
-  setTimeout(function () {
+  setTimeout(() => {
     window.location.reload();
   }, remainingTime);
   // set up the timer to inform user about new pokemon generation
   var minutes = Math.floor(remainingTime / 60000);
   var seconds = ((remainingTime % 60000) / 1000).toFixed(0);
-  setInterval(function () {
+  setInterval(() => {
     if (minutes <= 0 && seconds <= 0) return;
     if (minutes >= 1 && seconds == 0) {
       minutes--;
@@ -169,7 +165,7 @@ sendButton.addEventListener("click", () => {
       tries: updatedTries,
       uid: appState.getID(),
     })
-    .then(function (response) {
+    .then((response) => {
       // if this is the first attempt, saves the timestamp in localStorage
       if (!appState.isPresent()) {
         window.localStorage.setItem("timestamp", JSON.stringify(Date.now()));
@@ -186,7 +182,7 @@ sendButton.addEventListener("click", () => {
         appState.removeTimestamp();
       }
     })
-    .catch(function (error) {
+    .catch((error) => {
       console.log(error);
     });
 });
@@ -239,14 +235,11 @@ function autocomplete(input, arr) {
 
   function closeAllLists(elmnt) {
     var x = document.getElementsByClassName("autocomplete-items");
-    for (var i = 0; i < x.length; i++) {
-      if (elmnt != x[i] && elmnt != input) {
-        x[i].parentNode.removeChild(x[i]);
-      }
-    }
+    for (var i = 0; i < x.length; i++)
+      if (elmnt != x[i] && elmnt != input) x[i].parentNode.removeChild(x[i]);
   }
 
-  document.addEventListener("click", function (e) {
+  document.addEventListener("click", (e) => {
     closeAllLists(e.target);
   });
 }
