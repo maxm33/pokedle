@@ -89,19 +89,16 @@ body {
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
-a:link {
+a:link,
+a:visited {
   color: greenyellow;
   background-color: transparent;
   text-decoration: none;
 }
-a:visited {
+a:hover {
   color: deepskyblue;
   background-color: transparent;
   text-decoration: none;
-}
-a:active {
-  color: yellow;
-  background-color: transparent;
 }
 * {
   box-sizing: border-box;

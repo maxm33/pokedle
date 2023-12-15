@@ -16,7 +16,7 @@
       <div id="logo">
         <a href="/"><img alt="" src="/public/images/pokedle-logo.webp" /></a>
       </div>
-      <h1 id="pokedex-title"><%= name %>'s Pokédex</h1>
+      <h1 id="pokedex-title"><a id="proflink"><%= name %></a>'s Pokédex</h1>
       <div>
         <% for (var i = 0; i < history.length; i++) { %>
         <div class="pokemon-guessed" id="<%= history[i].pokemon %>">
@@ -33,5 +33,10 @@
         <% } %>
       </div>
     </div>
+    <script>
+      var str = window.location.href;
+      var ref = str.substring(0, str.length - 8); // removig "/pokedex"
+      document.getElementById("proflink").href = ref;
+    </script>
   </body>
 </html>
