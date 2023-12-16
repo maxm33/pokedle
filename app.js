@@ -89,7 +89,7 @@ async function getUserById(id) {
 // update user's stats and pokedex on winning
 async function updateStatsOnWinning(id, name, pokemon, tries) {
   var user = await getUserById(id);
-  if (user == null) {
+  if (user == null)
     // if is a first-login user, set up a fresh document
     user = {
       name: name,
@@ -97,7 +97,7 @@ async function updateStatsOnWinning(id, name, pokemon, tries) {
       avgTries: tries,
       history: [{ pokemon: pokemon, timesGuessed: 1 }],
     };
-  } else {
+  else {
     // updating stats
     user.avgTries = (user.wins * user.avgTries + tries) / (user.wins + 1);
     user.wins++;

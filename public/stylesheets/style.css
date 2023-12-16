@@ -306,7 +306,7 @@ input[type="hidden"] {
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
-.pokemon-guessed {
+.pokedex-row {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -427,7 +427,7 @@ input[type="hidden"] {
     word-wrap: break-word;
     max-width: 4em;
   }
-  .pokemon-guessed {
+  .pokedex-row {
     max-width: 25em;
   }
   .pokedex-text {
@@ -490,7 +490,7 @@ input[type="hidden"] {
     word-wrap: break-word;
     max-width: 4em;
   }
-  .pokemon-guessed {
+  .pokedex-row {
     max-width: 22em;
   }
   .pokedex-text {

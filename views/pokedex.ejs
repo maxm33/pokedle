@@ -17,26 +17,45 @@
         <a href="/"><img alt="" src="/public/images/pokedle-logo.webp" /></a>
       </div>
       <h1 id="pokedex-title"><a id="proflink"><%= name %></a>'s Pokédex</h1>
-      <div>
-        <% for (var i = 0; i < history.length; i++) { %>
-        <div class="pokemon-guessed" id="<%= history[i].pokemon %>">
-          <img
-            src="/public/images/sprites/<%= history[i].pokemon %>.png"
-            width="100px"
-            height="100px"
-          />
-          <p class="pokedex-text"><%= history[i].pokemon %></p>
-          <p class="pokedex-text">
-            Guessed: <%= history[i].timesGuessed %> times
-          </p>
-        </div>
-        <% } %>
-      </div>
     </div>
-    <script>
+    <script type="module">
+      import { pokemons } from "../../public/js/pokemon.js";
+
       var str = window.location.href;
       var ref = str.substring(0, str.length - 8); // removig "/pokedex"
       document.getElementById("proflink").href = ref;
+
+      var container = document.getElementById("container");
+      var div = document.createElement("DIV");
+
+      // generating all the pokedex rows as unknown
+      for (var i = 0; i < pokemons.length; i++) {
+        var subdiv = document.createElement("DIV");
+        subdiv.setAttribute("class", "pokedex-row");
+        subdiv.setAttribute("id", pokemons[i]);
+        subdiv.innerHTML = `<img
+            src="/public/images/sprites/unknown.png"
+            width="90px"
+            height="90px"
+          />
+          <p class="pokedex-text">???</p>`;
+        div.appendChild(subdiv);
+      }
+      container.appendChild(div);
+
+      // replacing some unknown rows with known ones (according to the user's history)
+      var history = `<%- JSON.stringify(history) %>`;
+      history = JSON.parse(history);
+      for (var i = 0; i < history.length; i++) {
+        var subdiv = document.getElementById(history[i].pokemon);
+        subdiv.innerHTML = `<img
+            src="/public/images/sprites/${history[i].pokemon}.png"
+            width="100px"
+            height="100px"
+          />
+          <p class="pokedex-text">${history[i].pokemon}</p>
+          <p class="pokedex-text">Guessed: ${history[i].timesGuessed}</p>`;
+      }
     </script>
   </body>
 </html>

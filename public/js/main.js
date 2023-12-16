@@ -33,16 +33,14 @@ Notification.requestPermission((permission) => {
 
 // sends notifications on login/logout, if enabled
 function sendNotification(message) {
-  if ("Notification" in window) {
+  if ("Notification" in window)
     Notification.requestPermission().then((permission) => {
-      if (permission === "granted") {
+      if (permission === "granted")
         new Notification("Pokédle", {
           body: message,
           icon: "/public/images/icon-192x192.png",
         });
-      }
     });
-  }
 }
 
 let appState = new AppState(); // initializing app state
@@ -115,15 +113,14 @@ axios.get("/id/status/" + appState.getID()).then((response) => {
 });
 
 loginButton.addEventListener("click", () => {
-  if (auth.currentUser == null) {
+  if (auth.currentUser == null)
     signInWithPopup(auth, provider).then(() => {
       sendNotification("Welcome back, " + auth.currentUser.displayName + "!");
     });
-  } else {
+  else
     signOut(auth).then(() => {
       sendNotification("Logged out successfully.");
     });
-  }
 });
 
 profileButton.addEventListener("click", () => {
