@@ -17,6 +17,7 @@
         <a href="/"><img alt="" src="/public/images/pokedle-logo.webp" /></a>
       </div>
       <h1 id="pokedex-title"><a id="proflink"><%= name %></a>'s Pokédex</h1>
+      <h2 id="pokedex-numbers"></h2>
     </div>
     <script type="module">
       import { pokemons } from "../../public/js/pokemon.js";
@@ -33,7 +34,8 @@
         var subdiv = document.createElement("DIV");
         subdiv.setAttribute("class", "pokedex-row");
         subdiv.setAttribute("id", pokemons[i]);
-        subdiv.innerHTML = `<img
+        subdiv.innerHTML = `<p class="pokedex-row-numbers">${i + 1}.</p>
+        <img
             src="/public/images/sprites/unknown.png"
             width="90px"
             height="90px"
@@ -46,9 +48,13 @@
       // replacing some unknown rows with known ones (according to the user's history)
       var history = `<%- JSON.stringify(history) %>`;
       history = JSON.parse(history);
+      document.getElementById(
+        "pokedex-numbers"
+      ).textContent = `${history.length}/${pokemons.length} Pokémons discovered`;
       for (var i = 0; i < history.length; i++) {
         var subdiv = document.getElementById(history[i].pokemon);
-        subdiv.innerHTML = `<img
+        subdiv.innerHTML = `<p class="pokedex-row-numbers">${subdiv.firstChild.innerHTML}</p>
+          <img
             src="/public/images/sprites/${history[i].pokemon}.png"
             width="100px"
             height="100px"

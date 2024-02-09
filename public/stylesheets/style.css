@@ -299,9 +299,16 @@ input[type="hidden"] {
 }
 #pokedex-title {
   color: white;
-  margin-top: 2em;
-  margin-bottom: 2em;
+  margin-top: 1.5em;
   font-size: 1.3rem;
+  font-weight: 600;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+#pokedex-numbers {
+  color: white;
+  margin-bottom: 1em;
+  font-size: 1.2rem;
   font-weight: 600;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
@@ -316,6 +323,14 @@ input[type="hidden"] {
   margin-bottom: 1em;
   border-radius: 1.8em;
   animation: fadeIn 1.5s;
+}
+.pokedex-row-numbers {
+  color: black;
+  margin: 1.5em;
+  font-size: 1em;
+  font-weight: 600;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 .pokedex-text {
   color: black;
@@ -430,6 +445,10 @@ input[type="hidden"] {
   .pokedex-row {
     max-width: 25em;
   }
+  .pokedex-row-numbers {
+    font-size: 0.9em;
+    margin: 0.5em;
+  }
   .pokedex-text {
     font-size: 0.9em;
     margin: 1.3em;
@@ -493,8 +512,12 @@ input[type="hidden"] {
   .pokedex-row {
     max-width: 22em;
   }
+  .pokedex-row-numbers {
+    font-size: 0.9em;
+    margin: 0.5em;
+  }
   .pokedex-text {
     font-size: 0.9em;
-    margin: 1.3em;
+    margin: 1em;
   }
 }
