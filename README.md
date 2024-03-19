@@ -10,16 +10,20 @@ You will be given hints on each of these categories for the pokémon you guess.<
 Through their colors, these hints will help you to figure out what is the secret pokemon:<br>
 
 - `green` is an exact match on that same category of the secret pokémon;<br>
-- `yellow` is a partial match (meaning that one value of the two is right);<br>
+- `yellow` is a partial match (meaning that one value of the two is correct);<br>
 - `red` means there's no match at all.<br>
 
-If you want to keep track of your game stats, make sure to login with Google.<br>
+> [!TIP]
+> If you want to keep track of your game stats, make sure to login with Google.<br>
 
 Secret pokémon changes every **_5 minutes_**.<br>
 
-Have fun guessin' 'em all!<br><br>
+Have fun guessin' 'em all!<br><br><br><br>
+
 Visit Pokédle [here](https://pokedle.onrender.com/).<br>
-(Can be slow to load because the hosting site shuts the service down after 15 minutes of inactivity)<br>
+
+> [!NOTE]
+> Pokédle can be slow to load because the host server shuts down after 15 minutes of inactivity.
 
 ## Usage
 
@@ -35,4 +39,5 @@ npm install
 npm start
 ```
 
-**Note**: Locally, server is available at `localhost:3000` (you can change port value in `bin/www`).<br>
+> [!NOTE]
+> Locally, Pokédle is available at `localhost:3000`.
