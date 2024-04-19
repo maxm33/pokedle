@@ -16,7 +16,7 @@ Through their colors, these hints will help you to figure out what is the secret
 > [!TIP]
 > If you want to keep track of your game stats, make sure to login with Google.<br>
 
-Secret pokémon changes every **_5 minutes_**.<br>
+Secret pokémon changes every day.<br>
 
 Have fun guessin' 'em all!<br><br><br><br>
 

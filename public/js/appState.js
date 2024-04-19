@@ -2,31 +2,28 @@ export class AppState {
   guesses = [];
   uuid = "";
 
-  isPresent() {
-    return this.guesses.length != 0 ? true : false;
+  getID() {
+    return this.uuid;
   }
   getTries() {
     return this.guesses.length;
   }
-  getID() {
-    return this.uuid;
+  isPresent() {
+    return this.guesses.length != 0 ? true : false;
   }
-  getTimestamp() {
-    return JSON.parse(window.localStorage.getItem("timestamp"));
+  saveState() {
+    window.localStorage.setItem("state", JSON.stringify(this.guesses));
   }
-  removeTimestamp() {
-    window.localStorage.removeItem("timestamp");
+  removeState() {
+    window.localStorage.removeItem("state");
   }
   setSavedID() {
-    var uuid = JSON.parse(window.localStorage.getItem("uuid"));
-    // if uuid is not been set already
-    if (uuid == null) {
-      // ask server to generate a unique id
+    var id = JSON.parse(window.localStorage.getItem("uuid"));
+    if (id == null)
       axios.get("/id").then(function (response) {
         window.localStorage.setItem("uuid", JSON.stringify(response.data));
       });
-    }
-    this.uuid = uuid;
+    this.uuid = id;
   }
   setSavedState() {
     var guesses = JSON.parse(window.localStorage.getItem("state"));
@@ -34,12 +31,6 @@ export class AppState {
       this.guesses = guesses;
       console.log("State has been restored from localStorage");
     } else console.log("State is not present");
-  }
-  saveState() {
-    window.localStorage.setItem("state", JSON.stringify(this.guesses));
-  }
-  removeState() {
-    window.localStorage.removeItem("state");
   }
   add(guess) {
     this.guesses.unshift(guess);
@@ -66,8 +57,7 @@ export class AppState {
     menucontainer.insertAdjacentElement("afterbegin", menuoption);
   }
   renderAll() {
-    for (var i = this.guesses.length - 1; i >= 0; i--) {
+    for (var i = this.guesses.length - 1; i >= 0; i--)
       this.render(this.guesses[i]);
-    }
   }
 }

@@ -25,7 +25,7 @@ var index = 0; // index of winners array
 var winners = []; // to store unique id of players who have won the current game
 var timestamp; // to store the time when pokemon is generated
 var generatedPokemon; // to store the generated pokemon
-var generateInterval = 300; // in seconds, the interval between each generation
+var generateInterval = 24 * 60 * 60 * 1000; // in milliseconds, the interval between each generation
 
 async function generatePokemon() {
   index = 0;
@@ -118,7 +118,7 @@ async function updateStatsOnWinning(id, name, pokemon, tries) {
 }
 
 generatePokemon(); // first pokemon is generated here
-setInterval(() => generatePokemon(), generateInterval * 1000); // new pokemon will be generated every 5 minutes
+setInterval(() => generatePokemon(), generateInterval); // new pokemon will be generated at set intervals
 
 var app = express();
 
@@ -218,10 +218,11 @@ app.get("/id", (req, res) => {
   res.send(uuidv4());
 });
 
-// send a boolean that states if user can play current game and a timestamp of the current pokemon generation
+// send a boolean that states if user can play current game and the remaining time before next pokemon generation
 app.get("/id/status/:id", (req, res) => {
+  var remainingTime = timestamp + generateInterval - Date.now();
   res.status(200);
-  res.send([winners.includes(req.params.id), timestamp]);
+  res.send([winners.includes(req.params.id), remainingTime]);
 });
 
 // catch 404 and forward to error handler

@@ -31,18 +31,6 @@ Notification.requestPermission((permission) => {
   else console.log("Notifications enabled.");
 });
 
-// sends notifications on login/logout, if enabled
-function sendNotification(message) {
-  if ("Notification" in window)
-    Notification.requestPermission().then((permission) => {
-      if (permission === "granted")
-        new Notification("Pokédle", {
-          body: message,
-          icon: "/public/images/icon-192x192.png",
-        });
-    });
-}
-
 let appState = new AppState(); // initializing app state
 // get all important html elements to manage
 let loginButton = document.getElementById("loginButton");
@@ -69,10 +57,9 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-appState.setSavedID(); // set the saved unique id from localStorage (or request it to server if not present)
+appState.setSavedID(); // set the saved unique id from localStorage (if not present, request it)
 // send a request to server to retrieve various info
 axios.get("/id/status/" + appState.getID()).then((response) => {
-  // check if user can play or not
   if (response.data[0])
     subtitle.textContent = "You can't make anymore tries... Come back later...";
   else {
@@ -80,35 +67,45 @@ axios.get("/id/status/" + appState.getID()).then((response) => {
     containerbar.style.visibility = "visible";
     subtitle.textContent = "I'm thinking of a Pokémon, can you guess it?";
   }
-  var timestamp = appState.getTimestamp(); // timestamp of the generation of current state
-  // second index of response is the timestamp of the pokemon generation
-  if (timestamp == null || timestamp < response.data[1]) {
-    appState.removeState(); // state expired, discard
-    appState.removeTimestamp();
-  } else {
-    appState.setSavedState(); // set state from localStorage
-    // render previous state if present
-    if (appState.isPresent()) {
-      appState.renderAll();
-      titles.style.visibility = "visible";
-    }
-  }
-  var remainingTime = response.data[1] + 300 * 1000 - Date.now();
-  // reload page automatically when the new pokemon is generated
+  var remainingTime = response.data[1];
+  // reload page automatically after remaining time has passed
   setTimeout(() => {
+    appState.removeState();
     window.location.reload();
   }, remainingTime);
-  // set up the timer to inform user about new pokemon generation
-  var minutes = Math.floor(remainingTime / 60000);
-  var seconds = ((remainingTime % 60000) / 1000).toFixed(0);
+
+  appState.setSavedState();
+  if (appState.isPresent()) {
+    appState.renderAll();
+    titles.style.visibility = "visible";
+  }
+
+  const totalSeconds = Math.floor(remainingTime / 1000);
+  const remainingSecondsAfterHours = totalSeconds % 3600;
+
+  var hours = Math.floor(totalSeconds / 3600);
+  var minutes = Math.floor(remainingSecondsAfterHours / 60);
+  var seconds = remainingSecondsAfterHours % 60;
+
+  // updates the timer every second
   setInterval(() => {
-    if (minutes <= 0 && seconds <= 0) return;
-    if (minutes >= 1 && seconds == 0) {
+    if (hours <= 0 && minutes <= 0 && seconds <= 0) return;
+    else if (hours >= 1 && minutes == 0 && seconds == 0) {
+      hours--;
+      minutes = 59;
+      seconds = 59;
+    } else if (minutes >= 1 && seconds == 0) {
       minutes--;
       seconds = 59;
     } else seconds--;
+
     timer.textContent =
-      "New Pokémon in " + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+      "New Pokémon in " +
+      (hours < 10 ? "0" + hours : hours) +
+      ":" +
+      (minutes < 10 ? "0" + minutes : minutes) +
+      ":" +
+      (seconds < 10 ? "0" + seconds : seconds);
   }, 1000);
 });
 
@@ -138,7 +135,7 @@ rankingsButton.addEventListener("click", () => {
 sendButton.addEventListener("click", () => {
   var myGuess = inp.value;
   inp.value = "";
-  // in case of some types of errors, textbox will shake to notify the user
+  // in case of some types of errors, textbar will shake to notify the user
   if (myGuess == "" || !pokemons.includes(myGuess)) {
     var textbox = document.getElementById("autocomplete");
     textbox.classList.remove("shake");
@@ -163,11 +160,7 @@ sendButton.addEventListener("click", () => {
       uid: appState.getID(),
     })
     .then((response) => {
-      // if this is the first attempt, saves the timestamp in localStorage
-      if (!appState.isPresent()) {
-        window.localStorage.setItem("timestamp", JSON.stringify(Date.now()));
-        titles.style.visibility = "visible"; // hint categories will be shown as well
-      }
+      if (!appState.isPresent()) titles.style.visibility = "visible"; // hint categories will be shown
       // forward to appState to generate the hints on the guess
       appState.add(response.data);
       if (response.data[1].hasWon) {
@@ -176,7 +169,6 @@ sendButton.addEventListener("click", () => {
           onVictory(updatedTries, response.data[0].name);
         }, 1000);
         appState.removeState(); // resetting the state
-        appState.removeTimestamp();
       }
     })
     .catch((error) => {
@@ -199,7 +191,19 @@ function onVictory(tries, pokename) {
   }, 1500);
 }
 
-// management of autocomplete text bar
+// sends notifications on login/logout, if enabled
+function sendNotification(message) {
+  if ("Notification" in window)
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted")
+        new Notification("Pokédle", {
+          body: message,
+          icon: "/public/images/icon-192x192.png",
+        });
+    });
+}
+
+// management of autocomplete textbar
 function autocomplete(input, arr) {
   input.addEventListener("input", function (e) {
     var a, b;
