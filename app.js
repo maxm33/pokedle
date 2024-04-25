@@ -25,7 +25,7 @@ var index = 0; // index of winners array
 var winners = []; // to store unique id of players who have won the current game
 var timestamp; // to store the time when pokemon is generated
 var generatedPokemon; // to store the generated pokemon
-var generateInterval = 24 * 60 * 60 * 1000; // in milliseconds, the interval between each generation
+var generateInterval = 5 * 60 * 1000; // in milliseconds, the interval between each generation
 
 async function generatePokemon() {
   index = 0;
