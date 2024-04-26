@@ -250,7 +250,7 @@ input[type="hidden"] {
   animation: fadeIn 2s;
 }
 #victory-ad-button,
-#dex-profile-button {
+#onprofile-dex-button {
   color: black;
   background-color: white;
   cursor: pointer;
@@ -268,7 +268,7 @@ input[type="hidden"] {
 #victory-ad-button {
   font-size: 1em;
 }
-#dex-profile-button {
+#onprofile-dex-button {
   font-size: 0.7em;
 }
 #dex-owner,
