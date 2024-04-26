@@ -367,7 +367,7 @@ input[type="hidden"] {
     top: 0em;
   }
 }
-@media (min-width: 425px) and (max-width: 650px) {
+@media (min-width: 410px) and (max-width: 650px) {
   body {
     margin: 0.3em;
   }
@@ -410,9 +410,13 @@ input[type="hidden"] {
     font-size: 0.8em;
     margin: 0.2em;
   }
+  .answer {
+    margin-top: 0;
+  }
   .answer img {
     width: 4em;
     height: 4em;
+    margin-right: 0.5em;
   }
   .answer-text {
     font-size: 0.75em;
@@ -439,7 +443,7 @@ input[type="hidden"] {
     margin-right: 1.3em;
   }
 }
-@media (max-width: 425px) {
+@media (max-width: 409px) {
   body {
     margin: 0.3em;
   }
@@ -483,9 +487,14 @@ input[type="hidden"] {
     font-size: 0.8em;
     margin: 0.2em;
   }
+  .answer {
+    margin-top: 0;
+    max-height: 4.2em;
+  }
   .answer img {
     width: 3.5em;
     height: 3.5em;
+    margin-right: 0.5em;
   }
   .answer-text {
     font-size: 0.6em;
