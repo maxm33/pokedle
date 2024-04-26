@@ -8,6 +8,12 @@ export class AppState {
   getTries() {
     return this.guesses.length;
   }
+  getGameID() {
+    return JSON.parse(window.localStorage.getItem("gameID"));
+  }
+  setGameID(id) {
+    window.localStorage.setItem("gameID", JSON.stringify(id));
+  }
   isPresent() {
     return this.guesses.length != 0 ? true : false;
   }
@@ -18,10 +24,10 @@ export class AppState {
     window.localStorage.removeItem("state");
   }
   setSavedID() {
-    var id = JSON.parse(window.localStorage.getItem("uuid"));
+    var id = JSON.parse(window.localStorage.getItem("userID"));
     if (id == null)
       axios.get("/id").then(function (response) {
-        window.localStorage.setItem("uuid", JSON.stringify(response.data));
+        window.localStorage.setItem("userID", JSON.stringify(response.data));
       });
     this.uuid = id;
   }

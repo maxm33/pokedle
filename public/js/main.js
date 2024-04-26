@@ -76,6 +76,13 @@ axios.get("/id/status/" + appState.getID()).then((response) => {
     window.location.reload();
   }, remainingTime);
 
+  var gameID = appState.getGameID();
+  if (gameID == null) appState.setGameID(response.data[2]);
+  else if (gameID != response.data[2]) {
+    appState.removeState();
+    appState.setGameID(response.data[2]);
+  }
+
   appState.setSavedState();
   if (appState.isPresent()) {
     appState.renderAll();

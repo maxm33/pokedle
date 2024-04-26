@@ -24,6 +24,7 @@ const db = firestore.getFirestore(firebaseApp);
 var index = 0; // index of winners array
 var winners = []; // to store uuid of players who have won the current game
 var timestamp; // to store the time of pokemon generation
+var gameID; // to store uuid of current game
 var generatedPokemon; // to store the generated pokemon
 var generateInterval = 5 * 60 * 1000; // the interval between each generation (ms)
 
@@ -128,11 +129,11 @@ app.get("/id", (req, res) => {
   res.send(uuid());
 });
 
-// send a boolean that states if user can play current game and the remaining time before next pokemon generation
+// send a boolean that states if user can play current game, the remaining time before next pokemon generation and current game ID
 app.get("/id/status/:id", (req, res) => {
   var remainingTime = timestamp + generateInterval - Date.now();
   res.status(200);
-  res.send([winners.includes(req.params.id), remainingTime]);
+  res.send([winners.includes(req.params.id), remainingTime, gameID]);
 });
 
 // catch 404 and forward to error handler
@@ -153,6 +154,7 @@ module.exports = app;
 async function generatePokemon() {
   index = 0;
   winners.length = 0;
+  gameID = uuid();
   timestamp = Date.now();
   var pokemonID = Math.floor(Math.random() * 151 + 1);
   var pokemonRef = firestore.doc(db, "pokemons", pokemonID.toString());
