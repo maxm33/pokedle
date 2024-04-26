@@ -50,7 +50,7 @@ export class AppState {
       ) {
         var card = document.createElement("DIV");
         card.setAttribute("class", guess[1][prop]);
-        card.innerHTML = `<p>${guess[0][prop]}</p>`;
+        card.innerHTML = `<p class="answer-text">${guess[0][prop]}</p>`;
         menuoption.appendChild(card);
       }
     }

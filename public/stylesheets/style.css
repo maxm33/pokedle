@@ -209,6 +209,9 @@ input[type="hidden"] {
   width: 36em;
   height: 5em;
 }
+.answer-text {
+  font-size: 0.9em;
+}
 .wrong,
 .correct,
 .partial {
@@ -389,7 +392,7 @@ input[type="hidden"] {
     font-size: 0.9em;
   }
   #subtitle {
-    font-size: 1.2em;
+    font-size: 1em;
   }
   #autocomplete {
     margin-left: 0;
@@ -400,6 +403,9 @@ input[type="hidden"] {
   .dex-row {
     max-width: 26em;
   }
+  #titles-container {
+    margin-bottom: 0;
+  }
   .titles {
     font-size: 0.8em;
     margin: 0.2em;
@@ -408,11 +414,15 @@ input[type="hidden"] {
     width: 4em;
     height: 4em;
   }
+  .answer-text {
+    font-size: 0.75em;
+  }
   .wrong,
   .correct,
   .partial {
     word-wrap: break-word;
     max-width: 4em;
+    max-height: 4em;
   }
   .dex-row-numbers,
   .dex-row-name,
@@ -455,7 +465,7 @@ input[type="hidden"] {
     font-size: 0.9em;
   }
   #subtitle {
-    font-size: 1.1em;
+    font-size: 1em;
   }
   #autocomplete {
     margin-left: 0;
@@ -466,19 +476,26 @@ input[type="hidden"] {
   .dex-row {
     max-width: 23em;
   }
+  #titles-container {
+    margin-bottom: 0;
+  }
   .titles {
     font-size: 0.8em;
     margin: 0.2em;
   }
   .answer img {
-    width: 4em;
-    height: 4em;
+    width: 3.5em;
+    height: 3.5em;
+  }
+  .answer-text {
+    font-size: 0.6em;
   }
   .wrong,
   .correct,
   .partial {
     word-wrap: break-word;
-    max-width: 4em;
+    max-width: 3.5em;
+    max-height: 3.5em;
   }
   .dex-row-numbers,
   .dex-row-name,
