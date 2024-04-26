@@ -30,7 +30,7 @@ onAuthStateChanged(auth, (user) => {
     profileButton.style.visibility = "visible";
     pokedexButton.style.visibility = "visible";
   } else {
-    loginButton.value = "Login with Google";
+    loginButton.value = "Login";
     profileButton.style.visibility = "hidden";
     pokedexButton.style.visibility = "hidden";
   }
