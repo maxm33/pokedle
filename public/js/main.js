@@ -24,27 +24,6 @@ const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const provider = new GoogleAuthProvider();
 
-// request for browser notifications
-Notification.requestPermission((permission) => {
-  if (permission != "granted")
-    console.log("Permission for notifications was not granted.");
-  else console.log("Notifications enabled.");
-});
-
-let appState = new AppState(); // initializing app state
-// get all important html elements to manage
-let loginButton = document.getElementById("loginButton");
-let profileButton = document.getElementById("profileButton");
-let pokedexButton = document.getElementById("pokedexButton");
-let rankingsButton = document.getElementById("rankingsButton");
-let sendButton = document.getElementById("bouncyButton");
-let timer = document.getElementById("timer");
-let containerbar = document.getElementById("bar-container");
-let subtitle = document.getElementById("subtitle");
-let titles = document.getElementById("category-titles");
-let inp = document.getElementById("myInput");
-autocomplete(inp, pokemons); // initializing autocomplete textbar
-
 onAuthStateChanged(auth, (user) => {
   if (user) {
     loginButton.value = "Logout";
@@ -57,6 +36,27 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
+// request for browser notifications
+Notification.requestPermission((permission) => {
+  if (permission != "granted")
+    console.log("Permission for notifications was not granted.");
+  else console.log("Notifications enabled.");
+});
+
+let appState = new AppState(); // initializing app state
+// get all important html elements to manage
+let loginButton = document.getElementById("login-button");
+let profileButton = document.getElementById("profile-button");
+let pokedexButton = document.getElementById("pokedex-button");
+let rankingsButton = document.getElementById("rankings-button");
+let sendButton = document.getElementById("bouncy-button");
+let timer = document.getElementById("timer");
+let subtitle = document.getElementById("subtitle");
+let titles = document.getElementById("titles-container");
+let containerbar = document.getElementById("textbar-container");
+let input = document.getElementById("textbar");
+autocomplete(input, pokemons); // initializing autocomplete textbar
+
 appState.setSavedID(); // set the saved unique id from localStorage (if not present, request it)
 // send a request to server to retrieve various info
 axios.get("/id/status/" + appState.getID()).then((response) => {
@@ -67,7 +67,9 @@ axios.get("/id/status/" + appState.getID()).then((response) => {
     containerbar.style.visibility = "visible";
     subtitle.textContent = "I'm thinking of a Pokémon, can you guess it?";
   }
+
   var remainingTime = response.data[1];
+
   // reload page automatically after remaining time has passed
   setTimeout(() => {
     appState.removeState();
@@ -133,8 +135,8 @@ rankingsButton.addEventListener("click", () => {
 });
 
 sendButton.addEventListener("click", () => {
-  var myGuess = inp.value;
-  inp.value = "";
+  var myGuess = input.value;
+  input.value = "";
   // in case of some types of errors, textbar will shake to notify the user
   if (myGuess == "" || !pokemons.includes(myGuess)) {
     var textbox = document.getElementById("autocomplete");
@@ -161,10 +163,9 @@ sendButton.addEventListener("click", () => {
     })
     .then((response) => {
       if (!appState.isPresent()) titles.style.visibility = "visible"; // hint categories will be shown
-      // forward to appState to generate the hints on the guess
-      appState.add(response.data);
+      appState.add(response.data); // forward to appState to generate the hints on the guess
       if (response.data[1].hasWon) {
-        inp.disabled = true; // textbar is disabled
+        input.disabled = true; // textbar is disabled
         setTimeout(() => {
           onVictory(updatedTries, response.data[0].name);
         }, 1000);
@@ -187,7 +188,7 @@ function onVictory(tries, pokename) {
     div.innerHTML = `<div><br><br><br><br><b>GG!</b><br><br><br><br></div>
     <div><b>It was ${pokename} indeed!</b></div><div><img src='/public/images/sprites/${pokename}.png' width='180px' height='180px'>
     </div><div><br><br><b>You guessed it in ${tries} tries...</b></div><div><br><br><b>Think you can do better? Let's see!</b>
-    <br><br></div><div><br><a href='/'><button id='victoryButton'>Continue</button></a></div>`;
+    <br><br></div><div><br><a href='/'><button id='victory-ad-button'>Continue</button></a></div>`;
   }, 1500);
 }
 
@@ -204,19 +205,18 @@ function sendNotification(message) {
 }
 
 // management of autocomplete textbar
-function autocomplete(input, arr) {
-  input.addEventListener("input", function (e) {
-    var a, b;
+function autocomplete(inp, arr) {
+  inp.addEventListener("input", function () {
     var val = this.value;
     closeAllLists();
     if (!val) return false;
-    a = document.createElement("DIV");
+    var a = document.createElement("DIV");
     a.setAttribute("id", this.id + "autocomplete-list");
     a.setAttribute("class", "autocomplete-items");
     this.parentNode.appendChild(a);
     for (var i = 0; i < arr.length; i++) {
       if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-        b = document.createElement("DIV");
+        var b = document.createElement("DIV");
         b.className = "list-option";
         b.innerHTML = `<img src='/public/images/sprites/${
           arr[i]
@@ -225,8 +225,8 @@ function autocomplete(input, arr) {
           val.length
         )}
       <input type='hidden' value='${arr[i]}'>`;
-        b.addEventListener("click", function (e) {
-          input.value = this.getElementsByTagName("input")[0].value;
+        b.addEventListener("click", function () {
+          inp.value = this.getElementsByTagName("input")[0].value;
           closeAllLists();
         });
         a.appendChild(b);
@@ -234,10 +234,10 @@ function autocomplete(input, arr) {
     }
   });
 
-  function closeAllLists(elmnt) {
+  function closeAllLists(elem) {
     var x = document.getElementsByClassName("autocomplete-items");
     for (var i = 0; i < x.length; i++)
-      if (elmnt != x[i] && elmnt != input) x[i].parentNode.removeChild(x[i]);
+      if (elem != x[i] && elem != inp) x[i].parentNode.removeChild(x[i]);
   }
 
   document.addEventListener("click", (e) => {

@@ -16,15 +16,15 @@
       <div id="logo">
         <a href="/"><img alt="" src="/public/images/pokedle-logo.webp" /></a>
       </div>
-      <h1 id="pokedex-title"><a id="proflink"><%= name %></a>'s Pokédex</h1>
-      <h2 id="pokedex-numbers"></h2>
+      <h1 id="dex-owner"><a id="dex-profile-link"><%= name %></a>'s Pokédex</h1>
+      <h2 id="dex-discovered"></h2>
     </div>
     <script type="module">
       import { pokemons } from "../../public/js/pokemon.js";
 
       var str = window.location.href;
       var ref = str.substring(0, str.length - 8); // removig "/pokedex"
-      document.getElementById("proflink").href = ref;
+      document.getElementById("dex-profile-link").href = ref;
 
       var container = document.getElementById("container");
       var div = document.createElement("DIV");
@@ -32,15 +32,15 @@
       // generating all the pokedex rows as unknown
       for (var i = 0; i < pokemons.length; i++) {
         var subdiv = document.createElement("DIV");
-        subdiv.setAttribute("class", "pokedex-row");
+        subdiv.setAttribute("class", "dex-row");
         subdiv.setAttribute("id", pokemons[i]);
-        subdiv.innerHTML = `<p class="pokedex-row-numbers">${i + 1}.</p>
+        subdiv.innerHTML = `<p class="dex-row-numbers">${i + 1}.</p>
         <img
             src="/public/images/sprites/unknown.png"
             width="90px"
             height="90px"
           />
-          <p class="pokedex-text">???</p>`;
+          <p class="dex-row-name">???</p>`;
         div.appendChild(subdiv);
       }
       container.appendChild(div);
@@ -49,18 +49,18 @@
       var history = `<%- JSON.stringify(history) %>`;
       history = JSON.parse(history);
       document.getElementById(
-        "pokedex-numbers"
+        "dex-discovered"
       ).textContent = `${history.length}/${pokemons.length} Pokémons discovered`;
       for (var i = 0; i < history.length; i++) {
         var subdiv = document.getElementById(history[i].pokemon);
-        subdiv.innerHTML = `<p class="pokedex-row-numbers">${subdiv.firstChild.innerHTML}</p>
+        subdiv.innerHTML = `<p class="dex-row-numbers">${subdiv.firstChild.innerHTML}</p>
           <img
             src="/public/images/sprites/${history[i].pokemon}.png"
             width="100px"
             height="100px"
           />
-          <p class="pokedex-text">${history[i].pokemon}</p>
-          <p class="pokedex-text">Guessed: ${history[i].timesGuessed}</p>`;
+          <p class="dex-row-name">${history[i].pokemon}</p>
+          <p class="dex-row-guess">Guessed: ${history[i].timesGuessed}</p>`;
       }
     </script>
   </body>

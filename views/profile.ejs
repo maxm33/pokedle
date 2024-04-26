@@ -20,12 +20,12 @@
         <h1><%= name %></h1>
         Wins: <%= wins %> <br />
         Average Tries: <%= avgTries %> <br /><br />
-        <button id="pokeprof-button">View Pokédex</button>
+        <button id="dex-profile-button">View Pokédex</button>
       </div>
     </div>
     <script>
-      let pokeprofButton = document.getElementById("pokeprof-button");
-      pokeprofButton.addEventListener("click", () => {
+      let profileButton = document.getElementById("dex-profile-button");
+      profileButton.addEventListener("click", () => {
         window.location.href = window.location.href + "/pokedex";
       });
     </script>
