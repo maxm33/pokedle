@@ -7,7 +7,7 @@ The goal of this game is to guess a secret pokémon.<br>
 
 All pokémons are represented by features such as habitat where they live, their colors, types and evolutions.<br>
 After each guess made, you will be given hints on each of these categories relative to the secret pokémon.<br>
-Hints will help you figure out what is the secret pokemon by looking at their colors:<br>
+Hints will help you figure out what is the secret pokémon by looking at their colors:<br>
 
 - `green` is an exact match on that same category of the secret pokémon;<br>
 - `yellow` is a partial match (meaning there are multiple values and one of them is correct);<br>
