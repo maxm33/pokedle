@@ -1,16 +1,16 @@
 # Pokédle
 
-This is a WebApp project for Sviluppo Applicazioni Web course (Web Application Development).<br>
+This is a web application for Web Application Development course.<br>
 
 Pokédle is a game inspired by Wordle and LoLdle.<br>
-The main goal of this game is to guess a secret pokémon.<br>
+The goal of this game is to guess a secret pokémon.<br>
 
-All pokémons are represented by features such as habitat where they live, their colors, their types, their evolutions.<br>
-You will be given hints on each of these categories for the pokémon you guess.<br>
-Through their colors, these hints will help you to figure out what is the secret pokemon:<br>
+All pokémons are represented by features such as habitat where they live, their colors, types and evolutions.<br>
+After each guess made, you will be given hints on each of these categories relative to the secret pokémon.<br>
+Hints will help you figure out what is the secret pokemon by looking at their colors:<br>
 
 - `green` is an exact match on that same category of the secret pokémon;<br>
-- `yellow` is a partial match (meaning that one value of the two is correct);<br>
+- `yellow` is a partial match (meaning there are multiple values and one of them is correct);<br>
 - `red` means there's no match at all.<br>
 
 > [!TIP]
