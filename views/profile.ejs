@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <link rel="icon" href="/public/images/favicon.ico" />
+    <link rel="stylesheet" href="/public/stylesheets/style.css" />
+    <link
+      rel="manifest"
+      type="application/manifest+json"
+      href="/app.webmanifest"
+    />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <title>Profile</title>
+  </head>
+  <body>
+    <div id="container">
+      <div id="logo">
+        <a href="/"><img alt="" src="/public/images/pokedle-logo.webp" /></a>
+      </div>
+      <div id="subtitle">
+        <h1><%= name %></h1>
+        Wins: <%= wins %> <br />
+        Average Tries: <%= avgTries %> <br /><br />
+        <button id="onprofile-dex-button">View Pokédex</button>
+      </div>
+    </div>
+    <script>
+      let pokedexButton = document.getElementById("onprofile-dex-button");
+      pokedexButton.addEventListener("click", () => {
+        var url = window.location.href;
+        var ref = url.substring(0, url.length - 8); // removing "/profile"
+        window.location.href = ref + "/pokedex";
+      });
+    </script>
+  </body>
+</html>

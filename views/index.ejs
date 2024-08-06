@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <link rel="icon" href="/public/images/favicon.ico" />
+    <link rel="stylesheet" href="/public/stylesheets/style.css" />
+    <link
+      rel="manifest"
+      type="application/manifest+json"
+      href="/app.webmanifest"
+    />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <title>Pokédle</title>
+  </head>
+  <body>
+    <div id="topnav">
+      <div id="authref">
+        <p>Created by <a href="https://github.com/maxm33">maxm33</a></p>
+      </div>
+      <input type="button" value="" id="login-button" class="topnav-buttons" />
+      <input
+        type="button"
+        value="Rankings"
+        id="rankings-button"
+        class="topnav-buttons"
+      />
+      <input
+        type="button"
+        value="Pokédex"
+        id="pokedex-button"
+        class="topnav-buttons"
+      />
+      <input
+        type="button"
+        value="Profile"
+        id="profile-button"
+        class="topnav-buttons"
+      />
+    </div>
+    <div id="container">
+      <div id="logo">
+        <a href="/"><img alt="" src="/public/images/pokedle-logo.webp" /></a>
+      </div>
+      <div id="timer">New Pokémon in ...</div>
+      <div id="subtitle"></div>
+      <div id="textbar-container" style="visibility: hidden">
+        <div id="autocomplete">
+          <input
+            id="textbar"
+            type="text"
+            name="pokemon"
+            placeholder="Type the Pokémon here..."
+          />
+        </div>
+        <button id="bouncy-button" type="submit">Send</button>
+      </div>
+      <div id="menu-container">
+        <div id="titles-container">
+          <div class="titles">
+            <p>Pokémon</p>
+          </div>
+          <div class="titles">
+            <p>Habitat</p>
+          </div>
+          <div class="titles">
+            <p>Color(s)</p>
+          </div>
+          <div class="titles">
+            <p>Type(s)</p>
+          </div>
+          <div class="titles">
+            <p>Fully Evolved</p>
+          </div>
+          <div class="titles">
+            <p>Evolution Level</p>
+          </div>
+        </div>
+        <div id="answers-container"></div>
+      </div>
+    </div>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="module" src="/public/js/main.js"></script>
+  </body>
+</html>

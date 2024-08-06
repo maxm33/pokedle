@@ -1,0 +1,23 @@
+{
+  "name": "pokedle",
+  "version": "1.1.0",
+  "description": "Pokédle is a game in which the main goal is to guess a secret pokémon!",
+  "homepage": "https://github.com/maxm33/pokedle#readme",
+  "repository": "github:maxm33/pokedle",
+  "author": "Massimo Monai (https://github.com/maxm33)",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "firebase-admin": "^12.3.0",
+    "firebase-functions": "^5.0.1",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1",
+    "uuid": "^9.0.0"
+  }
+}

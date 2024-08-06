@@ -1,0 +1,518 @@
+* {
+  color: white;
+  font-weight: 600;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+}
+html,
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+}
+body {
+  margin: 0;
+  background-image: url("/public/images/background.webp");
+  background-repeat: no-repeat;
+  background-position: 50%;
+  background-attachment: fixed;
+}
+#authref {
+  float: left;
+  font-size: 1em;
+}
+#topnav {
+  overflow: hidden;
+  margin: 0.5em 0.75em 0.5em 0.75em;
+  background-color: transparent !important;
+}
+.topnav-buttons {
+  float: right;
+  font-size: 1.2em;
+  padding: 0.5em 0.8em 0.5em 0.8em;
+  margin: 0.22em 0.3em 0.22em 0.3em;
+  border: none;
+  border-radius: 0.8em;
+  animation: fadeIn 1.5s;
+  background-color: #333;
+}
+.topnav-buttons:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+#profile-button,
+#pokedex-button {
+  visibility: hidden;
+}
+#container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  margin: 0.5em;
+}
+#logo {
+  width: 26em;
+  height: 9em;
+  margin-top: 1em;
+  display: flex;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+}
+#logo:hover {
+  transform: scale(1.1);
+}
+#timer {
+  color: lightgreen;
+  font-size: 1.3rem;
+  margin-top: 3em;
+}
+#subtitle {
+  font-size: 1.3rem;
+  margin-top: 2.5em;
+  margin-bottom: 1.75em;
+  animation: fadeIn 1.5s;
+}
+a:link,
+a:visited,
+a:hover {
+  color: deepskyblue;
+  text-decoration: none;
+  background-color: transparent;
+}
+a:hover {
+  color: greenyellow;
+}
+input[type="text"] {
+  width: 100%;
+  font-size: 1.05em;
+  padding: 0.65em;
+  border: 0.05em solid transparent;
+  border-radius: 0.7em;
+  background-color: #333;
+}
+input[type="hidden"] {
+  background-color: transparent !important;
+}
+#autocomplete {
+  width: 16em;
+  margin-left: 3.5em;
+  position: relative;
+  display: inline-block;
+}
+.autocomplete-items {
+  max-height: 27.7em;
+  position: absolute;
+  overflow-y: scroll;
+  z-index: 99;
+  top: 100%;
+  left: 0;
+  right: 0;
+  border-bottom: none;
+  border-top: none;
+}
+.list-options {
+  font-size: 1.1em;
+  font-weight: 100;
+  border-radius: 0.36em;
+  display: flex;
+  align-items: center;
+}
+.autocomplete-items div {
+  background-color: #333;
+  cursor: pointer;
+  border: none;
+}
+.autocomplete-items div:hover {
+  background-color: #404040;
+  transition: all 0.2s;
+}
+.autocomplete-items::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0.5em;
+}
+.autocomplete-items::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.autocomplete-items::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  border: 0.15em solid transparent;
+  border-radius: 1em;
+  background-color: #d3d3d3;
+}
+#titles-container {
+  width: 36em;
+  height: 3em;
+  margin-top: 0.6em;
+  margin-bottom: 0.8em;
+  display: flex;
+  flex-direction: row;
+  visibility: hidden;
+  animation: fadeIn 1.5s;
+}
+.titles {
+  width: 6em;
+  margin: 0.1em;
+}
+#answers-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0;
+}
+.answers {
+  width: 36em;
+  height: 5em;
+  padding-top: 0.6em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.answers-text {
+  font-size: 0.8em;
+}
+.wrong,
+.correct,
+.partial {
+  width: 5.5em;
+  height: 4.5em;
+  margin-left: 0.2em;
+  margin-right: 0.2em;
+  padding-top: 0.6em;
+  border-radius: 0.8em;
+  position: relative;
+  text-align: center;
+  animation: fadeIn 1.5s;
+}
+.wrong {
+  background-color: red;
+}
+.correct {
+  background-color: #008000;
+}
+.partial {
+  background-color: #cc7722;
+}
+#bouncy-button {
+  margin: 0em 0.3em 0.3em 0;
+  padding: 0.35em 1.2em;
+  border: 0.1em solid white;
+  border-radius: 0.96em;
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.2s;
+  animation: bouncy 2s infinite linear;
+  background-color: transparent;
+}
+#bouncy-button:hover {
+  color: black;
+  background-color: white;
+}
+#victory-ad {
+  width: 26em;
+  height: 36em;
+  border-radius: 3em;
+  position: absolute;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 1s;
+  background-color: #333;
+}
+#victory-ad-text {
+  animation: fadeIn 500ms;
+}
+#victory-ad-button,
+#onprofile-dex-button {
+  color: black;
+  margin: 0;
+  padding: 0.8em;
+  border-radius: 3em;
+  border-width: 0;
+  cursor: pointer;
+  line-height: 1em;
+  list-style: none;
+  text-align: center;
+  background-color: white;
+}
+#victory-ad-button {
+  font-size: 1em;
+}
+#onprofile-dex-button {
+  font-size: 0.7em;
+}
+#dex-owner {
+  margin-top: 1.5em;
+  font-size: 1.3rem;
+}
+#dex-discovered {
+  margin-bottom: 1em;
+  font-size: 1.2rem;
+}
+.dex-rows {
+  width: 32em;
+  height: 7.5em;
+  margin-bottom: 1em;
+  border-radius: 1.8em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  animation: fadeIn 1.5s;
+  background-color: blanchedalmond;
+}
+.dex-rows-numbers,
+.dex-rows-name,
+.dex-rows-guess {
+  color: black;
+  font-size: 1em;
+}
+.dex-rows-numbers {
+  margin: 1.5em;
+}
+.dex-rows-name {
+  margin: 2.5em;
+}
+.dex-rows-guess {
+  margin-left: auto;
+  margin-right: 3em;
+}
+.ranking-rows {
+  margin: 0.3em;
+}
+.shake {
+  animation: horizontal-shaking 0.35s;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes horizontal-shaking {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(0.25em);
+  }
+  50% {
+    transform: translateX(-0.25em);
+  }
+  75% {
+    transform: translateX(0.25em);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes bouncy {
+  0% {
+    top: 0em;
+  }
+  40% {
+    top: 0em;
+  }
+  43% {
+    top: -0.9em;
+  }
+  46% {
+    top: 0em;
+  }
+  48% {
+    top: -0.4em;
+  }
+  50% {
+    top: 0em;
+  }
+  100% {
+    top: 0em;
+  }
+}
+@media (min-width: 410px) and (max-width: 650px) {
+  #authref {
+    font-size: 0.7em;
+  }
+  #topnav {
+    margin: 0.3em;
+  }
+  .topnav-buttons {
+    font-size: 0.9em;
+    padding: 0.35em 0.55em 0.35em 0.55em;
+    margin: 0.15em;
+  }
+  #container {
+    margin: 0.3em;
+  }
+  #logo,
+  #logo a img {
+    width: 20em;
+    height: 7em;
+  }
+  #timer {
+    font-size: 0.9em;
+  }
+  #subtitle {
+    font-size: 1em;
+  }
+  #autocomplete {
+    margin-left: 0;
+  }
+  #menu-container,
+  #titles-container,
+  .answers,
+  .dex-rows {
+    max-width: 26em;
+  }
+  #titles-container {
+    margin-bottom: 0;
+  }
+  .titles {
+    margin: 0.2em;
+    font-size: 0.8em;
+  }
+  .answers {
+    margin-top: 0;
+  }
+  .answers img {
+    width: 4em;
+    height: 4em;
+    margin-right: 0.5em;
+  }
+  .answers-text {
+    font-size: 0.75em;
+  }
+  .wrong,
+  .correct,
+  .partial {
+    max-width: 4em;
+    max-height: 4em;
+    word-wrap: break-word;
+  }
+  .dex-rows {
+    width: 23em;
+    height: 6em;
+  }
+  .dex-rows img {
+    width: 80px;
+    height: 80px;
+  }
+  .dex-rows-numbers,
+  .dex-rows-name,
+  .dex-rows-guess {
+    font-size: 0.9em;
+  }
+  .dex-rows-numbers {
+    margin: 1em;
+  }
+  .dex-rows-name {
+    margin: 1.2em;
+  }
+  .dex-rows-guess {
+    margin-right: 1.3em;
+  }
+}
+@media (max-width: 409px) {
+  #authref {
+    font-size: 0.7em;
+  }
+  #topnav {
+    margin: 0.3em;
+  }
+  .topnav-buttons {
+    font-size: 0.75em;
+    padding: 0.25em 0.45em 0.25em 0.45em;
+    margin: 0.5em 0.15em 0.15em 0.15em;
+  }
+  #container {
+    margin: 0.3em;
+  }
+  #logo,
+  #logo a img {
+    width: 16.66em;
+    height: 5.83em;
+  }
+  #timer {
+    font-size: 0.8em;
+  }
+  #subtitle {
+    font-size: 0.85em;
+  }
+  input[type="text"] {
+    font-size: 0.7em;
+  }
+  #autocomplete {
+    width: 12em;
+    margin-left: 1em;
+  }
+  .list-options {
+    font-size: 0.8em;
+  }
+  #menu-container,
+  #titles-container,
+  .answers,
+  .dex-rows {
+    max-width: 23em;
+  }
+  #titles-container {
+    margin-bottom: 0;
+  }
+  .titles {
+    margin: 0.2em;
+    font-size: 0.8em;
+  }
+  .answers {
+    max-height: 4.2em;
+    margin-top: 0;
+  }
+  .answers img {
+    width: 3.5em;
+    height: 3.5em;
+    margin-right: 0.5em;
+  }
+  .answers-text {
+    font-size: 0.6em;
+  }
+  .wrong,
+  .correct,
+  .partial {
+    max-width: 3.5em;
+    max-height: 3.5em;
+    word-wrap: break-word;
+  }
+  #bouncy-button {
+    font-size: 0.7em;
+    padding: 0.2em 0.7em;
+  }
+  #dex-owner,
+  #dex-discovered {
+    font-size: 0.85em;
+  }
+  .dex-rows {
+    width: 20em;
+    height: 6em;
+    margin-bottom: 0.75em;
+  }
+  .dex-rows img {
+    width: 80px;
+    height: 80px;
+  }
+  .dex-rows-numbers,
+  .dex-rows-name,
+  .dex-rows-guess {
+    font-size: 0.9em;
+  }
+  .dex-rows-numbers {
+    margin: 0.5em;
+  }
+  .dex-rows-name {
+    margin: 1em;
+  }
+  .dex-rows-guess {
+    margin-right: 0.5em;
+  }
+}

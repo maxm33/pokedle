@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <link rel="icon" href="/public/images/favicon.ico" />
+    <link rel="stylesheet" href="/public/stylesheets/style.css" />
+    <link
+      rel="manifest"
+      type="application/manifest+json"
+      href="/app.webmanifest"
+    />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <title>Pokédex</title>
+  </head>
+  <body>
+    <div id="container">
+      <div id="logo">
+        <a href="/"><img alt="" src="/public/images/pokedle-logo.webp" /></a>
+      </div>
+      <h1 id="dex-owner"><a id="dex-profile-link"><%= name %></a>'s Pokédex</h1>
+      <h2 id="dex-discovered"></h2>
+    </div>
+    <script type="module">
+      import { pokemons } from "../../public/js/pokemon.js";
+
+      var url = window.location.href;
+      var ref = url.substring(0, url.length - 8); // removing "/pokedex"
+      document.getElementById("dex-profile-link").href = ref + "/profile";
+
+      var container = document.getElementById("container");
+      var div = document.createElement("DIV");
+      div.setAttribute("id", "dex-container");
+
+      // generating all the pokedex rows as unknown
+      for (var i = 0; i < pokemons.length; i++) {
+        var subdiv = document.createElement("DIV");
+        subdiv.setAttribute("class", "dex-rows");
+        subdiv.setAttribute("id", pokemons[i]);
+        subdiv.innerHTML = `<p class="dex-rows-numbers">${i + 1}.</p>
+        <img
+            src="/public/images/sprites/unknown.png"
+            width="90px"
+            height="90px"
+          />
+          <p class="dex-rows-name">???</p>`;
+        div.appendChild(subdiv);
+      }
+      container.appendChild(div);
+
+      // replacing unknown rows with known ones (according to the user's history)
+      var history = `<%- JSON.stringify(history) %>`;
+      history = JSON.parse(history);
+      document.getElementById(
+        "dex-discovered"
+      ).textContent = `${history.length}/${pokemons.length} Pokémons discovered`;
+      for (var i = 0; i < history.length; i++) {
+        var subdiv = document.getElementById(history[i].pokemon);
+        subdiv.innerHTML = `<p class="dex-rows-numbers">${subdiv.firstChild.innerHTML}</p>
+          <img
+            src="/public/images/sprites/${history[i].pokemon}.png"
+            width="100px"
+            height="100px"
+          />
+          <p class="dex-rows-name">${history[i].pokemon}</p>
+          <p class="dex-rows-guess">Guessed: ${history[i].timesGuessed}</p>`;
+      }
+    </script>
+  </body>
+</html>
