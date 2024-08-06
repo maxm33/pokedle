@@ -26,11 +26,12 @@ const firebaseConfig = {
   measurementId: process.env.MEASUREMENT_ID,
 };
 
+const generateInterval = Number(process.env.GENERATION_INTERVAL); // the interval between each generation (ms)
+
 var winners = []; // to store uuid of players who have won the current game
 var gameID; // to store uuid of current game
 var currentPokemon; // to store the generated pokemon
 var generateTimestamp; // to store the time of pokemon generation
-const generateInterval = 5 * 60 * 1000; // the interval between each generation (ms)
 
 var bg_desktop_option; // to store current background option for rendering desktop views
 var bg_mobile_option; // to store current background option for rendering mobile views
@@ -86,13 +87,13 @@ app.post("/", async (req, res) => {
       var response = verifyGuess(guess, currentPokemon);
       if (response.hasWon) {
         // if user is logged in, update his stats
-        if (req.body.gid != null) {
-          winners[winners.length] = req.body.gid;
+        if (req.body.gid == null) winners[winners.length] = req.body.uid;
+        else if (!winners.includes(req.body.gid)) {
           updateStatsOnWinning(req.body.gid, req.body.guess, req.body.tries);
-        } // winners won't be able to play until a new pokemon is generated
-        else winners[winners.length] = req.body.uid;
+          winners[winners.length] = req.body.gid;
+        }
       }
-      res.status(201);
+      res.status(200);
       res.send([guess, response]);
     });
 });
@@ -128,7 +129,7 @@ app.put("/user/:gid/update", async (req, res) => {
         // create the new document
         firestore.collection("users").doc(req.params.gid).set(user);
         res.status(201);
-      } else res.status(304);
+      } else res.status(204);
       res.end();
     });
 });

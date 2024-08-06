@@ -21,17 +21,18 @@ let loginButton = document.getElementById("login-button");
 let profileButton = document.getElementById("profile-button");
 let pokedexButton = document.getElementById("pokedex-button");
 let rankingsButton = document.getElementById("rankings-button");
-let sendButton = document.getElementById("bouncy-button");
+let guessButton = document.getElementById("guess-button");
 let timer = document.getElementById("timer");
 let subtitle = document.getElementById("subtitle");
 let titles = document.getElementById("titles-container");
 let containerbar = document.getElementById("textbar-container");
 let input = document.getElementById("textbar");
+let textbox = document.getElementById("autocomplete");
 
 let appState = new AppState(); // initialize app state
 let provider = new GoogleAuthProvider();
 let config = await axios.get("/env/fb");
-var auth = await getAuth(initializeApp(config.data));
+let auth = getAuth(initializeApp(config.data));
 
 // get user ID or request and set if null
 if (appState.getID() == null) {
@@ -41,7 +42,7 @@ if (appState.getID() == null) {
 }
 var userID = appState.getID();
 
-onAuthStateChanged(auth, (user) => {
+const unsubscribe = onAuthStateChanged(auth, (user) => {
   // user is signed in
   if (user) {
     loginButton.value = "Logout";
@@ -70,6 +71,7 @@ onAuthStateChanged(auth, (user) => {
 autocomplete(input, pokemons); // initialize autocomplete textbar
 
 loginButton.addEventListener("click", () => {
+  unsubscribe();
   if (auth.currentUser == null)
     signInWithPopup(auth, provider).then(() => {
       sendNotification("Welcome back, " + auth.currentUser.displayName + "!");
@@ -97,20 +99,19 @@ rankingsButton.addEventListener("click", () => {
   window.location.href = "/users/ranking";
 });
 
-sendButton.addEventListener("click", () => {
+guessButton.addEventListener("click", () => {
   var myGuess = input.value;
   input.value = "";
   // in case of type errors, textbar will shake
   if (myGuess == "" || !pokemons.includes(myGuess)) {
-    var textbox = document.getElementById("autocomplete");
     textbox.classList.remove("shake");
     void textbox.offsetWidth;
     textbox.classList.add("shake");
     return;
   }
-  var updatedTries = appState.getTries() + 1;
   var gid = null;
   if (auth.currentUser != null) gid = auth.currentUser.uid;
+  var updatedTries = appState.getTries() + 1;
   axios
     .post("/", {
       gid: gid,
@@ -126,26 +127,19 @@ sendButton.addEventListener("click", () => {
       appState.add(response.data); // rendering hints related to current guess
       if (response.data[1].hasWon) {
         input.disabled = true; // textbar is disabled
-        onVictory(updatedTries, response.data[0].name);
         appState.removeState(); // reset the state
+        onVictory(updatedTries, response.data[0].name);
       }
-    })
-    .catch((error) => {
-      console.error(error);
     });
 });
 
 // where the ability to play the game and the timer is managed
 function manageGameStatus(canPlay, remainingTime, id) {
-  // manage the elements according whether the user can play or not
-  if (canPlay) {
-    subtitle.textContent = "I'm thinking of a Pokémon, can you guess it?";
-    subtitle.style.animation = "fadeIn 1.5s";
-    containerbar.style.animation = "fadeIn 1.5s";
-    containerbar.style.visibility = "visible";
-  } else {
-    subtitle.textContent = "You can't make anymore tries... Come back later...";
-    subtitle.style.animation = "fadeIn 1.5s";
+  // remove any old game states
+  var gameID = appState.getGameID();
+  if (gameID == null || gameID != id) {
+    appState.removeState();
+    appState.setGameID(id);
   }
 
   // reload page automatically when time is up
@@ -154,19 +148,27 @@ function manageGameStatus(canPlay, remainingTime, id) {
     window.location.reload();
   }, remainingTime);
 
-  // remove any old game states
-  var gameID = appState.getGameID();
-  if (gameID == null || gameID != id) {
-    appState.removeState();
-    appState.setGameID(id);
-  }
+  // manage the elements according whether the user can play or not
+  if (canPlay) {
+    subtitle.style.animation = "fadeIn 1.5s";
+    subtitle.textContent = "I'm thinking of a Pokémon, can you guess it?";
+    containerbar.style.animation = "fadeIn 1.5s";
+    containerbar.style.visibility = "visible";
 
-  // render previous guesses
-  appState.getSavedState();
-  if (appState.exists()) {
-    appState.renderAll();
-    titles.style.animation = "fadeIn 1.5s";
-    titles.style.visibility = "visible";
+    // render previous guesses, if any
+    appState.getSavedState();
+    if (appState.exists()) {
+      appState.renderAll();
+      titles.style.animation = "fadeIn 1.5s";
+      titles.style.visibility = "visible";
+    }
+  } else {
+    subtitle.style.animation = "fadeIn 1.5s";
+    subtitle.textContent = "Don't move! Next will be legen... Wait for it...";
+    containerbar.style.animation = "fadeOut 1.5s";
+    setTimeout(() => {
+      containerbar.style.visibility = "hidden";
+    }, 1150);
   }
 
   var totalSeconds = Math.floor(remainingTime / 1000);

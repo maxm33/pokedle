@@ -198,7 +198,7 @@ body::-webkit-scrollbar-thumb {
 .partial {
   background-color: #cc7722;
 }
-#bouncy-button {
+#guess-button {
   margin: 0em 0.3em 0.3em 0;
   padding: 0.35em 1.2em;
   border: 0.1em solid white;
@@ -208,10 +208,10 @@ body::-webkit-scrollbar-thumb {
   text-align: center;
   text-decoration: none;
   transition: all 0.2s;
-  animation: bouncy 2s infinite linear;
   background-color: transparent;
+  animation: bouncy 2s infinite linear;
 }
-#bouncy-button:hover {
+#guess-button:hover {
   color: black;
   background-color: white;
 }
@@ -505,7 +505,7 @@ body::-webkit-scrollbar-thumb {
     max-height: 3.5em;
     word-wrap: break-word;
   }
-  #bouncy-button {
+  #guess-button {
     font-size: 0.7em;
     padding: 0.2em 0.7em;
   }
