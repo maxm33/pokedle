@@ -1,11 +1,19 @@
 const express = require("express");
+const device = require("express-device");
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
+const fs = require("fs");
 const createError = require("http-errors");
 const logger = require("morgan");
 const path = require("path");
 const serviceAccount = require("/etc/secrets/service_account_admin_sdk");
 const { v4: uuid } = require("uuid");
+
+// initialize Firebase with admin privileges
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: functions.config().databaseURL,
+});
 
 // needed for client-side use only
 const firebaseConfig = {
@@ -18,17 +26,21 @@ const firebaseConfig = {
   measurementId: process.env.MEASUREMENT_ID,
 };
 
-// initialize Firebase with admin privileges
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: functions.config().databaseURL,
-});
-
 var winners = []; // to store uuid of players who have won the current game
 var gameID; // to store uuid of current game
 var currentPokemon; // to store the generated pokemon
 var generateTimestamp; // to store the time of pokemon generation
 const generateInterval = 5 * 60 * 1000; // the interval between each generation (ms)
+
+var bg_desktop_option; // to store current background option for rendering desktop views
+var bg_mobile_option; // to store current background option for rendering mobile views
+
+var bg_desktop_number = fs.readdirSync(
+  "./public/images/backgrounds_desktop"
+).length; // number of desktop background options
+var bg_mobile_number = fs.readdirSync(
+  "./public/images/backgrounds_mobile"
+).length; //number of mobile background options
 
 const app = express(); // new express app
 const firestore = admin.firestore(); // reference to firestore cloud storage
@@ -43,6 +55,7 @@ app.set("view engine", "ejs");
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "")));
+app.use(device.capture());
 
 // send firebase configuration to client
 app.get("/env/fb", (req, res) => {
@@ -52,7 +65,13 @@ app.get("/env/fb", (req, res) => {
 
 // render home page
 app.get("/", (req, res) => {
-  res.render("index");
+  if (req.device.type == "phone")
+    var bgPath =
+      "/public/images/backgrounds_mobile/" + bg_mobile_option + ".webp";
+  else
+    var bgPath =
+      "/public/images/backgrounds_desktop/" + bg_desktop_option + ".webp";
+  res.render("index", { bg: bgPath });
 });
 
 // generate hints based on user's guess, check if user has won and, if so, call an update to his stats
@@ -128,11 +147,18 @@ app.get("/user/:gid/profile", async (req, res, next) => {
       if (user == undefined)
         next(createError(404, "User does not exist or has not played yet."));
       else {
+        if (req.device.type == "phone")
+          var bgPath =
+            "/public/images/backgrounds_mobile/" + bg_mobile_option + ".webp";
+        else
+          var bgPath =
+            "/public/images/backgrounds_desktop/" + bg_desktop_option + ".webp";
         res.status(200);
         res.render("profile", {
           name: user.name,
           wins: user.wins,
           avgTries: Math.round(user.avgTries * 100) / 100,
+          bg: bgPath,
         });
       }
     });
@@ -149,8 +175,18 @@ app.get("/user/:gid/pokedex", async (req, res, next) => {
       if (user == undefined)
         next(createError(404, "User does not exist or has not played yet."));
       else {
+        if (req.device.type == "phone")
+          var bgPath =
+            "/public/images/backgrounds_mobile/" + bg_mobile_option + ".webp";
+        else
+          var bgPath =
+            "/public/images/backgrounds_desktop/" + bg_desktop_option + ".webp";
         res.status(200);
-        res.render("pokedex", { name: user.name, history: user.history });
+        res.render("pokedex", {
+          name: user.name,
+          history: user.history,
+          bg: bgPath,
+        });
       }
     });
 });
@@ -171,8 +207,14 @@ app.get("/users/ranking", async (req, res) => {
           wins: user.data().wins,
         };
       });
+      if (req.device.type == "phone")
+        var bgPath =
+          "/public/images/backgrounds_mobile/" + bg_mobile_option + ".webp";
+      else
+        var bgPath =
+          "/public/images/backgrounds_desktop/" + bg_desktop_option + ".webp";
       res.status(200);
-      res.render("rankings", { rankingData: topTen });
+      res.render("rankings", { rankingData: topTen, bg: bgPath });
     });
 });
 
@@ -185,8 +227,14 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = err;
+  if (req.device.type == "phone")
+    var bgPath =
+      "/public/images/backgrounds_mobile/" + bg_mobile_option + ".webp";
+  else
+    var bgPath =
+      "/public/images/backgrounds_desktop/" + bg_desktop_option + ".webp";
   res.status(err.status || 500);
-  res.render("error");
+  res.render("error", { bg: bgPath });
 });
 
 module.exports = app;
@@ -195,6 +243,8 @@ async function generatePokemon() {
   winners.length = 0;
   gameID = uuid();
   generateTimestamp = Date.now();
+  bg_desktop_option = Math.floor(Math.random() * bg_desktop_number) + 1;
+  bg_mobile_option = Math.floor(Math.random() * bg_mobile_number) + 1;
   var pokemonID = Math.floor(Math.random() * 151 + 1);
   firestore
     .collection("pokemons")

@@ -47,7 +47,7 @@ export class AppState {
     var menucontainer = document.getElementById("answers-container");
     var menuoption = document.createElement("DIV");
     menuoption.setAttribute("class", "answers");
-    menuoption.innerHTML = `<img src='/public/images/sprites/${guess[0].name}.png' width='100px' height='100px'>`;
+    menuoption.innerHTML = `<img style="animation: fadeIn 1.5s" src='/public/images/sprites/${guess[0].name}.png' width='100px' height='100px'>`;
     for (var prop in guess[1]) {
       if (
         Object.hasOwnProperty.call(guess[1], prop) &&

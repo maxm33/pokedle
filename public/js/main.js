@@ -30,13 +30,19 @@ axios
       if (user) {
         gid = auth.currentUser.uid;
         loginButton.value = "Logout";
+        profileButton.style.animation = "fadeIn 1.5s";
+        pokedexButton.style.animation = "fadeIn 1.5s";
         profileButton.style.visibility = "visible";
         pokedexButton.style.visibility = "visible";
       } else {
         gid = null;
         loginButton.value = "Login";
-        profileButton.style.visibility = "hidden";
-        pokedexButton.style.visibility = "hidden";
+        profileButton.style.animation = "fadeOut 1.5s";
+        pokedexButton.style.animation = "fadeOut 1.5s";
+        setTimeout(() => {
+          profileButton.style.visibility = "hidden";
+          pokedexButton.style.visibility = "hidden";
+        }, 1400);
       }
     });
   })
@@ -87,6 +93,7 @@ axios.get("/user/" + appState.getID() + "/status").then((response) => {
   appState.setSavedState();
   if (appState.isPresent()) {
     appState.renderAll();
+    titles.style.animation = "fadeIn 1.5s";
     titles.style.visibility = "visible";
   }
 
@@ -165,7 +172,10 @@ sendButton.addEventListener("click", () => {
       tries: updatedTries,
     })
     .then((response) => {
-      if (!appState.isPresent()) titles.style.visibility = "visible"; // hint categories will be shown
+      if (!appState.isPresent()) {
+        titles.style.animation = "fadeIn 1.5s";
+        titles.style.visibility = "visible"; // hint categories will be shown
+      }
       appState.add(response.data); // rendering hints related to current guess
       if (response.data[1].hasWon) {
         input.disabled = true; // textbar is disabled
@@ -184,12 +194,9 @@ function onVictory(tries, pokename) {
   audio.play();
   setTimeout(() => {
     var div = document.createElement("DIV");
-    div.setAttribute("id", "victory-ad");
+    div.setAttribute("id", "victory-ad-container");
     subtitle.insertAdjacentElement("afterend", div);
-    div.innerHTML = `<div id="victory-ad-text"><div><br><br><br><br><b>GG!</b><br><br><br><br></div>
-    <div><b>It was ${pokename} indeed!</b></div><div><img src='/public/images/sprites/${pokename}.png' width='180px' height='180px'>
-    </div><div><br><br><b>You guessed it in ${tries} tries...</b></div><div><br><br><b>Think you can do better? Let's see!</b>
-    <br><br></div><div><br><a href='/'><button id='victory-ad-button'>Continue</button></a></div></div>`;
+    div.innerHTML = `<div id="victory-ad"><div><br><br><b>GG!</b><br><br></div><div><b>It was ${pokename} indeed!</b></div><div><img src='/public/images/sprites/${pokename}.png' width='180px' height='180px'></div><div><br><b>You guessed it in ${tries} tries...</b><br><br></div><div><b>Think you can do better? Let's see!</b><br><br></div><a href='/'><button id='continue-button'>Continue</button></a></div>`;
   }, 1000);
 }
 
@@ -200,7 +207,6 @@ function sendNotification(message) {
       if (permission === "granted")
         new Notification("Pokédle", {
           body: message,
-          timeout: 5000,
           icon: "/public/images/icon-192x192.png",
         });
     });

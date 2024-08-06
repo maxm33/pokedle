@@ -13,7 +13,6 @@ body {
 }
 body {
   margin: 0;
-  background-image: url("/public/images/background.webp");
   background-repeat: no-repeat;
   background-position: 50%;
   background-attachment: fixed;
@@ -21,6 +20,7 @@ body {
 #authref {
   float: left;
   font-size: 1em;
+  animation: fadeIn 1.5s;
 }
 #topnav {
   overflow: hidden;
@@ -58,6 +58,7 @@ body {
   display: flex;
   justify-content: center;
   transition: all 0.2s ease-in-out;
+  animation: fadeIn 1.5s;
 }
 #logo:hover {
   transform: scale(1.1);
@@ -66,6 +67,7 @@ body {
   color: lightgreen;
   font-size: 1.3rem;
   margin-top: 3em;
+  animation: fadeIn 1.5s;
 }
 #subtitle {
   font-size: 1.3rem;
@@ -149,7 +151,6 @@ body::-webkit-scrollbar-thumb {
   display: flex;
   flex-direction: row;
   visibility: hidden;
-  animation: fadeIn 1.5s;
 }
 .titles {
   width: 6em;
@@ -211,9 +212,9 @@ body::-webkit-scrollbar-thumb {
   color: black;
   background-color: white;
 }
-#victory-ad {
+#victory-ad-container {
   width: 26em;
-  height: 36em;
+  height: 33em;
   border-radius: 3em;
   position: absolute;
   z-index: 999;
@@ -222,10 +223,10 @@ body::-webkit-scrollbar-thumb {
   animation: fadeIn 1s;
   background-color: #333;
 }
-#victory-ad-text {
+#victory-ad {
   animation: fadeIn 500ms;
 }
-#victory-ad-button,
+#continue-button,
 #onprofile-dex-button {
   color: black;
   margin: 0;
@@ -238,7 +239,7 @@ body::-webkit-scrollbar-thumb {
   text-align: center;
   background-color: white;
 }
-#victory-ad-button {
+#continue-button {
   font-size: 1em;
 }
 #onprofile-dex-button {
@@ -247,10 +248,12 @@ body::-webkit-scrollbar-thumb {
 #dex-owner {
   margin-top: 1.5em;
   font-size: 1.3rem;
+  animation: fadeIn 1.5s;
 }
 #dex-discovered {
   margin-bottom: 1em;
   font-size: 1.2rem;
+  animation: fadeIn 1.5s;
 }
 .dex-rows {
   width: 32em;
@@ -293,6 +296,14 @@ body::-webkit-scrollbar-thumb {
     opacity: 1;
   }
 }
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 @keyframes horizontal-shaking {
   0% {
     transform: translateX(0);
@@ -333,7 +344,7 @@ body::-webkit-scrollbar-thumb {
     top: 0em;
   }
 }
-@media (min-width: 410px) and (max-width: 650px) {
+@media (min-width: 410px) and (max-width: 480px) {
   #authref {
     font-size: 0.7em;
   }
@@ -392,6 +403,13 @@ body::-webkit-scrollbar-thumb {
     max-width: 4em;
     max-height: 4em;
     word-wrap: break-word;
+  }
+  #victory-ad-container {
+    width: 20em;
+    height: 28em;
+  }
+  #victory-ad {
+    font-size: 0.8em;
   }
   .dex-rows {
     width: 23em;
@@ -487,6 +505,13 @@ body::-webkit-scrollbar-thumb {
   #bouncy-button {
     font-size: 0.7em;
     padding: 0.2em 0.7em;
+  }
+  #victory-ad-container {
+    width: 20em;
+    height: 28em;
+  }
+  #victory-ad {
+    font-size: 0.8em;
   }
   #dex-owner,
   #dex-discovered {
