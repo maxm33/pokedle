@@ -145,6 +145,7 @@ function manageGameStatus(canPlay, remainingTime, id) {
   // reload page automatically when time is up
   setTimeout(() => {
     appState.removeState();
+    sendNotification("A new Pokémon is waiting for you!");
     window.location.reload();
   }, remainingTime);
 
