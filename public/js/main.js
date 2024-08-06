@@ -16,42 +16,6 @@ Notification.requestPermission((permission) => {
   else console.log("Notifications enabled.");
 });
 
-var auth = null;
-var gid = null;
-var provider = new GoogleAuthProvider();
-
-axios
-  .get("/env/fb")
-  .then((config) => {
-    // initialize firebase authentication
-    auth = getAuth(initializeApp(config.data));
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        gid = auth.currentUser.uid;
-        loginButton.value = "Logout";
-        profileButton.style.animation = "fadeIn 1.5s";
-        pokedexButton.style.animation = "fadeIn 1.5s";
-        profileButton.style.visibility = "visible";
-        pokedexButton.style.visibility = "visible";
-      } else {
-        gid = null;
-        loginButton.value = "Login";
-        profileButton.style.animation = "fadeOut 1.5s";
-        pokedexButton.style.animation = "fadeOut 1.5s";
-        setTimeout(() => {
-          profileButton.style.visibility = "hidden";
-          pokedexButton.style.visibility = "hidden";
-        }, 1400);
-      }
-    });
-  })
-  .catch((error) => {
-    console.error("Error caught while setting environment: ", error);
-    return;
-  });
-
-let appState = new AppState(); // initialize app state
 // get all important HTML elements to manage
 let loginButton = document.getElementById("login-button");
 let profileButton = document.getElementById("profile-button");
@@ -63,89 +27,70 @@ let subtitle = document.getElementById("subtitle");
 let titles = document.getElementById("titles-container");
 let containerbar = document.getElementById("textbar-container");
 let input = document.getElementById("textbar");
-autocomplete(input, pokemons); // initialize autocomplete textbar
 
-appState.setSavedID(); // set the saved unique id from localStorage (if not present, request it)
-// send a request to server to retrieve various info
-axios.get("/user/" + appState.getID() + "/status").then((response) => {
-  if (response.data[0])
-    subtitle.textContent = "You can't make anymore tries... Come back later...";
-  else {
-    containerbar.style.animation = "fadeIn 1.5s";
-    containerbar.style.visibility = "visible";
-    subtitle.textContent = "I'm thinking of a Pokémon, can you guess it?";
+let appState = new AppState(); // initialize app state
+let provider = new GoogleAuthProvider();
+let config = await axios.get("/env/fb");
+var auth = await getAuth(initializeApp(config.data));
+
+// get user ID or request and set if null
+if (appState.getID() == null) {
+  await axios.get("/user/id").then((response) => {
+    appState.setID(response.data);
+  });
+}
+var userID = appState.getID();
+
+onAuthStateChanged(auth, (user) => {
+  // user is signed in
+  if (user) {
+    loginButton.value = "Logout";
+    profileButton.style.animation = "fadeIn 1.5s";
+    pokedexButton.style.animation = "fadeIn 1.5s";
+    profileButton.style.visibility = "visible";
+    pokedexButton.style.visibility = "visible";
+    axios
+      .get("/user/" + auth.currentUser.uid + "/status")
+      .then((res) => manageGameStatus(res.data[0], res.data[1], res.data[2]));
+  } else {
+    // user is signed out
+    loginButton.value = "Login";
+    profileButton.style.animation = "fadeOut 1.5s";
+    pokedexButton.style.animation = "fadeOut 1.5s";
+    setTimeout(() => {
+      profileButton.style.visibility = "hidden";
+      pokedexButton.style.visibility = "hidden";
+    }, 1400);
+    axios
+      .get("/user/" + userID + "/status")
+      .then((res) => manageGameStatus(res.data[0], res.data[1], res.data[2]));
   }
-
-  var remainingTime = response.data[1];
-
-  // reload page automatically after remaining time has passed
-  setTimeout(() => {
-    appState.removeState();
-    window.location.reload();
-  }, remainingTime);
-
-  var gameID = appState.getGameID();
-  if (gameID == null || gameID != response.data[2]) {
-    appState.removeState();
-    appState.setGameID(response.data[2]);
-  }
-
-  appState.setSavedState();
-  if (appState.isPresent()) {
-    appState.renderAll();
-    titles.style.animation = "fadeIn 1.5s";
-    titles.style.visibility = "visible";
-  }
-
-  var totalSeconds = Math.floor(remainingTime / 1000);
-  var remainingSecondsAfterHours = totalSeconds % 3600;
-
-  var hours = Math.floor(totalSeconds / 3600);
-  var minutes = Math.floor(remainingSecondsAfterHours / 60);
-  var seconds = remainingSecondsAfterHours % 60;
-
-  // update the timer every second
-  setInterval(() => {
-    if (hours <= 0 && minutes <= 0 && seconds <= 0) return;
-    else if (hours >= 1 && minutes == 0 && seconds == 0) {
-      hours--;
-      minutes = 59;
-      seconds = 59;
-    } else if (minutes >= 1 && seconds == 0) {
-      minutes--;
-      seconds = 59;
-    } else seconds--;
-
-    timer.textContent =
-      "New Pokémon in " +
-      (hours < 10 ? "0" + hours : hours) +
-      ":" +
-      (minutes < 10 ? "0" + minutes : minutes) +
-      ":" +
-      (seconds < 10 ? "0" + seconds : seconds);
-  }, 1000);
 });
+
+autocomplete(input, pokemons); // initialize autocomplete textbar
 
 loginButton.addEventListener("click", () => {
   if (auth.currentUser == null)
     signInWithPopup(auth, provider).then(() => {
       sendNotification("Welcome back, " + auth.currentUser.displayName + "!");
-      axios.put("/user/" + gid + "/update", {
+      axios.put("/user/" + auth.currentUser.uid + "/update", {
         name: auth.currentUser.displayName,
       });
+      window.location.reload();
     });
   else
     signOut(auth).then(() => {
       sendNotification("Logged out successfully.");
+      window.location.reload();
     });
 });
 
 profileButton.addEventListener("click", () => {
-  window.location.href = `/user/${gid}/profile`;
+  window.location.href = `/user/${auth.currentUser.uid}/profile`;
 });
 
 pokedexButton.addEventListener("click", () => {
-  window.location.href = `/user/${gid}/pokedex`;
+  window.location.href = `/user/${auth.currentUser.uid}/pokedex`;
 });
 
 rankingsButton.addEventListener("click", () => {
@@ -164,15 +109,17 @@ sendButton.addEventListener("click", () => {
     return;
   }
   var updatedTries = appState.getTries() + 1;
+  var gid = null;
+  if (auth.currentUser != null) gid = auth.currentUser.uid;
   axios
     .post("/", {
-      googleID: gid,
-      uid: appState.getID(),
+      gid: gid,
+      uid: userID,
       guess: myGuess,
       tries: updatedTries,
     })
     .then((response) => {
-      if (!appState.isPresent()) {
+      if (!appState.exists()) {
         titles.style.animation = "fadeIn 1.5s";
         titles.style.visibility = "visible"; // hint categories will be shown
       }
@@ -188,6 +135,68 @@ sendButton.addEventListener("click", () => {
     });
 });
 
+// where the ability to play the game and the timer is managed
+function manageGameStatus(canPlay, remainingTime, id) {
+  // manage the elements according whether the user can play or not
+  if (canPlay) {
+    subtitle.textContent = "I'm thinking of a Pokémon, can you guess it?";
+    subtitle.style.animation = "fadeIn 1.5s";
+    containerbar.style.animation = "fadeIn 1.5s";
+    containerbar.style.visibility = "visible";
+  } else {
+    subtitle.textContent = "You can't make anymore tries... Come back later...";
+    subtitle.style.animation = "fadeIn 1.5s";
+  }
+
+  // reload page automatically when time is up
+  setTimeout(() => {
+    appState.removeState();
+    window.location.reload();
+  }, remainingTime);
+
+  // remove any old game states
+  var gameID = appState.getGameID();
+  if (gameID == null || gameID != id) {
+    appState.removeState();
+    appState.setGameID(id);
+  }
+
+  // render previous guesses
+  appState.getSavedState();
+  if (appState.exists()) {
+    appState.renderAll();
+    titles.style.animation = "fadeIn 1.5s";
+    titles.style.visibility = "visible";
+  }
+
+  var totalSeconds = Math.floor(remainingTime / 1000);
+  var remainingSecondsAfterHours = totalSeconds % 3600;
+  var hours = Math.floor(totalSeconds / 3600);
+  var minutes = Math.floor(remainingSecondsAfterHours / 60);
+  var seconds = remainingSecondsAfterHours % 60;
+
+  // update the timer every second
+  setInterval(() => {
+    if (hours <= 0 && minutes <= 0 && seconds <= 0) return;
+    else if (hours >= 1 && minutes == 0 && seconds == 0) {
+      hours--;
+      minutes = 59;
+      seconds = 59;
+    } else if (minutes >= 1 && seconds == 0) {
+      minutes--;
+      seconds = 59;
+    } else seconds--;
+    timer.textContent =
+      "New Pokémon in " +
+      (hours < 10 ? "0" + hours : hours) +
+      ":" +
+      (minutes < 10 ? "0" + minutes : minutes) +
+      ":" +
+      (seconds < 10 ? "0" + seconds : seconds);
+  }, 1000);
+}
+
+// victory event
 function onVictory(tries, pokename) {
   var audio = new Audio("public/audio/victory-sound.mp3");
   audio.volume = 0.1;
@@ -200,7 +209,7 @@ function onVictory(tries, pokename) {
   }, 1000);
 }
 
-// sends notifications on login/logout (if enabled)
+// send notifications on login/logout, if enabled
 function sendNotification(message) {
   if ("Notification" in window)
     Notification.requestPermission().then((permission) => {

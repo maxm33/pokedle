@@ -1,12 +1,11 @@
 export class AppState {
   guesses = [];
-  uuid = "";
 
   getID() {
-    return this.uuid;
+    return JSON.parse(window.localStorage.getItem("userID"));
   }
-  getTries() {
-    return this.guesses.length;
+  setID(id) {
+    window.localStorage.setItem("userID", JSON.stringify(id));
   }
   getGameID() {
     return JSON.parse(window.localStorage.getItem("gameID"));
@@ -14,7 +13,10 @@ export class AppState {
   setGameID(id) {
     window.localStorage.setItem("gameID", JSON.stringify(id));
   }
-  isPresent() {
+  getTries() {
+    return this.guesses.length;
+  }
+  exists() {
     return this.guesses.length != 0 ? true : false;
   }
   saveState() {
@@ -23,15 +25,7 @@ export class AppState {
   removeState() {
     window.localStorage.removeItem("state");
   }
-  setSavedID() {
-    var id = JSON.parse(window.localStorage.getItem("userID"));
-    if (id == null)
-      axios.get("/user/id").then(function (response) {
-        window.localStorage.setItem("userID", JSON.stringify(response.data));
-      });
-    this.uuid = id;
-  }
-  setSavedState() {
+  getSavedState() {
     var guesses = JSON.parse(window.localStorage.getItem("state"));
     if (guesses != null) {
       this.guesses = guesses;

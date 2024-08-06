@@ -34,11 +34,14 @@ body {
   margin: 0.22em 0.3em 0.22em 0.3em;
   border: none;
   border-radius: 0.8em;
-  animation: fadeIn 1.5s;
   background-color: #333;
 }
 .topnav-buttons:hover {
   background-color: rgba(255, 255, 255, 0.3);
+}
+#login-button,
+#rankings-button {
+  animation: fadeIn 1.5s;
 }
 #profile-button,
 #pokedex-button {
@@ -73,7 +76,6 @@ body {
   font-size: 1.3rem;
   margin-top: 2.5em;
   margin-bottom: 1.75em;
-  animation: fadeIn 1.5s;
 }
 a:link,
 a:visited,

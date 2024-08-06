@@ -85,15 +85,12 @@ app.post("/", async (req, res) => {
       // confronting guess with answer, returns the hints to help user's guesses
       var response = verifyGuess(guess, currentPokemon);
       if (response.hasWon) {
-        // winners won't be able to play until a new pokemon is generated
-        winners[winners.length] = req.body.uid;
         // if user is logged in, update his stats
-        if (req.body.googleID != null)
-          updateStatsOnWinning(
-            req.body.googleID,
-            req.body.guess,
-            req.body.tries
-          );
+        if (req.body.gid != null) {
+          winners[winners.length] = req.body.gid;
+          updateStatsOnWinning(req.body.gid, req.body.guess, req.body.tries);
+        } // winners won't be able to play until a new pokemon is generated
+        else winners[winners.length] = req.body.uid;
       }
       res.status(201);
       res.send([guess, response]);
@@ -107,10 +104,10 @@ app.get("/user/id", (req, res) => {
 });
 
 // send a boolean stating if user can play current game, remaining time before next pokemon generation and current game ID
-app.get("/user/:uuid/status", (req, res) => {
+app.get("/user/:id/status", (req, res) => {
   var remainingTime = generateTimestamp + generateInterval - Date.now();
   res.status(200);
-  res.send([winners.includes(req.params.uuid), remainingTime, gameID]);
+  res.send([!winners.includes(req.params.id), remainingTime, gameID]);
 });
 
 app.put("/user/:gid/update", async (req, res) => {
@@ -240,7 +237,7 @@ app.use(function (err, req, res, next) {
 module.exports = app;
 
 async function generatePokemon() {
-  winners.length = 0;
+  winners = [];
   gameID = uuid();
   generateTimestamp = Date.now();
   bg_desktop_option = Math.floor(Math.random() * bg_desktop_number) + 1;
