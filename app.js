@@ -6,8 +6,8 @@ const fs = require("fs");
 const createError = require("http-errors");
 const logger = require("morgan");
 const path = require("path");
-const serviceAccount = require("/etc/secrets/service_account_admin_sdk");
 const { v4: uuid } = require("uuid");
+const serviceAccount = require("/etc/secrets/service_account_admin_sdk");
 
 // initialize Firebase with admin privileges
 admin.initializeApp({
@@ -44,7 +44,8 @@ var bg_mobile_number = fs.readdirSync(
 ).length; //number of mobile background options
 
 const app = express(); // new express app
-const firestore = admin.firestore(); // reference to firestore cloud storage
+const auth = admin.auth(); // reference to auth service
+const firestore = admin.firestore(); // reference to firestore cloud storage service
 
 generatePokemon(); // first pokemon is generated here
 setInterval(() => generatePokemon(), generateInterval); // new pokemon will be generated at set intervals
@@ -66,29 +67,25 @@ app.get("/env/fb", (req, res) => {
 
 // render home page
 app.get("/", (req, res) => {
-  if (req.device.type == "phone")
-    var bgPath =
-      "/public/images/backgrounds_mobile/" + bg_mobile_option + ".webp";
-  else
-    var bgPath =
-      "/public/images/backgrounds_desktop/" + bg_desktop_option + ".webp";
-  res.render("index", { bg: bgPath });
+  res.render("index", { bg: bgPathSelector(req.device.type) });
 });
 
 // generate hints based on user's guess, check if user has won and, if so, call an update to his stats
-app.post("/", async (req, res) => {
+app.post("/", async (req, res, next) => {
   firestore
     .collection("pokemons")
     .where("name", "==", req.body.guess)
     .get()
     .then((queryResult) => {
+      if (queryResult.docs.length != 1)
+        next(createError(404, "Pokémon not found."));
       var guess = queryResult.docs[0].data();
-      // confronting guess with answer, returns the hints to help user's guesses
+      // confront guess with answer, return the hints to help user's guesses
       var response = verifyGuess(guess, currentPokemon);
       if (response.hasWon) {
-        // if user is logged in, update his stats
         if (req.body.gid == null) winners[winners.length] = req.body.uid;
         else if (!winners.includes(req.body.gid)) {
+          // user is logged in, update his stats
           updateStatsOnWinning(req.body.gid, req.body.guess, req.body.tries);
           winners[winners.length] = req.body.gid;
         }
@@ -112,26 +109,31 @@ app.get("/user/:id/status", (req, res) => {
 });
 
 app.put("/user/:gid/update", async (req, res) => {
-  firestore
-    .collection("users")
-    .doc(req.params.gid)
-    .get()
-    .then((doc) => {
-      var user = doc.data();
-      if (user == undefined) {
-        // if is a first-login user, set up a fresh document
-        user = {
-          name: req.body.name,
-          wins: 0,
-          avgTries: 0,
-          history: [],
-        };
-        // create the new document
-        firestore.collection("users").doc(req.params.gid).set(user);
-        res.status(201);
-      } else res.status(204);
-      res.end();
-    });
+  auth.verifyIdToken(req.body.token).then((decodedToken) => {
+    var gid = req.params.gid;
+    if (gid == decodedToken.uid)
+      firestore
+        .collection("users")
+        .doc(gid)
+        .get()
+        .then((doc) => {
+          var user = doc.data();
+          if (user == undefined) {
+            // first-login user, set up a fresh document
+            user = {
+              name: req.body.name,
+              wins: 0,
+              avgTries: 0,
+              history: [],
+            };
+            // create the new document
+            firestore.collection("users").doc(gid).set(user);
+            res.status(201);
+          } else res.status(204);
+        });
+    else res.status(401);
+  });
+  res.end();
 });
 
 // render requested user's profile page
@@ -145,18 +147,12 @@ app.get("/user/:gid/profile", async (req, res, next) => {
       if (user == undefined)
         next(createError(404, "User does not exist or has not played yet."));
       else {
-        if (req.device.type == "phone")
-          var bgPath =
-            "/public/images/backgrounds_mobile/" + bg_mobile_option + ".webp";
-        else
-          var bgPath =
-            "/public/images/backgrounds_desktop/" + bg_desktop_option + ".webp";
         res.status(200);
         res.render("profile", {
           name: user.name,
           wins: user.wins,
           avgTries: Math.round(user.avgTries * 100) / 100,
-          bg: bgPath,
+          bg: bgPathSelector(req.device.type),
         });
       }
     });
@@ -173,23 +169,17 @@ app.get("/user/:gid/pokedex", async (req, res, next) => {
       if (user == undefined)
         next(createError(404, "User does not exist or has not played yet."));
       else {
-        if (req.device.type == "phone")
-          var bgPath =
-            "/public/images/backgrounds_mobile/" + bg_mobile_option + ".webp";
-        else
-          var bgPath =
-            "/public/images/backgrounds_desktop/" + bg_desktop_option + ".webp";
         res.status(200);
         res.render("pokedex", {
           name: user.name,
           history: user.history,
-          bg: bgPath,
+          bg: bgPathSelector(req.device.type),
         });
       }
     });
 });
 
-// render top 10 users' ranking page
+// render top 10 users ranking page
 app.get("/users/ranking", async (req, res) => {
   firestore
     .collection("users")
@@ -205,14 +195,11 @@ app.get("/users/ranking", async (req, res) => {
           wins: user.data().wins,
         };
       });
-      if (req.device.type == "phone")
-        var bgPath =
-          "/public/images/backgrounds_mobile/" + bg_mobile_option + ".webp";
-      else
-        var bgPath =
-          "/public/images/backgrounds_desktop/" + bg_desktop_option + ".webp";
       res.status(200);
-      res.render("ranking", { rankingData: topTen, bg: bgPath });
+      res.render("ranking", {
+        rankingData: topTen,
+        bg: bgPathSelector(req.device.type),
+      });
     });
 });
 
@@ -225,14 +212,8 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = err;
-  if (req.device.type == "phone")
-    var bgPath =
-      "/public/images/backgrounds_mobile/" + bg_mobile_option + ".webp";
-  else
-    var bgPath =
-      "/public/images/backgrounds_desktop/" + bg_desktop_option + ".webp";
   res.status(err.status || 500);
-  res.render("error", { bg: bgPath });
+  res.render("error", { bg: bgPathSelector(req.device.type) });
 });
 
 module.exports = app;
@@ -252,6 +233,13 @@ async function generatePokemon() {
       currentPokemon = pokemon.data();
       console.log("!!! Current Pokemon: " + currentPokemon.name + " !!!");
     });
+}
+
+function bgPathSelector(device) {
+  if (device == "phone")
+    return "/public/images/backgrounds_mobile/" + bg_mobile_option + ".webp";
+  else
+    return "/public/images/backgrounds_desktop/" + bg_desktop_option + ".webp";
 }
 
 // verify the client's guess, generate related hints

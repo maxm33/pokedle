@@ -62,10 +62,13 @@ loginButton.addEventListener("click", () => {
   if (auth.currentUser == null)
     signInWithPopup(auth, provider).then(() => {
       sendNotification("Welcome back, " + auth.currentUser.displayName + "!");
-      axios.put("/user/" + auth.currentUser.uid + "/update", {
-        name: auth.currentUser.displayName,
+      auth.currentUser.getIdToken().then((token) => {
+        axios.put("/user/" + auth.currentUser.uid + "/update", {
+          name: auth.currentUser.displayName,
+          token: token,
+        });
+        window.location.reload();
       });
-      window.location.reload();
     });
   else
     signOut(auth).then(() => {
