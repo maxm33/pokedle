@@ -92,6 +92,10 @@ app.post("/", async (req, res, next) => {
       }
       res.status(200);
       res.send([guess, response]);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.end();
     });
 });
 
@@ -109,30 +113,33 @@ app.get("/user/:id/status", (req, res) => {
 });
 
 app.put("/user/:gid/update", async (req, res) => {
-  auth.verifyIdToken(req.body.token).then((decodedToken) => {
-    var gid = req.params.gid;
-    if (gid == decodedToken.uid)
-      firestore
-        .collection("users")
-        .doc(gid)
-        .get()
-        .then((doc) => {
-          var user = doc.data();
-          if (user == undefined) {
-            // first-login user, set up a fresh document
-            user = {
-              name: req.body.name,
-              wins: 0,
-              avgTries: 0,
-              history: [],
-            };
-            // create the new document
-            firestore.collection("users").doc(gid).set(user);
-            res.status(201);
-          } else res.status(204);
-        });
-    else res.status(401);
-  });
+  auth
+    .verifyIdToken(req.body.token)
+    .then((decodedToken) => {
+      var gid = req.params.gid;
+      if (gid == decodedToken.uid)
+        firestore
+          .collection("users")
+          .doc(gid)
+          .get()
+          .then((doc) => {
+            var user = doc.data();
+            if (user == undefined) {
+              // first-login user, set up a fresh document
+              user = {
+                name: req.body.name,
+                wins: 0,
+                avgTries: 0,
+                history: [],
+              };
+              // create the new document
+              firestore.collection("users").doc(gid).set(user);
+              res.status(201);
+            } else res.status(204);
+          });
+      else res.status(401);
+    })
+    .catch((err) => console.error(err));
   res.end();
 });
 
@@ -144,8 +151,7 @@ app.get("/user/:gid/profile", async (req, res, next) => {
     .get()
     .then((doc) => {
       var user = doc.data();
-      if (user == undefined)
-        next(createError(404, "User does not exist or has not played yet."));
+      if (user == undefined) next(createError(404, "User does not exist."));
       else {
         res.status(200);
         res.render("profile", {
@@ -155,6 +161,10 @@ app.get("/user/:gid/profile", async (req, res, next) => {
           bg: bgPathSelector(req.device.type),
         });
       }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.end();
     });
 });
 
@@ -166,8 +176,7 @@ app.get("/user/:gid/pokedex", async (req, res, next) => {
     .get()
     .then((doc) => {
       var user = doc.data();
-      if (user == undefined)
-        next(createError(404, "User does not exist or has not played yet."));
+      if (user == undefined) next(createError(404, "User does not exist."));
       else {
         res.status(200);
         res.render("pokedex", {
@@ -176,6 +185,10 @@ app.get("/user/:gid/pokedex", async (req, res, next) => {
           bg: bgPathSelector(req.device.type),
         });
       }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.end();
     });
 });
 
@@ -200,6 +213,10 @@ app.get("/users/ranking", async (req, res) => {
         rankingData: topTen,
         bg: bgPathSelector(req.device.type),
       });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.end();
     });
 });
 
@@ -232,7 +249,8 @@ async function generatePokemon() {
     .then((pokemon) => {
       currentPokemon = pokemon.data();
       console.log("!!! Current Pokemon: " + currentPokemon.name + " !!!");
-    });
+    })
+    .catch((err) => console.error(err));
 }
 
 function bgPathSelector(device) {
@@ -307,5 +325,6 @@ async function updateStatsOnWinning(id, pokemon, tries) {
         // update the modified document
         firestore.collection("users").doc(id).set(user);
       }
-    });
+    })
+    .catch((err) => console.error(err));
 }

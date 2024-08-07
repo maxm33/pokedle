@@ -119,7 +119,8 @@ guessButton.addEventListener("click", () => {
         appState.removeState(); // reset the state
         onVictory(appState.getTries(), response.data[0].name);
       }
-    });
+    })
+    .catch((err) => console.error(err));
 });
 
 // where the ability to play the game and the timer is managed
