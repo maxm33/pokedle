@@ -11,23 +11,22 @@ import { AppState } from "./appState.js";
 
 // request for browser notifications
 Notification.requestPermission((permission) => {
-  if (permission != "granted")
-    console.log("Permission for notifications was not granted.");
-  else console.log("Notifications enabled.");
+  if (permission != "granted") console.log("Notifications: no permission");
+  else console.log("Notifications: enabled");
 });
 
 // get all important HTML elements to manage
 let loginButton = document.getElementById("login-button");
 let profileButton = document.getElementById("profile-button");
 let pokedexButton = document.getElementById("pokedex-button");
-let rankingsButton = document.getElementById("rankings-button");
+let rankingButton = document.getElementById("ranking-button");
 let guessButton = document.getElementById("guess-button");
 let timer = document.getElementById("timer");
 let subtitle = document.getElementById("subtitle");
 let titles = document.getElementById("titles-container");
 let containerbar = document.getElementById("textbar-container");
 let input = document.getElementById("textbar");
-let textbox = document.getElementById("autocomplete");
+let textbar = document.getElementById("autocomplete");
 
 let appState = new AppState(); // initialize app state
 let provider = new GoogleAuthProvider();
@@ -46,26 +45,14 @@ const unsubscribe = onAuthStateChanged(auth, (user) => {
   // user is signed in
   if (user) {
     loginButton.value = "Logout";
-    profileButton.style.animation = "fadeIn 1.5s";
-    pokedexButton.style.animation = "fadeIn 1.5s";
+    profileButton.style.animation = "fadeIn 1s";
+    pokedexButton.style.animation = "fadeIn 1s";
     profileButton.style.visibility = "visible";
     pokedexButton.style.visibility = "visible";
-    axios
-      .get("/user/" + auth.currentUser.uid + "/status")
-      .then((res) => manageGameStatus(res.data[0], res.data[1], res.data[2]));
-  } else {
-    // user is signed out
-    loginButton.value = "Login";
-    profileButton.style.animation = "fadeOut 1.5s";
-    pokedexButton.style.animation = "fadeOut 1.5s";
-    setTimeout(() => {
-      profileButton.style.visibility = "hidden";
-      pokedexButton.style.visibility = "hidden";
-    }, 1400);
-    axios
-      .get("/user/" + userID + "/status")
-      .then((res) => manageGameStatus(res.data[0], res.data[1], res.data[2]));
   }
+  axios
+    .get("/user/" + (user ? auth.currentUser.uid : userID) + "/status")
+    .then((res) => manageGameStatus(res.data[0], res.data[1], res.data[2]));
 });
 
 autocomplete(input, pokemons); // initialize autocomplete textbar
@@ -95,29 +82,28 @@ pokedexButton.addEventListener("click", () => {
   window.location.href = `/user/${auth.currentUser.uid}/pokedex`;
 });
 
-rankingsButton.addEventListener("click", () => {
+rankingButton.addEventListener("click", () => {
   window.location.href = "/users/ranking";
 });
 
 guessButton.addEventListener("click", () => {
-  var myGuess = input.value;
+  var guess = input.value;
   input.value = "";
   // in case of type errors, textbar will shake
-  if (myGuess == "" || !pokemons.includes(myGuess)) {
-    textbox.classList.remove("shake");
-    void textbox.offsetWidth;
-    textbox.classList.add("shake");
+  if (guess == "" || !pokemons.includes(guess)) {
+    textbar.classList.remove("shake");
+    void textbar.offsetWidth;
+    textbar.classList.add("shake");
     return;
   }
   var gid = null;
   if (auth.currentUser != null) gid = auth.currentUser.uid;
-  var updatedTries = appState.getTries() + 1;
   axios
     .post("/", {
       gid: gid,
       uid: userID,
-      guess: myGuess,
-      tries: updatedTries,
+      guess: guess,
+      tries: appState.getTries() + 1,
     })
     .then((response) => {
       if (!appState.exists()) {
@@ -128,7 +114,7 @@ guessButton.addEventListener("click", () => {
       if (response.data[1].hasWon) {
         input.disabled = true; // textbar is disabled
         appState.removeState(); // reset the state
-        onVictory(updatedTries, response.data[0].name);
+        onVictory(appState.getTries(), response.data[0].name);
       }
     });
 });
@@ -166,10 +152,6 @@ function manageGameStatus(canPlay, remainingTime, id) {
   } else {
     subtitle.style.animation = "fadeIn 1.5s";
     subtitle.textContent = "Don't move! Next will be legen... Wait for it...";
-    containerbar.style.animation = "fadeOut 1.5s";
-    setTimeout(() => {
-      containerbar.style.visibility = "hidden";
-    }, 1150);
   }
 
   var totalSeconds = Math.floor(remainingTime / 1000);
@@ -190,7 +172,7 @@ function manageGameStatus(canPlay, remainingTime, id) {
       seconds = 59;
     } else seconds--;
     timer.textContent =
-      "New Pokémon in " +
+      "A new Pokémon is spawning in " +
       (hours < 10 ? "0" + hours : hours) +
       ":" +
       (minutes < 10 ? "0" + minutes : minutes) +
@@ -208,7 +190,24 @@ function onVictory(tries, pokename) {
     var div = document.createElement("DIV");
     div.setAttribute("id", "victory-ad-container");
     subtitle.insertAdjacentElement("afterend", div);
-    div.innerHTML = `<div id="victory-ad"><div><br><br><b>GG!</b><br><br></div><div><b>It was ${pokename} indeed!</b></div><div><img src='/public/images/sprites/${pokename}.png' width='180px' height='180px'></div><div><br><b>You guessed it in ${tries} tries...</b><br><br></div><div><b>Think you can do better? Let's see!</b><br><br></div><a href='/'><button id='continue-button'>Continue</button></a></div>`;
+    div.innerHTML = `
+      <div id="victory-text1">
+        <b>GG!</b>
+      </div>
+      <div id="victory-text2">
+        <b>It was ${pokename} indeed!</b>
+      </div>
+      <div>
+        <img style="animation: fadeIn 500ms" src='/public/images/sprites/${pokename}.png' width='180px' height='180px'>
+      </div>
+      <div id="victory-text3">
+        <b>You guessed it in ${tries} tries...</b>
+      </div>
+      <div id="victory-text4">
+        <b>Think you can do better? Let's see!</b>
+      </div>
+      <a href='/'><button id='continue-button'>Continue</button></a>
+      `;
   }, 1000);
 }
 
@@ -230,15 +229,15 @@ function autocomplete(inp, arr) {
     var val = this.value;
     closeAllLists();
     if (!val) return false;
-    var a = document.createElement("DIV");
-    a.setAttribute("id", this.id + "autocomplete-list");
-    a.setAttribute("class", "autocomplete-items");
-    this.parentNode.appendChild(a);
+    var list = document.createElement("DIV");
+    list.setAttribute("id", this.id + "autocomplete-list");
+    list.setAttribute("class", "autocomplete-items");
+    this.parentNode.appendChild(list);
     for (var i = 0; i < arr.length; i++) {
       if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-        var b = document.createElement("DIV");
-        b.className = "list-options";
-        b.innerHTML = `<img src='/public/images/sprites/${
+        var option = document.createElement("DIV");
+        option.className = "list-options";
+        option.innerHTML = `<img src='/public/images/sprites/${
           arr[i]
         }.png' width='70px' height='70px'>
           <strong style="color: lightgreen;">${arr[i].substr(
@@ -246,11 +245,11 @@ function autocomplete(inp, arr) {
             val.length
           )}</strong>${arr[i].substr(val.length)}
       <input type='hidden' value='${arr[i]}'>`;
-        b.addEventListener("click", function () {
+        option.addEventListener("click", function () {
           inp.value = this.getElementsByTagName("input")[0].value;
           closeAllLists();
         });
-        a.appendChild(b);
+        list.appendChild(option);
       }
     }
   });

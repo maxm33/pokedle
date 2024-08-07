@@ -212,7 +212,7 @@ app.get("/users/ranking", async (req, res) => {
         var bgPath =
           "/public/images/backgrounds_desktop/" + bg_desktop_option + ".webp";
       res.status(200);
-      res.render("rankings", { rankingData: topTen, bg: bgPath });
+      res.render("ranking", { rankingData: topTen, bg: bgPath });
     });
 });
 

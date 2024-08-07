@@ -29,8 +29,8 @@ export class AppState {
     var guesses = JSON.parse(window.localStorage.getItem("state"));
     if (guesses != null) {
       this.guesses = guesses;
-      console.log("State has been restored from localStorage");
-    } else console.log("State is not present");
+      console.log("State: restored");
+    } else console.log("State: not found");
   }
   add(guess) {
     this.guesses.unshift(guess);

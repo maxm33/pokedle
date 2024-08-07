@@ -1,59 +1,70 @@
 * {
   color: white;
+  box-sizing: border-box;
   font-weight: 600;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-  box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
+}
+*::-webkit-scrollbar {
+  width: 0.5em;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  border-radius: 1em;
+  border: 0.15em solid transparent;
+  background-color: #d3d3d3;
 }
 html,
 body {
+  height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
-  height: 100%;
 }
 body {
   margin: 0;
-  background-repeat: no-repeat;
   background-position: 50%;
+  background-repeat: no-repeat;
   background-attachment: fixed;
 }
+#topnav {
+  margin: 0.5em 0.75em 0.5em 0.75em;
+  overflow: hidden;
+  background-color: transparent;
+}
 #authref {
-  float: left;
   font-size: 1em;
+  float: left;
   animation: fadeIn 1.5s;
 }
-#topnav {
-  overflow: hidden;
-  margin: 0.5em 0.75em 0.5em 0.75em;
-  background-color: transparent !important;
-}
 .topnav-buttons {
-  float: right;
   font-size: 1.2em;
   padding: 0.5em 0.8em 0.5em 0.8em;
   margin: 0.22em 0.3em 0.22em 0.3em;
-  border: none;
   border-radius: 0.8em;
+  border: none;
+  float: right;
   background-color: #333;
 }
 .topnav-buttons:hover {
   background-color: rgba(255, 255, 255, 0.3);
 }
-#login-button,
-#rankings-button {
-  animation: fadeIn 1.5s;
-}
 #profile-button,
 #pokedex-button {
   visibility: hidden;
 }
+#ranking-button,
+#login-button {
+  animation: fadeIn 1.5s;
+}
 #container {
+  margin: 0.5em;
   display: flex;
   flex-direction: column;
   text-align: center;
   align-items: center;
-  margin: 0.5em;
 }
 #logo {
   width: 26em;
@@ -68,9 +79,9 @@ body {
   transform: scale(1.1);
 }
 #timer {
-  color: lightgreen;
   font-size: 1.3rem;
   margin-top: 3em;
+  color: lightgreen;
   animation: fadeIn 1.5s;
 }
 #subtitle {
@@ -106,45 +117,48 @@ input[type="hidden"] {
   display: inline-block;
 }
 .autocomplete-items {
-  max-height: 27.7em;
-  position: absolute;
-  overflow-y: scroll;
-  z-index: 99;
+  max-height: 21.9em;
   top: 100%;
+  z-index: 99;
   left: 0;
   right: 0;
+  position: absolute;
+  overflow-y: scroll;
   border-bottom: none;
   border-top: none;
 }
+.autocomplete-items div {
+  cursor: pointer;
+  border: none;
+  background-color: #333;
+}
+.autocomplete-items div:hover {
+  transition: all 0.2s;
+  background-color: #404040;
+}
 .list-options {
   font-size: 1.1em;
-  font-weight: 100;
   border-radius: 0.36em;
+  font-weight: 100;
   display: flex;
   align-items: center;
 }
-.autocomplete-items div {
-  background-color: #333;
-  cursor: pointer;
-  border: none;
-}
-.autocomplete-items div:hover {
-  background-color: #404040;
+#guess-button {
+  margin: 0em 0.3em 0.3em 0;
+  padding: 0.35em 1.2em;
+  border: 0.1em solid white;
+  border-radius: 0.96em;
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
   transition: all 0.2s;
+  background-color: transparent;
+  animation: bouncy 2s infinite linear;
 }
-.autocomplete-items::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  width: 0.5em;
-}
-.autocomplete-items::-webkit-scrollbar-track,
-body::-webkit-scrollbar-track {
-  background: transparent;
-}
-.autocomplete-items::-webkit-scrollbar-thumb,
-body::-webkit-scrollbar-thumb {
-  border: 0.15em solid transparent;
-  border-radius: 1em;
-  background-color: #d3d3d3;
+#guess-button:hover {
+  color: black;
+  background-color: white;
 }
 #titles-container {
   width: 36em;
@@ -160,10 +174,10 @@ body::-webkit-scrollbar-thumb {
   margin: 0.1em;
 }
 #answers-container {
+  margin-bottom: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 0;
 }
 .answers {
   width: 36em;
@@ -198,54 +212,49 @@ body::-webkit-scrollbar-thumb {
 .partial {
   background-color: #cc7722;
 }
-#guess-button {
-  margin: 0em 0.3em 0.3em 0;
-  padding: 0.35em 1.2em;
-  border: 0.1em solid white;
-  border-radius: 0.96em;
-  position: relative;
-  display: inline-block;
-  text-align: center;
-  text-decoration: none;
-  transition: all 0.2s;
-  background-color: transparent;
-  animation: bouncy 2s infinite linear;
-}
-#guess-button:hover {
-  color: black;
-  background-color: white;
-}
 #victory-ad-container {
   width: 26em;
   height: 33em;
   border-radius: 3em;
-  position: absolute;
   z-index: 999;
+  position: absolute;
   display: flex;
   flex-direction: column;
-  animation: fadeIn 1s;
   background-color: #333;
+  animation: fadeIn 1s;
 }
-#victory-ad {
+#victory-text1,
+#victory-text2,
+#victory-text3,
+#victory-text4 {
+  font-size: 1em;
+  margin: 1.1em;
   animation: fadeIn 500ms;
+}
+#victory-text1 {
+  margin-top: 2em;
+  margin-bottom: auto;
 }
 #continue-button,
 #onprofile-dex-button {
-  color: black;
-  margin: 0;
   padding: 0.8em;
   border-radius: 3em;
+  line-height: 1em;
   border-width: 0;
   cursor: pointer;
-  line-height: 1em;
   list-style: none;
   text-align: center;
+  color: black;
   background-color: white;
 }
 #continue-button {
   font-size: 1em;
+  margin-bottom: 2em;
+  margin-top: auto;
+  animation: fadeIn 500ms;
 }
 #onprofile-dex-button {
+  margin: 0;
   font-size: 0.7em;
 }
 #dex-owner {
@@ -266,14 +275,14 @@ body::-webkit-scrollbar-thumb {
   display: flex;
   flex-direction: row;
   align-items: center;
-  animation: fadeIn 1.5s;
   background-color: blanchedalmond;
+  animation: fadeIn 1.5s;
 }
 .dex-rows-numbers,
 .dex-rows-name,
 .dex-rows-guess {
-  color: black;
   font-size: 1em;
+  color: black;
 }
 .dex-rows-numbers {
   margin: 1.5em;
@@ -282,8 +291,8 @@ body::-webkit-scrollbar-thumb {
   margin: 2.5em;
 }
 .dex-rows-guess {
-  margin-left: auto;
   margin-right: 3em;
+  margin-left: auto;
 }
 .ranking-rows {
   margin: 0.3em;
@@ -297,31 +306,6 @@ body::-webkit-scrollbar-thumb {
   }
   100% {
     opacity: 1;
-  }
-}
-@keyframes fadeOut {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-@keyframes horizontal-shaking {
-  0% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(0.25em);
-  }
-  50% {
-    transform: translateX(-0.25em);
-  }
-  75% {
-    transform: translateX(0.25em);
-  }
-  100% {
-    transform: translateX(0);
   }
 }
 @keyframes bouncy {
@@ -347,12 +331,29 @@ body::-webkit-scrollbar-thumb {
     top: 0em;
   }
 }
-@media (min-width: 410px) and (max-width: 480px) {
-  #authref {
-    font-size: 0.7em;
+@keyframes horizontal-shaking {
+  0% {
+    transform: translateX(0);
   }
+  25% {
+    transform: translateX(0.25em);
+  }
+  50% {
+    transform: translateX(-0.25em);
+  }
+  75% {
+    transform: translateX(0.25em);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@media (min-width: 410px) and (max-width: 480px) {
   #topnav {
     margin: 0.3em;
+  }
+  #authref {
+    font-size: 0.7em;
   }
   .topnav-buttons {
     font-size: 0.9em;
@@ -376,7 +377,7 @@ body::-webkit-scrollbar-thumb {
   #autocomplete {
     margin-left: 0;
   }
-  #menu-container,
+  #state-container,
   #titles-container,
   .answers,
   .dex-rows {
@@ -411,7 +412,10 @@ body::-webkit-scrollbar-thumb {
     width: 20em;
     height: 28em;
   }
-  #victory-ad {
+  #victory-text1,
+  #victory-text2,
+  #victory-text3,
+  #victory-text4 {
     font-size: 0.8em;
   }
   .dex-rows {
@@ -438,11 +442,11 @@ body::-webkit-scrollbar-thumb {
   }
 }
 @media (max-width: 409px) {
-  #authref {
-    font-size: 0.7em;
-  }
   #topnav {
     margin: 0.3em;
+  }
+  #authref {
+    font-size: 0.7em;
   }
   .topnav-buttons {
     font-size: 0.75em;
@@ -473,7 +477,11 @@ body::-webkit-scrollbar-thumb {
   .list-options {
     font-size: 0.8em;
   }
-  #menu-container,
+  #guess-button {
+    font-size: 0.7em;
+    padding: 0.2em 0.7em;
+  }
+  #state-container,
   #titles-container,
   .answers,
   .dex-rows {
@@ -505,15 +513,14 @@ body::-webkit-scrollbar-thumb {
     max-height: 3.5em;
     word-wrap: break-word;
   }
-  #guess-button {
-    font-size: 0.7em;
-    padding: 0.2em 0.7em;
-  }
   #victory-ad-container {
     width: 20em;
     height: 28em;
   }
-  #victory-ad {
+  #victory-text1,
+  #victory-text2,
+  #victory-text3,
+  #victory-text4 {
     font-size: 0.8em;
   }
   #dex-owner,
