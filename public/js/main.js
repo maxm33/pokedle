@@ -70,17 +70,26 @@ const unsubscribe = onAuthStateChanged(auth, (user) => {
     .get("/user/" + (user ? auth.currentUser.uid : userID) + "/play")
     .then((res) => {
       // manage the elements according whether the user can play or not
+      var string_play = "I'm thinking of a Pokémon, can you guess it?";
+      var string_nope = "Don't move! Next will be legen... Wait for it...";
       if (res.data) {
-        triggerElementAnimation(subtitle, "fadeIn");
-        subtitle.textContent = "I'm thinking of a Pokémon, can you guess it?";
-        triggerElementAnimation(containerbar, "fadeIn");
-        containerbar.style.visibility = "visible";
+        if (subtitle.textContent != string_play) {
+          triggerElementAnimation(subtitle, "fadeIn");
+          subtitle.textContent = string_play;
+        }
+        if (containerbar.style.visibility == "hidden") {
+          triggerElementAnimation(containerbar, "fadeIn");
+          containerbar.style.visibility = "visible";
+        }
       } else {
-        triggerElementAnimation(subtitle, "fadeOut");
-        subtitle.textContent =
-          "Don't move! Next will be legen... Wait for it...";
-        triggerElementAnimation(containerbar, "fadeOut");
-        setTimeout(() => (containerbar.style.visibility = "hidden"), 1150);
+        if (subtitle.textContent != string_nope) {
+          triggerElementAnimation(subtitle, "fadeIn");
+          subtitle.textContent = string_nope;
+        }
+        if (containerbar.style.visibility == "visible") {
+          triggerElementAnimation(containerbar, "fadeOut");
+          setTimeout(() => (containerbar.style.visibility = "hidden"), 1150);
+        }
       }
     });
 });
