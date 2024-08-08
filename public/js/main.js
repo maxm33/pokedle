@@ -35,11 +35,18 @@ let auth = getAuth(initializeApp(config.data));
 
 // get user ID or request and set if null
 if (appState.getID() == null) {
-  await axios.get("/user/id").then((response) => {
-    appState.setID(response.data);
+  await axios.get("/user/id").then((res) => {
+    appState.setID(res.data);
   });
 }
 var userID = appState.getID();
+
+// get game status to update timer and render guesses
+axios.get("/game/status").then((res) => {
+  manageGameStatus(res.data[0], res.data[1]);
+});
+
+autocomplete(input, pokemons); // initialize autocomplete textbar
 
 const unsubscribe = onAuthStateChanged(auth, (user) => {
   // user is signed in
@@ -49,13 +56,34 @@ const unsubscribe = onAuthStateChanged(auth, (user) => {
     pokedexButton.style.animation = "fadeIn 1s";
     profileButton.style.visibility = "visible";
     pokedexButton.style.visibility = "visible";
+  } else {
+    // user is not signed in
+    loginButton.value = "Login";
+    profileButton.style.animation = "fadeOut 1.2s";
+    pokedexButton.style.animation = "fadeOut 1.2s";
+    setTimeout(() => {
+      profileButton.style.visibility = "hidden";
+      pokedexButton.style.visibility = "hidden";
+    }, 1100);
   }
   axios
-    .get("/user/" + (user ? auth.currentUser.uid : userID) + "/status")
-    .then((res) => manageGameStatus(res.data[0], res.data[1], res.data[2]));
+    .get("/user/" + (user ? auth.currentUser.uid : userID) + "/play")
+    .then((res) => {
+      // manage the elements according whether the user can play or not
+      if (res.data) {
+        subtitle.style.animation = "fadeIn 1.5s";
+        subtitle.textContent = "I'm thinking of a Pokémon, can you guess it?";
+        containerbar.style.animation = "fadeIn 1.5s";
+        containerbar.style.visibility = "visible";
+      } else {
+        subtitle.style.animation = "fadeIn 1.5s";
+        subtitle.textContent =
+          "Don't move! Next will be legen... Wait for it...";
+        containerbar.style.animation = "fadeOut 1.2s";
+        setTimeout(() => (containerbar.style.visibility = "hidden"), 1100);
+      }
+    });
 });
-
-autocomplete(input, pokemons); // initialize autocomplete textbar
 
 loginButton.addEventListener("click", () => {
   unsubscribe();
@@ -63,7 +91,7 @@ loginButton.addEventListener("click", () => {
     signInWithPopup(auth, provider).then(() => {
       sendNotification("Welcome back, " + auth.currentUser.displayName + "!");
       auth.currentUser.getIdToken().then((token) => {
-        axios.put("/user/" + auth.currentUser.uid + "/update", {
+        axios.put("/user/check", {
           name: auth.currentUser.displayName,
           token: token,
         });
@@ -89,7 +117,7 @@ rankingButton.addEventListener("click", () => {
   window.location.href = "/users/ranking";
 });
 
-guessButton.addEventListener("click", () => {
+guessButton.addEventListener("click", async () => {
   var guess = input.value;
   input.value = "";
   // in case of type errors, textbar will shake
@@ -99,37 +127,45 @@ guessButton.addEventListener("click", () => {
     textbar.classList.add("shake");
     return;
   }
-  var gid = null;
-  if (auth.currentUser != null) gid = auth.currentUser.uid;
+  var token = null;
+  if (auth.currentUser != null) token = await auth.currentUser.getIdToken();
   axios
     .post("/", {
-      gid: gid,
+      token: token,
       uid: userID,
       guess: guess,
       tries: appState.getTries() + 1,
     })
-    .then((response) => {
+    .then((res) => {
       if (!appState.exists()) {
         titles.style.animation = "fadeIn 1.5s";
         titles.style.visibility = "visible"; // hint categories will be shown
       }
-      appState.add(response.data); // rendering hints related to current guess
-      if (response.data[1].hasWon) {
+      appState.add(res.data); // rendering hints related to current guess
+      if (res.data[1].hasWon) {
         input.disabled = true; // textbar is disabled
         appState.removeState(); // reset the state
-        onVictory(appState.getTries(), response.data[0].name);
+        onVictory(appState.getTries(), res.data[0].name);
       }
     })
     .catch((err) => console.error(err));
 });
 
-// where the ability to play the game and the timer is managed
-function manageGameStatus(canPlay, remainingTime, id) {
+// where timer and initial guess rendering are managed
+function manageGameStatus(id, remainingTime) {
   // remove any old game states
   var gameID = appState.getGameID();
   if (gameID == null || gameID != id) {
     appState.removeState();
     appState.setGameID(id);
+  }
+
+  // render previous guesses, if any
+  appState.getSavedState();
+  if (appState.exists()) {
+    appState.renderAll();
+    titles.style.animation = "fadeIn 1.5s";
+    titles.style.visibility = "visible";
   }
 
   // reload page automatically when time is up
@@ -138,25 +174,6 @@ function manageGameStatus(canPlay, remainingTime, id) {
     sendNotification("A new Pokémon is waiting for you!");
     window.location.reload();
   }, remainingTime);
-
-  // manage the elements according whether the user can play or not
-  if (canPlay) {
-    subtitle.style.animation = "fadeIn 1.5s";
-    subtitle.textContent = "I'm thinking of a Pokémon, can you guess it?";
-    containerbar.style.animation = "fadeIn 1.5s";
-    containerbar.style.visibility = "visible";
-
-    // render previous guesses, if any
-    appState.getSavedState();
-    if (appState.exists()) {
-      appState.renderAll();
-      titles.style.animation = "fadeIn 1.5s";
-      titles.style.visibility = "visible";
-    }
-  } else {
-    subtitle.style.animation = "fadeIn 1.5s";
-    subtitle.textContent = "Don't move! Next will be legen... Wait for it...";
-  }
 
   var totalSeconds = Math.floor(remainingTime / 1000);
   var remainingSecondsAfterHours = totalSeconds % 3600;
@@ -234,7 +251,7 @@ function autocomplete(inp, arr) {
     closeAllLists();
     if (!val) return false;
     var list = document.createElement("DIV");
-    list.setAttribute("id", this.id + "autocomplete-list");
+    list.setAttribute("id", this.id + "-autocomplete-list");
     list.setAttribute("class", "autocomplete-items");
     this.parentNode.appendChild(list);
     for (var i = 0; i < arr.length; i++) {
@@ -259,9 +276,10 @@ function autocomplete(inp, arr) {
   });
 
   function closeAllLists(elem) {
-    var x = document.getElementsByClassName("autocomplete-items");
-    for (var i = 0; i < x.length; i++)
-      if (elem != x[i] && elem != inp) x[i].parentNode.removeChild(x[i]);
+    var items = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < items.length; i++)
+      if (elem != items[i] && elem != inp)
+        items[i].parentNode.removeChild(items[i]);
   }
 
   document.addEventListener("click", (e) => {

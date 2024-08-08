@@ -83,11 +83,22 @@ app.post("/", async (req, res, next) => {
       // confront guess with answer, return the hints to help user's guesses
       var response = verifyGuess(guess, currentPokemon);
       if (response.hasWon) {
-        if (req.body.gid == null) winners[winners.length] = req.body.uid;
-        else if (!winners.includes(req.body.gid)) {
-          // user is logged in, update his stats
-          updateStatsOnWinning(req.body.gid, req.body.guess, req.body.tries);
-          winners[winners.length] = req.body.gid;
+        if (req.body.token == null) winners[winners.length] = req.body.uid;
+        else {
+          auth
+            .verifyIdToken(req.body.token)
+            .then((decodedToken) => {
+              if (!winners.includes(decodedToken.uid)) {
+                // user is logged in, update his stats
+                updateStatsOnWinning(
+                  decodedToken.uid,
+                  req.body.guess,
+                  req.body.tries
+                );
+                winners[winners.length] = decodedToken.uid;
+              }
+            })
+            .catch((err) => console.error(err));
         }
       }
       res.status(200);
@@ -95,8 +106,46 @@ app.post("/", async (req, res, next) => {
     })
     .catch((err) => {
       console.error(err);
-      res.end();
+      next(createError(500));
     });
+});
+
+// send game ID and remaining time before next generation
+app.get("/game/status", (req, res) => {
+  var remainingTime = generateTimestamp + generateInterval - Date.now();
+  res.status(200);
+  res.send([gameID, remainingTime]);
+});
+
+app.put("/user/check", async (req, res) => {
+  auth
+    .verifyIdToken(req.body.token)
+    .then((decodedToken) => {
+      firestore
+        .collection("users")
+        .doc(decodedToken.uid)
+        .get()
+        .then((doc) => {
+          var user = doc.data();
+          if (user == undefined) {
+            // first-login user, set up a fresh document
+            user = {
+              name: req.body.name,
+              wins: 0,
+              avgTries: 0,
+              history: [],
+            };
+            // create the new document
+            firestore.collection("users").doc(decodedToken.uid).set(user);
+            res.status(201);
+          } else res.status(204);
+        });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(401);
+    });
+  res.end();
 });
 
 // generate new unique id (uuid) on request
@@ -105,42 +154,10 @@ app.get("/user/id", (req, res) => {
   res.send(uuid());
 });
 
-// send a boolean stating if user can play current game, remaining time before next pokemon generation and current game ID
-app.get("/user/:id/status", (req, res) => {
-  var remainingTime = generateTimestamp + generateInterval - Date.now();
+// send a boolean stating if user can play the current game
+app.get("/user/:id/play", (req, res) => {
   res.status(200);
-  res.send([!winners.includes(req.params.id), remainingTime, gameID]);
-});
-
-app.put("/user/:gid/update", async (req, res) => {
-  auth
-    .verifyIdToken(req.body.token)
-    .then((decodedToken) => {
-      var gid = req.params.gid;
-      if (gid == decodedToken.uid)
-        firestore
-          .collection("users")
-          .doc(gid)
-          .get()
-          .then((doc) => {
-            var user = doc.data();
-            if (user == undefined) {
-              // first-login user, set up a fresh document
-              user = {
-                name: req.body.name,
-                wins: 0,
-                avgTries: 0,
-                history: [],
-              };
-              // create the new document
-              firestore.collection("users").doc(gid).set(user);
-              res.status(201);
-            } else res.status(204);
-          });
-      else res.status(401);
-    })
-    .catch((err) => console.error(err));
-  res.end();
+  res.send(!winners.includes(req.params.id));
 });
 
 // render requested user's profile page
@@ -164,7 +181,7 @@ app.get("/user/:gid/profile", async (req, res, next) => {
     })
     .catch((err) => {
       console.error(err);
-      res.end();
+      next(createError(500));
     });
 });
 
@@ -188,7 +205,7 @@ app.get("/user/:gid/pokedex", async (req, res, next) => {
     })
     .catch((err) => {
       console.error(err);
-      res.end();
+      next(createError(500));
     });
 });
 
@@ -216,7 +233,7 @@ app.get("/users/ranking", async (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      res.end();
+      next(createError(500));
     });
 });
 
