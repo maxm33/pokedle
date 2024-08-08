@@ -59,28 +59,28 @@ const unsubscribe = onAuthStateChanged(auth, (user) => {
   } else {
     // user is not signed in
     loginButton.value = "Login";
-    profileButton.style.animation = "fadeOut 1.2s";
-    pokedexButton.style.animation = "fadeOut 1.2s";
+    profileButton.style.animation = "fadeOut 1.5s";
+    pokedexButton.style.animation = "fadeOut 1.5s";
     setTimeout(() => {
       profileButton.style.visibility = "hidden";
       pokedexButton.style.visibility = "hidden";
-    }, 1100);
+    }, 1150);
   }
   axios
     .get("/user/" + (user ? auth.currentUser.uid : userID) + "/play")
     .then((res) => {
       // manage the elements according whether the user can play or not
       if (res.data) {
-        subtitle.style.animation = "fadeIn 1.5s";
+        triggerElementAnimation(subtitle, "fadeIn");
         subtitle.textContent = "I'm thinking of a Pokémon, can you guess it?";
-        containerbar.style.animation = "fadeIn 1.5s";
+        triggerElementAnimation(containerbar, "fadeIn");
         containerbar.style.visibility = "visible";
       } else {
-        subtitle.style.animation = "fadeIn 1.5s";
+        triggerElementAnimation(subtitle, "fadeOut");
         subtitle.textContent =
           "Don't move! Next will be legen... Wait for it...";
-        containerbar.style.animation = "fadeOut 1.2s";
-        setTimeout(() => (containerbar.style.visibility = "hidden"), 1100);
+        triggerElementAnimation(containerbar, "fadeOut");
+        setTimeout(() => (containerbar.style.visibility = "hidden"), 1150);
       }
     });
 });
@@ -122,9 +122,7 @@ guessButton.addEventListener("click", async () => {
   input.value = "";
   // in case of type errors, textbar will shake
   if (guess == "" || !pokemons.includes(guess)) {
-    textbar.classList.remove("shake");
-    void textbar.offsetWidth;
-    textbar.classList.add("shake");
+    triggerElementAnimation(textbar, "shake");
     return;
   }
   var token = null;
@@ -200,6 +198,12 @@ function manageGameStatus(id, remainingTime) {
       ":" +
       (seconds < 10 ? "0" + seconds : seconds);
   }, 1000);
+}
+
+function triggerElementAnimation(element, animationClass) {
+  element.classList.remove(animationClass);
+  void element.offsetWidth;
+  element.classList.add(animationClass);
 }
 
 // victory event

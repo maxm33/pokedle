@@ -154,7 +154,7 @@ input[type="hidden"] {
   text-decoration: none;
   transition: all 0.2s;
   background-color: transparent;
-  animation: bouncy 2s infinite linear;
+  animation: bounce 2s infinite linear;
 }
 #guess-button:hover {
   color: black;
@@ -300,6 +300,12 @@ input[type="hidden"] {
 .shake {
   animation: horizontal-shaking 0.35s;
 }
+.fadeIn {
+  animation: fadeIn 1.5s;
+}
+.fadeOut {
+  animation: fadeOut 1.5s;
+}
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -316,7 +322,7 @@ input[type="hidden"] {
     opacity: 0;
   }
 }
-@keyframes bouncy {
+@keyframes bounce {
   0% {
     top: 0em;
   }
