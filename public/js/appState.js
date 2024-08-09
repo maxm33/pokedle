@@ -1,5 +1,6 @@
 export class AppState {
   guesses = [];
+  rendered = 0;
 
   getID() {
     return JSON.parse(window.localStorage.getItem("userID"));
@@ -15,6 +16,9 @@ export class AppState {
   }
   getTries() {
     return this.guesses.length;
+  }
+  getRenderedTries() {
+    return this.rendered.length;
   }
   exists() {
     return this.guesses.length != 0 ? true : false;
@@ -35,9 +39,9 @@ export class AppState {
   add(guess) {
     this.guesses.unshift(guess);
     this.saveState();
-    this.render(this.guesses[0]);
+    this.renderGuess(this.guesses[0]);
   }
-  render(guess) {
+  renderGuess(guess) {
     var menucontainer = document.getElementById("answers-container");
     var menuoption = document.createElement("DIV");
     menuoption.setAttribute("class", "answers");
@@ -55,9 +59,10 @@ export class AppState {
       }
     }
     menucontainer.insertAdjacentElement("afterbegin", menuoption);
+    this.rendered++;
   }
-  renderAll() {
+  renderState() {
     for (var i = this.guesses.length - 1; i >= 0; i--)
-      this.render(this.guesses[i]);
+      this.renderGuess(this.guesses[i]);
   }
 }

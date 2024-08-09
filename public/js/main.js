@@ -179,10 +179,21 @@ function manageGameStatus(id, remainingTime) {
   // render previous guesses, if any
   appState.getSavedState();
   if (appState.exists()) {
-    appState.renderAll();
+    appState.renderState();
     titles.style.animation = "fadeIn 1.5s";
     titles.style.visibility = "visible";
   }
+
+  // keep state updated between different tabs, fired every 30 seconds
+  setInterval(() => {
+    appState.getSavedState();
+    var total = appState.getTries();
+    var toRender = total - appState.getRenderedTries();
+    while (toRender > 0) {
+      toRender--;
+      appState.renderGuess(appState.guesses[toRender]);
+    }
+  }, 30000);
 
   // reload page automatically when time is up
   setTimeout(() => {
