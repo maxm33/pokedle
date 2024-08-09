@@ -18,7 +18,7 @@ export class AppState {
     return this.guesses.length;
   }
   getRenderedTries() {
-    return this.rendered.length;
+    return this.rendered;
   }
   exists() {
     return this.guesses.length != 0 ? true : false;
