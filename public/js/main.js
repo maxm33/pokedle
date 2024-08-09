@@ -25,6 +25,7 @@ let timer = document.getElementById("timer");
 let subtitle = document.getElementById("subtitle");
 let titles = document.getElementById("titles-container");
 let containerbar = document.getElementById("textbar-container");
+let containerstate = document.getElementById("state-container");
 let input = document.getElementById("textbar");
 let textbar = document.getElementById("autocomplete");
 
@@ -52,7 +53,7 @@ const unsubscribe = onAuthStateChanged(auth, (user) => {
   // user is signed in
   if (user) {
     loginButton.value = "Logout";
-    profileButton.style.animation = "fadeIn 1s";
+    profileButton.style.animation = "fadeIn 1s"; // not handled with specific function
     pokedexButton.style.animation = "fadeIn 1s";
     profileButton.style.visibility = "visible";
     pokedexButton.style.visibility = "visible";
@@ -77,18 +78,26 @@ const unsubscribe = onAuthStateChanged(auth, (user) => {
           triggerElementAnimation(subtitle, "fadeIn");
           subtitle.textContent = string_play;
         }
-        if (containerbar.style.visibility == "hidden") {
+        if (containerbar.style.display == "none") {
           triggerElementAnimation(containerbar, "fadeIn");
-          containerbar.style.visibility = "visible";
+          containerbar.style.display = "block";
+        }
+        if (containerstate.style.display == "none") {
+          triggerElementAnimation(containerstate, "fadeIn");
+          containerstate.style.display = "block";
         }
       } else {
         if (subtitle.textContent != string_nope) {
           triggerElementAnimation(subtitle, "fadeIn");
           subtitle.textContent = string_nope;
         }
-        if (containerbar.style.visibility == "visible") {
+        if (containerbar.style.display == "block") {
           triggerElementAnimation(containerbar, "fadeOut");
-          setTimeout(() => (containerbar.style.visibility = "hidden"), 1150);
+          setTimeout(() => (containerbar.style.display = "none"), 1150);
+        }
+        if (containerstate.style.display == "block") {
+          triggerElementAnimation(containerstate, "fadeOut");
+          setTimeout(() => (containerstate.style.display = "none"), 1150);
         }
       }
     });
@@ -210,7 +219,8 @@ function manageGameStatus(id, remainingTime) {
 }
 
 function triggerElementAnimation(element, animationClass) {
-  element.classList.remove(animationClass);
+  while (element.classList.length > 0)
+    element.classList.remove(element.classList.item(0));
   void element.offsetWidth;
   element.classList.add(animationClass);
 }
@@ -288,11 +298,10 @@ function autocomplete(inp, arr) {
     }
   });
 
-  function closeAllLists(elem) {
+  function closeAllLists(e) {
     var items = document.getElementsByClassName("autocomplete-items");
     for (var i = 0; i < items.length; i++)
-      if (elem != items[i] && elem != inp)
-        items[i].parentNode.removeChild(items[i]);
+      if (e != items[i] && e != inp) items[i].parentNode.removeChild(items[i]);
   }
 
   document.addEventListener("click", (e) => {

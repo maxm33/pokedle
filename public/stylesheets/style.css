@@ -187,6 +187,9 @@ input[type="hidden"] {
   flex-direction: row;
   align-items: center;
 }
+.answers img {
+  animation: fadeIn 1.5s;
+}
 .answers-text {
   font-size: 0.8em;
 }
