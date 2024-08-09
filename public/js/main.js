@@ -180,8 +180,7 @@ function manageGameStatus(id, remainingTime) {
     var total = appState.getTries();
     var rendered = appState.getRenderedTries();
     var toRender = total - rendered;
-    if (total > 0 && rendered == 0 && titles.style.visibility == "hidden")
-      showElement(titles);
+    if (total > 0 && titles.style.visibility == "hidden") showElement(titles);
     while (toRender > 0) {
       toRender--;
       appState.renderGuess(appState.guesses[toRender]);
