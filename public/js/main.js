@@ -53,19 +53,13 @@ const unsubscribe = onAuthStateChanged(auth, (user) => {
   // user is signed in
   if (user) {
     loginButton.value = "Logout";
-    profileButton.style.animation = "fadeIn 1s"; // not handled with specific function
-    pokedexButton.style.animation = "fadeIn 1s";
-    profileButton.style.visibility = "visible";
-    pokedexButton.style.visibility = "visible";
+    showElement(profileButton);
+    showElement(pokedexButton);
   } else {
     // user is not signed in
     loginButton.value = "Login";
-    profileButton.style.animation = "fadeOut 1.5s";
-    pokedexButton.style.animation = "fadeOut 1.5s";
-    setTimeout(() => {
-      profileButton.style.visibility = "hidden";
-      pokedexButton.style.visibility = "hidden";
-    }, 1150);
+    hideElement(profileButton);
+    hideElement(pokedexButton);
   }
   axios
     .get("/user/" + (user ? auth.currentUser.uid : userID) + "/play")
@@ -153,10 +147,7 @@ guessButton.addEventListener("click", async () => {
       tries: appState.getTries() + 1,
     })
     .then((res) => {
-      if (!appState.exists()) {
-        titles.style.animation = "fadeIn 1.5s";
-        titles.style.visibility = "visible"; // hint categories will be shown
-      }
+      if (!appState.exists()) showElement(titles); // hint categories will be shown
       appState.add(res.data); // rendering hints related to current guess
       if (res.data[1].hasWon) {
         input.disabled = true; // textbar is disabled
@@ -180,15 +171,17 @@ function manageGameStatus(id, remainingTime) {
   appState.getSavedState();
   if (appState.exists()) {
     appState.renderState();
-    titles.style.animation = "fadeIn 1.5s";
-    titles.style.visibility = "visible";
+    showElement(titles);
   }
 
   // keep state updated between different tabs, fired every 30 seconds
   setInterval(() => {
     appState.getSavedState();
     var total = appState.getTries();
-    var toRender = total - appState.getRenderedTries();
+    var rendered = appState.getRenderedTries();
+    var toRender = total - rendered;
+    if (total > 0 && rendered == 0 && titles.style.visibility == "hidden")
+      showElement(titles);
     while (toRender > 0) {
       toRender--;
       appState.renderGuess(appState.guesses[toRender]);
@@ -227,6 +220,16 @@ function manageGameStatus(id, remainingTime) {
       ":" +
       (seconds < 10 ? "0" + seconds : seconds);
   }, 1000);
+}
+
+function showElement(element) {
+  element.style.animation = "fadeIn 1.5s";
+  element.style.visibility = "visible";
+}
+
+function hideElement(element) {
+  element.style.animation = "fadeOut 1.5s";
+  setTimeout(() => (element.style.visibility = "hidden"), 1150);
 }
 
 function triggerElementAnimation(element, animationClass) {
