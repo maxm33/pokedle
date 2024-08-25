@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" href="/public/images/favicon.ico" />
+    <link rel="stylesheet" href="/public/stylesheets/style.css" />
+    <link
+      rel="manifest"
+      type="application/manifest+json"
+      href="/public/app.webmanifest"
+    />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <title>Ranking</title>
+  </head>
+  <body style="background-image: url('<%= bg %>')">
+    <div id="container">
+      <div id="logo">
+        <a aria-label="Go to Home" href="/"
+          ><img alt="" src="/public/images/pokedle-logo.webp"
+        /></a>
+      </div>
+      <div id="subtitle" class="fadeIn">
+        <h1>CHAMPIONS</h1>
+        <% for (var i = 0; i < rankingData.length; i++) { %>
+        <div class="ranking-rows">
+          <b
+            ><%= i+1 %>.
+            <a
+              aria-label="<%= rankingData[i].id %>'s profile"
+              href="/user/<%= rankingData[i].id %>/profile"
+              ><%= rankingData[i].name %></a
+            ></b
+          >
+          - <%= rankingData[i].wins %> wins<br />
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </body>
+</html>
