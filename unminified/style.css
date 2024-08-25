@@ -1,0 +1,608 @@
+* {
+  color: white;
+  box-sizing: border-box;
+  font-weight: 600;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+*::-webkit-scrollbar {
+  width: 0.5em;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  border-radius: 1em;
+  border: 0.15em solid transparent;
+  background-color: #d3d3d3;
+}
+html,
+body {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+body {
+  margin: 0;
+  background-size: cover;
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+#topnav {
+  margin: 0.5em 0.75em 0.5em 0.75em;
+  overflow: hidden;
+  background-color: transparent;
+}
+#authref {
+  font-size: 1em;
+  float: left;
+  animation: fadeIn 1.5s;
+}
+.topnav-buttons {
+  font-size: 1.2em;
+  padding: 0.5em 0.8em 0.5em 0.8em;
+  margin: 0.22em 0.3em 0.22em 0.3em;
+  border-radius: 0.8em;
+  border: none;
+  float: right;
+  background-color: #333;
+}
+.topnav-buttons:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+#profile-button,
+#pokedex-button {
+  visibility: hidden;
+}
+#ranking-button,
+#login-button {
+  animation: fadeIn 1.5s;
+}
+#container {
+  margin: 0.5em;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+}
+#logo {
+  width: 26em;
+  height: 9em;
+  margin-top: 1em;
+  display: flex;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+  animation: fadeIn 1.5s;
+}
+#logo:hover {
+  transform: scale(1.1);
+}
+#prev-title {
+  font-size: 1.3em;
+  visibility: hidden;
+}
+#timer {
+  font-size: 1.3rem;
+  margin-top: 0.75em;
+  color: #8cff66;
+  animation: fadeIn 1.5s;
+}
+#subtitle {
+  font-size: 1.3rem;
+  margin-top: 2.2em;
+}
+a:link,
+a:visited,
+a:hover {
+  color: deepskyblue;
+  text-decoration: none;
+  background-color: transparent;
+}
+a:hover {
+  color: greenyellow;
+}
+input[type="text"] {
+  width: 100%;
+  font-size: 1.05em;
+  padding: 0.65em;
+  border: 0.05em solid transparent;
+  border-radius: 0.7em;
+  background-color: #333;
+}
+input[type="hidden"] {
+  background-color: transparent !important;
+}
+#autocomplete {
+  width: 16em;
+  margin-left: 3.5em;
+  position: relative;
+  display: inline-block;
+}
+.autocomplete-items {
+  max-height: 21.9em;
+  top: 100%;
+  z-index: 99;
+  left: 0;
+  right: 0;
+  position: absolute;
+  overflow-y: scroll;
+  border-bottom: none;
+  border-top: none;
+}
+.autocomplete-items div {
+  cursor: pointer;
+  border: none;
+  background-color: #333;
+}
+.autocomplete-items div:hover {
+  transition: all 0.2s;
+  background-color: #404040;
+}
+.list-options {
+  font-size: 1.1em;
+  border-radius: 0.36em;
+  font-weight: 100;
+  display: flex;
+  align-items: center;
+}
+#guess-button {
+  margin: 0em 0.3em 0.3em 0;
+  padding: 0.35em 1.2em;
+  border: 0.1em solid white;
+  border-radius: 0.96em;
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.2s;
+  background-color: transparent;
+  animation: bounce 2s infinite linear;
+}
+#guess-button:hover {
+  color: black;
+  background-color: white;
+}
+#titles-container {
+  width: 36em;
+  height: 3em;
+  margin-top: 0.6em;
+  margin-bottom: 0.8em;
+  display: flex;
+  flex-direction: row;
+  visibility: hidden;
+}
+.titles {
+  width: 5em;
+  margin-left: 0.7em;
+}
+#titles-container:first-child {
+  margin-left: 0;
+}
+#answers-container {
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.answers {
+  width: 36em;
+  height: 5em;
+  padding-top: 0.6em;
+  display: flex;
+  align-items: center;
+}
+.answers img {
+  animation: fadeIn 1.5s;
+}
+.pokeimage {
+  width: 6.25em;
+  height: 6.25em;
+}
+.wrong,
+.correct,
+.partial,
+.wrong-higher,
+.wrong-lower {
+  width: 5.5em;
+  height: 4.5em;
+  margin-left: 0.2em;
+  margin-right: 0.2em;
+  padding: 0.2em 0.2em 0.2em 0.2em;
+  border-radius: 0.8em;
+  position: relative;
+  text-align: center;
+  animation: fadeIn 1.5s;
+}
+.wrong,
+.wrong-higher,
+.wrong-lower {
+  background-color: #ff6666;
+}
+.wrong-higher {
+  background-image: url("../images/up.webp");
+  background-size: cover;
+}
+.wrong-lower {
+  background-image: url("../images/down.webp");
+  background-size: cover;
+}
+.correct {
+  background-color: #8cff66;
+}
+.partial {
+  background-color: #ffdb4d;
+}
+.habitat {
+  width: 48px;
+  height: 36px;
+  margin-top: 0.9em;
+}
+.color-square {
+  width: 23px;
+  height: 23px;
+  margin-top: 1.1em;
+  padding: 0.25em;
+  border: 0.1em solid white;
+  border-radius: 0.5em;
+  position: relative;
+  display: inline-block;
+}
+.types {
+  width: 55px;
+  height: 11px;
+  margin-top: 0.8em;
+}
+.answers-text {
+  margin-top: 1.6em;
+  font-size: 0.8em;
+}
+#victory-ad-container {
+  width: 26em;
+  height: 33em;
+  border-radius: 3em;
+  z-index: 999;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background-color: #333;
+  animation: fadeIn 1s;
+}
+#victory-text1,
+#victory-text2,
+#victory-text3,
+#victory-text4 {
+  font-size: 1em;
+  margin: 1.1em;
+  animation: fadeIn 500ms;
+}
+#victory-text1 {
+  margin-top: 2em;
+  margin-bottom: auto;
+}
+#continue-button,
+#onprofile-dex-button {
+  padding: 0.8em;
+  border-radius: 3em;
+  line-height: 1em;
+  border-width: 0;
+  cursor: pointer;
+  list-style: none;
+  text-align: center;
+  color: black;
+  background-color: white;
+}
+#continue-button {
+  font-size: 1em;
+  margin-bottom: 2em;
+  margin-top: auto;
+  animation: fadeIn 500ms;
+}
+#onprofile-dex-button {
+  margin: 0;
+  font-size: 0.7em;
+}
+#dex-owner {
+  margin-top: 1.5em;
+  font-size: 1.3rem;
+  animation: fadeIn 1.5s;
+}
+#dex-discovered {
+  margin-bottom: 1em;
+  font-size: 1.2rem;
+  animation: fadeIn 1.5s;
+}
+.dex-rows {
+  width: 32em;
+  height: 7.5em;
+  margin-bottom: 1em;
+  border-radius: 1.8em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: blanchedalmond;
+  animation: fadeIn 1.5s;
+}
+.dex-rows-numbers,
+.dex-rows-name,
+.dex-rows-guess {
+  font-size: 1em;
+  color: black;
+}
+.dex-rows-numbers {
+  margin: 1.5em;
+}
+.dex-rows-name {
+  margin: 2.5em;
+}
+.dex-rows-guess {
+  margin-right: 3em;
+  margin-left: auto;
+}
+.ranking-rows {
+  margin: 0.3em;
+}
+.shake {
+  animation: horizontal-shaking 0.35s;
+}
+.fadeIn {
+  animation: fadeIn 1.5s;
+}
+.fadeOut {
+  animation: fadeOut 1.5s;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes bounce {
+  0% {
+    top: 0em;
+  }
+  40% {
+    top: 0em;
+  }
+  43% {
+    top: -0.9em;
+  }
+  46% {
+    top: 0em;
+  }
+  48% {
+    top: -0.4em;
+  }
+  50% {
+    top: 0em;
+  }
+  100% {
+    top: 0em;
+  }
+}
+@keyframes horizontal-shaking {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(0.25em);
+  }
+  50% {
+    transform: translateX(-0.25em);
+  }
+  75% {
+    transform: translateX(0.25em);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@media (max-width: 480px) {
+  #topnav {
+    margin: 0.3em;
+  }
+  #authref {
+    font-size: 0.7em;
+  }
+  .topnav-buttons {
+    font-size: 0.9em;
+    padding: 0.35em 0.55em 0.35em 0.55em;
+    margin: 0.15em;
+  }
+  #container {
+    margin: 0.3em;
+  }
+  #logo,
+  #logo a img {
+    width: 20em;
+    height: 7em;
+  }
+  #prev-title {
+    font-size: 0.9em;
+  }
+  #timer {
+    font-size: 0.9em;
+  }
+  #subtitle {
+    font-size: 1em;
+  }
+  #autocomplete {
+    margin-left: 0;
+  }
+  #state-container,
+  #titles-container,
+  .answers,
+  .dex-rows {
+    max-width: 26em;
+  }
+  #titles-container {
+    margin-bottom: 0;
+  }
+  .titles {
+    margin: 0.2em;
+    font-size: 0.8em;
+  }
+  .answers {
+    margin-top: 0;
+  }
+  .pokeimage {
+    width: 3.5em;
+    height: 3.5em;
+    margin-right: 0.5em;
+  }
+  .wrong,
+  .correct,
+  .partial,
+  .wrong-higher,
+  .wrong-lower {
+    width: 3.5em;
+    height: 3.5em;
+    padding: 0;
+    word-wrap: break-word;
+  }
+  .habitat {
+    margin-top: 0.6em;
+  }
+  .color-square {
+    width: 18px;
+    height: 18px;
+  }
+  .types {
+    margin-top: 0.6em;
+  }
+  .answers-text {
+    font-size: 0.75em;
+  }
+  #victory-ad-container {
+    width: 20em;
+    height: 28em;
+  }
+  #victory-text1,
+  #victory-text2,
+  #victory-text3,
+  #victory-text4 {
+    font-size: 0.8em;
+  }
+  .dex-rows {
+    width: 23em;
+    height: 6em;
+  }
+  .dex-rows img {
+    width: 80px;
+    height: 80px;
+  }
+  .dex-rows-numbers,
+  .dex-rows-name,
+  .dex-rows-guess {
+    font-size: 0.9em;
+  }
+  .dex-rows-numbers {
+    margin: 1em;
+  }
+  .dex-rows-name {
+    margin: 1.2em;
+  }
+  .dex-rows-guess {
+    margin-right: 1.3em;
+  }
+}
+@media (max-width: 409px) {
+  .topnav-buttons {
+    font-size: 0.75em;
+    padding: 0.25em 0.45em 0.25em 0.45em;
+    margin: 0.5em 0.15em 0.15em 0.15em;
+  }
+  #logo,
+  #logo a img {
+    width: 16.66em;
+    height: 5.83em;
+  }
+  #prev-title {
+    font-size: 0.8em;
+  }
+  #timer {
+    font-size: 0.8em;
+  }
+  #subtitle {
+    font-size: 0.85em;
+  }
+  input[type="text"] {
+    font-size: 0.7em;
+  }
+  #autocomplete {
+    width: 12em;
+    margin-left: 1em;
+  }
+  .autocomplete-items {
+    max-height: 17.5em;
+  }
+  .list-options {
+    font-size: 0.8em;
+  }
+  #guess-button {
+    font-size: 0.7em;
+    padding: 0.2em 0.7em;
+  }
+  #state-container,
+  #titles-container,
+  .answers,
+  .dex-rows {
+    max-width: 23em;
+  }
+  .answers {
+    max-height: 4.2em;
+  }
+  .wrong,
+  .correct,
+  .partial,
+  .wrong-higher,
+  .wrong-lower {
+    width: 3em;
+    height: 3em;
+  }
+  .habitat {
+    width: 36px;
+    height: 30px;
+  }
+  .color-square {
+    width: 15px;
+    height: 15px;
+  }
+  .types {
+    width: 40px;
+    height: 10px;
+    margin-top: 0em;
+  }
+  .answers-text {
+    font-size: 0.6em;
+  }
+  #dex-owner,
+  #dex-discovered {
+    font-size: 0.85em;
+  }
+  .dex-rows {
+    width: 20em;
+    height: 6em;
+    margin-bottom: 0.75em;
+  }
+  .dex-rows-numbers {
+    margin: 0.5em;
+  }
+  .dex-rows-name {
+    margin: 1em;
+  }
+  .dex-rows-guess {
+    margin-right: 0.5em;
+  }
+}

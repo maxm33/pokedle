@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
   <head>
     <link rel="icon" href="/public/images/favicon.ico" />
     <link rel="stylesheet" href="/public/stylesheets/style.css" />
     <link
       rel="manifest"
       type="application/manifest+json"
-      href="/app.webmanifest"
+      href="/public/app.webmanifest"
     />
     <meta name="viewport" content="initial-scale=1, width=device-width" />
     <title>Profile</title>
   </head>
-  <body>
+  <body style="background-image: url('<%= bg %>')">
     <div id="container">
       <div id="logo">
-        <a href="/"><img alt="" src="/public/images/pokedle-logo.webp" /></a>
+        <a aria-label="Go to Home" href="/"
+          ><img alt="" src="/public/images/pokedle-logo.webp"
+        /></a>
       </div>
-      <div id="subtitle">
+      <div id="subtitle" class="fadeIn">
         <h1><%= name %></h1>
         Wins: <%= wins %> <br />
         Average Tries: <%= avgTries %> <br /><br />
