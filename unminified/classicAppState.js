@@ -36,41 +36,42 @@ export class classicAppState {
     this.renderGuess(this.guesses[0]);
   }
   renderGuess(guess) {
+    var pokemon = guess[0];
+    var response = guess[1];
     var menucontainer = document.getElementById("answers-container");
     var menuoption = document.createElement("DIV");
     menuoption.setAttribute("class", "answers");
-    menuoption.innerHTML = `<img alt="" aria-label="${guess[0].name}" class="pokeimage" src='/public/images/sprites/${guess[0].name}.webp'>`;
-    for (var prop in guess[1]) {
-      if (
-        Object.hasOwnProperty.call(guess[1], prop) &&
-        guess[1][prop] != true &&
-        guess[1][prop] != false
-      ) {
-        var card = document.createElement("DIV");
-        card.setAttribute("class", guess[1][prop]);
-        switch (prop) {
-          case "habitat":
-            card.innerHTML = `<img alt="" aria-label="${guess[0][prop]}" class="habitat" src="/public/images/habitats/${guess[0][prop]}.webp"/>`;
-            break;
-          case "color":
-            var colors = guess[0][prop].split(" , ");
-            card.innerHTML =
-              colors[1] == null
-                ? `<div class="color-square" style="background-color: ${colors[0]}"></div>`
-                : `<div class="color-square" style="background-color: ${colors[0]}"></div><div class="color-square" style="background-color: ${colors[1]}"></div>`;
-            break;
-          case "type":
-            var types = guess[0][prop].split(" , ");
-            card.innerHTML =
-              types[1] == null
-                ? `<img alt="" aria-label="${types[0]}" class="types" src="/public/images/types/${types[0]}.webp"/>`
-                : `<img alt="" aria-label="${types[0]}" class="types" src="/public/images/types/${types[0]}.webp"/><img alt="" aria-label="${types[1]}" class="types" src="/public/images/types/${types[1]}.webp"/>`;
-            break;
-          default:
-            card.innerHTML = `<p class="answers-text">${guess[0][prop]}</p>`;
-        }
-        menuoption.appendChild(card);
+    menuoption.innerHTML = `<img alt="" aria-label="${pokemon.name}" class="pokeimage" src='/public/images/sprites/${pokemon.name}.webp'>`;
+    for (var property in response) {
+      var card = document.createElement("DIV");
+      card.setAttribute("class", response[property]);
+      switch (property) {
+        case "habitat":
+          card.innerHTML = `<img alt="" aria-label="${pokemon[property]}" class="habitat" src="/public/images/habitats/${pokemon[property]}.webp"/>`;
+          break;
+        case "colors":
+          var colors = pokemon[property];
+          card.innerHTML =
+            colors[1] == null
+              ? `<div class="color-square" style="background-color: ${colors[0]}"></div>`
+              : `<div class="color-square" style="background-color: ${colors[0]}"></div><div class="color-square" style="background-color: ${colors[1]}"></div>`;
+          break;
+        case "types":
+          var types = pokemon[property];
+          card.innerHTML =
+            types[1] == null
+              ? `<img alt="" aria-label="${types[0]}" class="types" src="/public/images/types/${types[0]}.webp"/>`
+              : `<img alt="" aria-label="${types[0]}" class="types" src="/public/images/types/${types[0]}.webp"/><img alt="" aria-label="${types[1]}" class="types" src="/public/images/types/${types[1]}.webp"/>`;
+          break;
+        case "fullyEvolved":
+          card.innerHTML = `<p class="answers-text">${
+            pokemon[property] ? "Yes" : "No"
+          }</p>`;
+          break;
+        default:
+          card.innerHTML = `<p class="answers-text">${pokemon[property]}</p>`;
       }
+      menuoption.appendChild(card);
     }
     menucontainer.insertAdjacentElement("afterbegin", menuoption);
     this.rendered[this.rendered.length] = guess;

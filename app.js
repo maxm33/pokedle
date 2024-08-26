@@ -98,7 +98,7 @@ app.get("/", (req, res) => {
 
 // render home page
 app.get("/classic", (req, res) => {
-  res.render("classic", { bg: bgPathSelector(req.device.type) });
+  res.render("classicMode", { bg: bgPathSelector(req.device.type) });
 });
 
 // generate hints based on user's guess, check if user has won and, if so, call an update to his stats
@@ -112,10 +112,11 @@ app.post("/classic", async (req, res, next) => {
         next(createError(404, "Pokémon not found"));
       var guess = queryResult.docs[0].data();
       // confront guess with answer, return the hints to help user's guesses
-      var response = verifyGuess(guess, currentPokemon);
-      if (response.hasWon) {
-        if (req.body.token == null) winners[winners.length] = req.body.uid;
-        else {
+      var result = verifyGuess(guess, currentPokemon);
+      // if player has won
+      if (result[2]) {
+        winners[winners.length] = req.body.uid;
+        if (req.body.token != null)
           auth
             .verifyIdToken(req.body.token)
             .then((decodedToken) => {
@@ -130,10 +131,9 @@ app.post("/classic", async (req, res, next) => {
               }
             })
             .catch((err) => console.error(err));
-        }
       }
       res.status(200);
-      res.send([guess, response]);
+      res.send(result);
     })
     .catch((err) => {
       console.error(err);
@@ -329,18 +329,18 @@ function bgPathSelector(device) {
 // verify the client's guess, generate related hints
 function verifyGuess(guess, answer) {
   var response = {
-    hasWon: true,
     habitat: "correct",
-    color: "correct",
-    type: "correct",
+    colors: "correct",
+    types: "correct",
     fullyEvolved: "correct",
     evolutionLevel: "correct",
     gen: "correct",
   };
   var count = 0;
+  var hasWon = true;
 
   if (guess.name != answer.name) {
-    response.hasWon = false;
+    hasWon = false;
     if (guess.fullyEvolved != answer.fullyEvolved)
       response.fullyEvolved = "wrong";
     if (guess.evolutionLevel > answer.evolutionLevel)
@@ -351,24 +351,24 @@ function verifyGuess(guess, answer) {
     if (guess.gen > answer.gen) response.gen = "wrong-lower";
     if (guess.gen < answer.gen) response.gen = "wrong-higher";
 
-    var guessColors = guess.color.split(" , ");
+    var guessColors = guess.colors;
     for (var i = 0; i < guessColors.length; i++)
-      if (answer.color.includes(guessColors[i])) count++;
-    var colors = answer.color.split(" , ");
-    if (count == 0) response.color = "wrong";
+      if (answer.colors.includes(guessColors[i])) count++;
+    var colors = answer.colors;
+    if (count == 0) response.colors = "wrong";
     else if (colors.length != count || guessColors.length != count)
-      response.color = "partial";
+      response.colors = "partial";
     count = 0;
 
-    var guessTypes = guess.type.split(" , ");
+    var guessTypes = guess.types;
     for (var i = 0; i < guessTypes.length; i++)
-      if (answer.type.includes(guessTypes[i])) count++;
-    var types = answer.type.split(" , ");
-    if (count == 0) response.type = "wrong";
+      if (answer.types.includes(guessTypes[i])) count++;
+    var types = answer.types;
+    if (count == 0) response.types = "wrong";
     else if (types.length != count || guessTypes.length != count)
-      response.type = "partial";
+      response.types = "partial";
   }
-  return response;
+  return [guess, response, hasWon];
 }
 
 // update a logged user's document on winning

@@ -146,11 +146,13 @@ guessButton.addEventListener("click", async () => {
       tries: classicState.getTries() + 1,
     })
     .then((res) => {
+      var pokemon = res.data[0];
+      var hasWon = res.data[2];
       if (classicState.notRendered()) animateFadeIn(containertitles, "1.5s"); // hint categories will be shown
       classicState.addGuess(res.data); // rendering hints related to current guess
-      if (res.data[1].hasWon) {
+      if (hasWon) {
         textbar.disabled = true; // textbar is disabled
-        onVictory(classicState.getTries(), res.data[0]);
+        onVictory(classicState.getTries(), pokemon);
         classicState.removeState(); // reset the state
       }
     })
