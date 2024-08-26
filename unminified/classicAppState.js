@@ -1,11 +1,11 @@
-export class AppState {
+export class classicAppState {
   guesses = [];
   rendered = [];
 
-  getID() {
+  getUserID() {
     return JSON.parse(window.localStorage.getItem("userID"));
   }
-  setID(id) {
+  setUserID(id) {
     window.localStorage.setItem("userID", JSON.stringify(id));
   }
   getGameID() {
@@ -29,7 +29,7 @@ export class AppState {
   removeState() {
     window.localStorage.removeItem("state");
   }
-  add(guess) {
+  addGuess(guess) {
     this.refreshState();
     this.guesses.unshift(guess);
     window.localStorage.setItem("state", JSON.stringify(this.guesses));

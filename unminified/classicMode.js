@@ -6,8 +6,8 @@ import {
   signInWithPopup,
   signOut,
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-import { pokemons } from "./pokemon.js";
-import { AppState } from "./appState.js";
+import { pokemons } from "./pokemons.js";
+import { classicAppState } from "./classicAppState.js";
 
 // request for browser notifications
 Notification.requestPermission((permission) => {
@@ -27,52 +27,51 @@ let subtitle = document.getElementById("subtitle");
 let containertitles = document.getElementById("titles-container");
 let containerbar = document.getElementById("textbar-container");
 let containerstate = document.getElementById("state-container");
-let input = document.getElementById("textbar");
-let textbar = document.getElementById("autocomplete");
+let textbar = document.getElementById("textbar");
 
-let appState = new AppState(); // initialize app state
+let classicState = new classicAppState(); // initialize app state
 let provider = new GoogleAuthProvider();
 let config = await axios.get("/env/fb");
 let auth = getAuth(initializeApp(config.data));
 
 // get user ID or request and set if null
-if (appState.getID() == null) {
+if (classicState.getUserID() == null) {
   await axios.get("/user/id").then((res) => {
-    appState.setID(res.data);
+    classicState.setUserID(res.data);
   });
 }
-const userID = appState.getID();
+const userID = classicState.getUserID();
 
 // get game status to update timer and render guesses
 axios.get("/classic/state").then((res) => {
   manageGameState(res.data[0], res.data[1], res.data[2]);
 });
 
-autocomplete(input, pokemons); // initialize autocomplete textbar
+initializeAutocomplete(textbar, pokemons); // initialize autocomplete textbar
 
 const unsubscribe = onAuthStateChanged(auth, (user) => {
-  // user is signed in
   if (user) {
+    // user is signed in
     loginButton.value = "Logout";
-    fadeIn(profileButton, "1s");
-    fadeIn(pokedexButton, "1s");
+    animateFadeIn(profileButton, "1s");
+    animateFadeIn(pokedexButton, "1s");
   } else {
     // user is not signed in
     loginButton.value = "Login ";
-    fadeOut(profileButton, "1.5s");
-    fadeOut(pokedexButton, "1.5s");
+    animateFadeOut(profileButton, "1.5s");
+    animateFadeOut(pokedexButton, "1.5s");
   }
   axios
     .get("/user/" + (user ? auth.currentUser.uid : userID) + "/canPlay")
     .then((res) => {
       // manage the elements according whether the user can play or not
-      var string_play = `<p>I'm thinking of a <span style="color:#8cff66">Pokémon</span>, can you guess it?</p>`;
-      var string_nope =
+      var stringCanPlay = `<p>I'm thinking of a <span style="color:#8cff66">Pokémon</span>, can you guess it?</p>`;
+      var stringCantPlay =
         "<p>Don't move! Next will be legen... Wait for it...</p>";
       if (res.data) {
-        if (subtitle.innerHTML != string_play) {
+        if (subtitle.innerHTML != stringCanPlay) {
           triggerElementAnimation(subtitle, "fadeIn");
-          subtitle.innerHTML = string_play;
+          subtitle.innerHTML = stringCanPlay;
         }
         if (containerbar.style.display == "none") {
           triggerElementAnimation(containerbar, "fadeIn");
@@ -83,9 +82,9 @@ const unsubscribe = onAuthStateChanged(auth, (user) => {
           containerstate.style.display = "block";
         }
       } else {
-        if (subtitle.innerHTML != string_nope) {
+        if (subtitle.innerHTML != stringCantPlay) {
           triggerElementAnimation(subtitle, "fadeIn");
-          subtitle.innerHTML = string_nope;
+          subtitle.innerHTML = stringCantPlay;
         }
         if (containerbar.style.display == "block") {
           triggerElementAnimation(containerbar, "fadeOut");
@@ -130,8 +129,8 @@ rankingButton.addEventListener("click", () => {
 });
 
 guessButton.addEventListener("click", async () => {
-  var guess = input.value;
-  input.value = "";
+  var guess = textbar.value;
+  textbar.value = "";
   // in case of type errors, textbar will shake
   if (guess == "" || !pokemons.includes(guess)) {
     triggerElementAnimation(textbar, "shake");
@@ -144,15 +143,15 @@ guessButton.addEventListener("click", async () => {
       token: token,
       uid: userID,
       guess: guess,
-      tries: appState.getTries() + 1,
+      tries: classicState.getTries() + 1,
     })
     .then((res) => {
-      if (appState.notRendered()) fadeIn(containertitles, "1.5s"); // hint categories will be shown
-      appState.add(res.data); // rendering hints related to current guess
+      if (classicState.notRendered()) animateFadeIn(containertitles, "1.5s"); // hint categories will be shown
+      classicState.addGuess(res.data); // rendering hints related to current guess
       if (res.data[1].hasWon) {
-        input.disabled = true; // textbar is disabled
-        onVictory(appState.getTries(), res.data[0].name);
-        appState.removeState(); // reset the state
+        textbar.disabled = true; // textbar is disabled
+        onVictory(classicState.getTries(), res.data[0]);
+        classicState.removeState(); // reset the state
       }
     })
     .catch((err) => console.error(err));
@@ -167,32 +166,32 @@ function manageGameState(id, remainingTime, previousPokemon) {
       " #" +
       previousPokemon.ID;
     ("</span></p>");
-    fadeIn(prevtitle, "1.5s");
+    animateFadeIn(prevtitle, "1.5s");
   }
 
   // remove any old game states
-  var gameID = appState.getGameID();
+  var gameID = classicState.getGameID();
   if (gameID == null || gameID != id) {
-    appState.setGameID(id);
-    appState.removeState();
+    classicState.setGameID(id);
+    classicState.removeState();
   }
 
   // render previous guesses, if any
-  if (appState.notRendered() && appState.getTries() > 0)
-    fadeIn(containertitles, "1.5s");
-  appState.renderState();
+  if (classicState.notRendered() && classicState.getTries() > 0)
+    animateFadeIn(containertitles, "1.5s");
+  classicState.renderState();
 
   // keep state updated between different tabs, fired every minute
   setInterval(() => {
-    if (appState.notRendered() && appState.getTries() > 0)
-      fadeIn(containertitles, "1.5s");
-    appState.renderStateDiff();
+    if (classicState.notRendered() && classicState.getTries() > 0)
+      animateFadeIn(containertitles, "1.5s");
+    classicState.renderStateDiff();
   }, 60000);
 
   // reload page automatically when time is up
   setTimeout(() => {
     sendNotification("A new Pokémon is waiting for you!");
-    appState.removeState();
+    classicState.removeState();
     window.location.reload();
   }, remainingTime);
 
@@ -223,12 +222,65 @@ function manageGameState(id, remainingTime, previousPokemon) {
   }, 1000);
 }
 
-function fadeIn(element, duration) {
+function onVictory(tries, pokemon) {
+  var audio = new Audio("public/audio/victory-sound.mp3");
+  audio.volume = 0.1;
+  audio.play();
+  setTimeout(() => {
+    var ad = document.createElement("DIV");
+    ad.setAttribute("id", "victory-ad-container");
+    subtitle.insertAdjacentElement("afterend", ad);
+    ad.innerHTML = `<div id="victory-text1"><b>GG!</b></div><div id="victory-text2"><b>It was ${pokemon.name} indeed!</b></div><div><img alt="" style="animation: fadeIn 500ms" src='/public/images/sprites/${pokemon.name}.webp' width='180px' height='180px'></div><div id="victory-text3"><b>You guessed it in ${tries} tries...</b></div><div id="victory-text4"><b>Think you can do better? Let's see!</b></div><a aria-label="Go to Home" href='/'><button id='continue-button'>Continue</button></a>`;
+  }, 1000);
+}
+
+function initializeAutocomplete(element, array) {
+  element.addEventListener("input", function () {
+    var val = this.value;
+    closeList();
+    if (!val) return false;
+    var list = document.createElement("DIV");
+    list.setAttribute("id", "autocomplete-list");
+    list.setAttribute("class", "autocomplete-items");
+    this.parentNode.appendChild(list);
+    for (var i = 0; i < array.length; i++) {
+      if (array[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+        var option = document.createElement("DIV");
+        option.className = "list-options";
+        option.innerHTML = `<img alt="" src='/public/images/sprites/${
+          array[i]
+        }.webp' width='70px' height='70px'><strong style="color: lightgreen;">${array[
+          i
+        ].substr(0, val.length)}</strong>${array[i].substr(
+          val.length
+        )}<input type='hidden' value='${array[i]}'>`;
+        option.addEventListener("click", function () {
+          element.value = this.getElementsByTagName("input")[0].value;
+          closeList();
+        });
+        list.appendChild(option);
+      }
+    }
+  });
+
+  function closeList(e) {
+    var items = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < items.length; i++)
+      if (e != items[i] && e != element)
+        items[i].parentNode.removeChild(items[i]);
+  }
+
+  document.addEventListener("click", (e) => {
+    closeList(e.target);
+  });
+}
+
+function animateFadeIn(element, duration) {
   element.style.animation = "fadeIn " + duration;
   element.style.visibility = "visible";
 }
 
-function fadeOut(element, duration) {
+function animateFadeOut(element, duration) {
   element.style.animation = "fadeOut " + duration;
   setTimeout(() => (element.style.visibility = "hidden"), 1150);
 }
@@ -240,20 +292,6 @@ function triggerElementAnimation(element, animationClass) {
   element.classList.add(animationClass);
 }
 
-// victory event
-function onVictory(tries, pokename) {
-  var audio = new Audio("public/audio/victory-sound.mp3");
-  audio.volume = 0.1;
-  audio.play();
-  setTimeout(() => {
-    var ad = document.createElement("DIV");
-    ad.setAttribute("id", "victory-ad-container");
-    subtitle.insertAdjacentElement("afterend", ad);
-    ad.innerHTML = `<div id="victory-text1"><b>GG!</b></div><div id="victory-text2"><b>It was ${pokename} indeed!</b></div><div><img alt="" style="animation: fadeIn 500ms" src='/public/images/sprites/${pokename}.webp' width='180px' height='180px'></div><div id="victory-text3"><b>You guessed it in ${tries} tries...</b></div><div id="victory-text4"><b>Think you can do better? Let's see!</b></div><a aria-label="Go to Home" href='/'><button id='continue-button'>Continue</button></a>`;
-  }, 1000);
-}
-
-// send notifications on login/logout, if enabled
 function sendNotification(message) {
   if ("Notification" in window)
     Notification.requestPermission().then((permission) => {
@@ -263,45 +301,4 @@ function sendNotification(message) {
           icon: "/public/images/icon-192x192.webp",
         });
     });
-}
-
-// management of autocomplete textbar
-function autocomplete(inp, arr) {
-  inp.addEventListener("input", function () {
-    var val = this.value;
-    closeAllLists();
-    if (!val) return false;
-    var list = document.createElement("DIV");
-    list.setAttribute("id", this.id + "-autocomplete-list");
-    list.setAttribute("class", "autocomplete-items");
-    this.parentNode.appendChild(list);
-    for (var i = 0; i < arr.length; i++) {
-      if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-        var option = document.createElement("DIV");
-        option.className = "list-options";
-        option.innerHTML = `<img alt="" src='/public/images/sprites/${
-          arr[i]
-        }.webp' width='70px' height='70px'><strong style="color: lightgreen;">${arr[
-          i
-        ].substr(0, val.length)}</strong>${arr[i].substr(
-          val.length
-        )}<input type='hidden' value='${arr[i]}'>`;
-        option.addEventListener("click", function () {
-          inp.value = this.getElementsByTagName("input")[0].value;
-          closeAllLists();
-        });
-        list.appendChild(option);
-      }
-    }
-  });
-
-  function closeAllLists(e) {
-    var items = document.getElementsByClassName("autocomplete-items");
-    for (var i = 0; i < items.length; i++)
-      if (e != items[i] && e != inp) items[i].parentNode.removeChild(items[i]);
-  }
-
-  document.addEventListener("click", (e) => {
-    closeAllLists(e.target);
-  });
 }

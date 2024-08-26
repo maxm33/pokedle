@@ -6,9 +6,9 @@ cleanDir(__dirname + "/public/js");
 cleanDir(__dirname + "/public/stylesheets");
 
 // get files automatically from 'unminified' dir
-minify("appState", "js");
-minify("main", "js");
-minify("pokemon", "js");
+minify("classicAppState", "js");
+minify("classicMode", "js");
+minify("pokemons", "js");
 minify("style", "css");
 
 function cleanDir(dir) {
