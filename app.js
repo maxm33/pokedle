@@ -315,7 +315,7 @@ async function classicGeneratePokemon() {
       console.log("#DEV Solution: " + classicCurrentPokemon.name);
     })
     .catch((err) => console.error(err));
-  setTimeout(() => classicGeneratePokemon(), getClassicRemainingTime());
+  setTimeout(classicGeneratePokemon, getClassicRemainingTime());
 }
 
 function getClassicRemainingTime() {

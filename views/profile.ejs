@@ -18,11 +18,14 @@
           ><img alt="" src="/public/images/pokedle-logo.webp"
         /></a>
       </div>
-      <div id="subtitle" class="fadeIn">
-        <h1><%= name %></h1>
-        Wins: <%= wins %> <br />
-        Average Tries: <%= avgTries %> <br /><br />
-        <button id="onprofile-dex-button">View Pokédex</button>
+      <h1 style="margin-top: 2.2em" class="fadeIn"><%= name %></h1>
+      <div>
+        <div id="mode-title">Classic</div>
+        <div id="mode-data">
+          Wins: <%= wins %><br />
+          Average Tries: <%= avgTries %><br /><br />
+          <button id="onprofile-dex-button">View Pokédex</button>
+        </div>
       </div>
     </div>
     <script>

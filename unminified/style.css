@@ -89,9 +89,29 @@ body {
   color: #8cff66;
   animation: fadeIn 1.5s;
 }
-#subtitle {
+#subtitle,
+#mode-title {
   font-size: 1.3rem;
   margin-top: 2.2em;
+}
+#mode-title,
+#mode-data {
+  width: inherit;
+  height: inherit;
+  border: 0.15em solid #fff;
+  animation: fadeIn 1.5s;
+}
+#mode-title {
+  padding: 0.5em;
+  border-bottom: 0em solid transparent;
+  border-top-left-radius: 1em;
+  border-top-right-radius: 1em;
+}
+#mode-data {
+  font-size: 1.3rem;
+  padding: 1em;
+  border-bottom-left-radius: 1em;
+  border-bottom-right-radius: 1em;
 }
 a:link,
 a:visited,
@@ -300,10 +320,10 @@ input[type="hidden"] {
   animation: fadeIn 500ms;
 }
 #onprofile-dex-button {
-  margin: 0;
+  margin-bottom: 1.25em;
   font-size: 0.7em;
 }
-#dex-owner {
+#dex-trainer {
   margin-top: 1.5em;
   font-size: 1.3rem;
   animation: fadeIn 1.5s;
@@ -434,7 +454,9 @@ input[type="hidden"] {
   #timer {
     font-size: 0.9em;
   }
-  #subtitle {
+  #subtitle,
+  #mode-title,
+  #mode-data {
     font-size: 1em;
   }
   #autocomplete {
@@ -534,7 +556,9 @@ input[type="hidden"] {
   #timer {
     font-size: 0.8em;
   }
-  #subtitle {
+  #subtitle,
+  #mode-title,
+  #mode-data {
     font-size: 0.85em;
   }
   input[type="text"] {
@@ -587,7 +611,7 @@ input[type="hidden"] {
   .answers-text {
     font-size: 0.6em;
   }
-  #dex-owner,
+  #dex-trainer,
   #dex-discovered {
     font-size: 0.85em;
   }
