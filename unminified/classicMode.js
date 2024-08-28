@@ -62,13 +62,19 @@ const unsubscribe = onAuthStateChanged(auth, (user) => {
     animateFadeOut(pokedexButton, "1.5s");
   }
   axios
-    .get("/user/" + (user ? auth.currentUser.uid : userID) + "/canPlay")
+    .get(
+      "/classic/canPlay/uid=" +
+        userID +
+        "&gid=" +
+        (auth.currentUser ? auth.currentUser.uid : null)
+    )
     .then((res) => {
       // manage the elements according whether the user can play or not
       var stringCanPlay = `<p>I'm thinking of a <span style="color:#8cff66">Pokémon</span>, can you guess it?</p>`;
       var stringCantPlay =
         "<p>Don't move! Next will be legen... Wait for it...</p>";
       if (res.data) {
+        // user can play
         if (subtitle.innerHTML != stringCanPlay) {
           triggerElementAnimation(subtitle, "fadeIn");
           subtitle.innerHTML = stringCanPlay;
@@ -82,6 +88,7 @@ const unsubscribe = onAuthStateChanged(auth, (user) => {
           containerstate.style.display = "block";
         }
       } else {
+        //user can't play
         if (subtitle.innerHTML != stringCantPlay) {
           triggerElementAnimation(subtitle, "fadeIn");
           subtitle.innerHTML = stringCantPlay;
@@ -100,7 +107,7 @@ const unsubscribe = onAuthStateChanged(auth, (user) => {
 
 loginButton.addEventListener("click", () => {
   unsubscribe();
-  if (auth.currentUser == null)
+  if (!auth.currentUser)
     signInWithPopup(auth, provider).then(() => {
       auth.currentUser.getIdToken().then((token) => {
         axios.put("/user/" + auth.currentUser.uid, {
