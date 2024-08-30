@@ -5,30 +5,34 @@ const querystring = require("querystring");
 cleanDir(__dirname + "/public/js");
 cleanDir(__dirname + "/public/stylesheets");
 
-// get files automatically from 'unminified' dir
-minify("classicAppState", "js");
-minify("classicMode", "js");
-minify("pokemons", "js");
-minify("style", "css");
-
-function cleanDir(dir) {
-  const files = fs.readdirSync(dir);
-  for (const file of files) fs.unlinkSync(dir + "/" + file);
+for (var file of fs.readdirSync(__dirname + "/unminified")) {
+  var filename = file.split(".");
+  var name = filename[0];
+  var extension = filename[1];
+  if (extension == null || (extension != "js" && extension != "css")) {
+    console.error("Can't minify ." + extension + " files");
+    continue;
+  }
+  minify(name, extension);
 }
 
-function minify(file, type) {
-  const query = querystring.stringify({
+function cleanDir(dir) {
+  for (var file of fs.readdirSync(dir)) fs.unlinkSync(dir + "/" + file);
+}
+
+function minify(name, extension) {
+  var query = querystring.stringify({
     input: fs.readFileSync(
-      __dirname + "/unminified/" + file + "." + type,
+      __dirname + "/unminified/" + name + "." + extension,
       "utf-8"
     ),
   });
-  const req = https.request(
+  var req = https.request(
     {
       method: "POST",
       hostname: "www.toptal.com",
       path:
-        type == "js"
+        extension == "js"
           ? "/developers/javascript-minifier/api/raw"
           : "/developers/cssminifier/api/raw",
     },
@@ -41,15 +45,15 @@ function minify(file, type) {
         fs.writeFileSync(
           __dirname +
             "/public/" +
-            (type == "js" ? type : "stylesheets") +
+            (extension == "js" ? extension : "stylesheets") +
             "/" +
-            file +
+            name +
             "." +
-            type,
+            extension,
           data,
           { encoding: "utf8", flag: "w" }
         );
-        console.log("Minified: " + file + "." + type);
+        console.log("Minified: " + name + "." + extension);
       });
     }
   );
