@@ -10,6 +10,7 @@ This is a web application for Web Application Development course.
   - [V1.0.0](#v100)
   - [V1.1.0](#v110)
   - [V1.5.6](#v156)
+  - [V1.6.0](#v160)
 - [Usage](#usage)
 - [Troubleshooting](#troubleshooting)
 - [Future Plans](#future-plans)
@@ -41,7 +42,7 @@ Visit Pokédle [here](https://pokedle.onrender.com/) and have fun guessing 'em a
 <br>
 
 > [!NOTE]
-> This update is not available in commit history due to the presence of sensible hard-coded data.
+> This version is not available in commit history due to the presence of sensible hard-coded data.
 
 <br>
 
@@ -54,15 +55,15 @@ A new minor update has been implemented:<br>
 
 - `possibly-sensible data` has been moved to the hosting site using environment variables and secret files;<br>
 
-- changed the EJS views, CSS and client's code to adapt to server-side changes.
+- changed the CSS, EJS views and client's code to adapt to server-side changes.
 
 <br>
 
 ## V1.5.6
 
-Several minor updates implemented:<br>
+Several minor updates have been implemented:<br>
 
-- added `2th, 3rd, 4th and 5th generations of Pokémons`;<br>
+- added `2nd, 3rd, 4th and 5th generation of pokémons`;<br>
 
 - implemented the server-side verification of `Firebase ID Tokens` (based on JWT) for sensible requests, enhancing the security;<br>
 
@@ -70,11 +71,21 @@ Several minor updates implemented:<br>
 
 - the `API endpoints' structure` has been reorganized to create a more intuitive hierarchical order, improved server-side `error handling`;<br>
 
-- renamed the only mode available to `classic` in prevision of new future game modes;<br>
+- renamed the only mode currently available to `classic mode` in prevision of new future game modes;<br>
 
-- more `backgrounds` added for both pc and mobile resolutions, implemented a `background randomizer`;<br>
+- more `backgrounds` added for both PC and mobile resolutions, implemented a `background randomizer`;<br>
 
-- changes to the CSS, EJS views, static .webp assets and client's code.
+- changed the CSS, EJS views, static .webp assets and client's code.
+
+<br>
+
+## V1.6.0
+
+A new minor update has been implemented:<br>
+
+- reworked the `user interface` style;<br>
+
+- the handling of `authentication` on client-side has been separated and modularized.
 
 <br>
 

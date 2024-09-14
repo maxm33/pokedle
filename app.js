@@ -25,14 +25,10 @@ const firebaseConfig = {
   measurementId: process.env.MEASUREMENT_ID,
 };
 
-const generateInterval = Number(process.env.GENERATION_INTERVAL); // the interval between each generation (ms)
-
-var winners = []; // to store uuid of players who have won the current game
-var gameID; // to store uuid of current game
-var previousPokemon; // to store the previous generated pokemon
-var currentPokemon; // to store the current generated pokemon
-var generateTimestamp; // to store the time of pokemon generation
-
+var classicWinners = []; // to store uuid of players who have won the current game
+var classicGameID; // to store uuid of current game
+var classicPreviousPokemon; // to store the previous generated pokemon
+var classicCurrentPokemon; // to store the current generated pokemon
 var bg_desktop_option; // to store current background option for rendering desktop views
 var bg_mobile_option; // to store current background option for rendering mobile views
 
@@ -47,8 +43,14 @@ const app = express(); // new express app
 const auth = admin.auth(); // reference to auth service
 const firestore = admin.firestore(); // reference to firestore cloud storage service
 
-generatePokemon(); // first pokemon is generated here
-setInterval(() => generatePokemon(), generateInterval); // new pokemon will be generated at set intervals
+firestore
+  .collection("pokemons")
+  .doc("132")
+  .get()
+  .then((pokemon) => {
+    classicCurrentPokemon = pokemon.data();
+    classicGeneratePokemon(); // first pokemon is generated here
+  });
 
 // view engine setup
 app.set("views", __dirname + "/views");
@@ -61,7 +63,7 @@ app.use(
   "/public/js",
   express.static(__dirname + "/public/js", {
     setHeaders: function (res, path) {
-      res.setHeader("Cache-Control", `public, max-age=86400, must-revalidate`);
+      res.setHeader("Cache-Control", `public, max-age=3600, must-revalidate`);
     },
   })
 );
@@ -69,7 +71,7 @@ app.use(
   "/public/stylesheets",
   express.static(__dirname + "/public/stylesheets", {
     setHeaders: function (res, path) {
-      res.setHeader("Cache-Control", `public, max-age=86400, must-revalidate`);
+      res.setHeader("Cache-Control", `public, max-age=3600, must-revalidate`);
     },
   })
 );
@@ -98,7 +100,10 @@ app.get("/", (req, res) => {
 
 // render home page
 app.get("/classic", (req, res) => {
-  res.render("classic", { bg: bgPathSelector(req.device.type) });
+  res.render("classicMode", {
+    bg: bgPathSelector(req.device.type),
+    prev: classicPreviousPokemon,
+  });
 });
 
 // generate hints based on user's guess, check if user has won and, if so, call an update to his stats
@@ -112,28 +117,29 @@ app.post("/classic", async (req, res, next) => {
         next(createError(404, "Pokémon not found"));
       var guess = queryResult.docs[0].data();
       // confront guess with answer, return the hints to help user's guesses
-      var response = verifyGuess(guess, currentPokemon);
-      if (response.hasWon) {
-        if (req.body.token == null) winners[winners.length] = req.body.uid;
-        else {
+      var result = classicVerifyGuess(guess, classicCurrentPokemon);
+      // if player has won
+      if (result[2]) {
+        if (!classicWinners.includes(req.body.uid))
+          classicWinners[classicWinners.length] = req.body.uid;
+        if (req.body.token != null)
           auth
             .verifyIdToken(req.body.token)
             .then((decodedToken) => {
-              if (!winners.includes(decodedToken.uid)) {
+              if (!classicWinners.includes(decodedToken.uid)) {
                 // user is logged in, update his stats
-                updateStatsOnWinning(
+                updateStatsOnClassicWin(
                   decodedToken.uid,
                   req.body.guess,
                   req.body.tries
                 );
-                winners[winners.length] = decodedToken.uid;
+                classicWinners[classicWinners.length] = decodedToken.uid;
               }
             })
             .catch((err) => console.error(err));
-        }
       }
       res.status(200);
-      res.send([guess, response]);
+      res.send(result);
     })
     .catch((err) => {
       console.error(err);
@@ -141,17 +147,53 @@ app.post("/classic", async (req, res, next) => {
     });
 });
 
+// send a boolean stating if user can play the current game
+app.get("/classic/canPlay/uid=:uid&gid=:gid", (req, res) => {
+  var canPlay = !classicWinners.includes(req.params.uid);
+  if (canPlay && req.params.gid != null)
+    canPlay = !classicWinners.includes(req.params.gid);
+  res.status(200);
+  res.send(canPlay);
+});
+
 // send game ID and remaining time before next generation
 app.get("/classic/state", (req, res) => {
-  var remainingTime = generateTimestamp + generateInterval - Date.now();
   res.status(200);
   res.send([
-    gameID,
-    remainingTime,
-    previousPokemon == null
+    classicGameID,
+    getClassicRemainingTime(),
+    classicPreviousPokemon == null
       ? null
-      : { ID: previousPokemon.ID, name: previousPokemon.name },
+      : { ID: classicPreviousPokemon.ID, name: classicPreviousPokemon.name },
   ]);
+});
+
+// render top 10 classic mode users page
+app.get("/classic/ranking", async (req, res) => {
+  firestore
+    .collection("users")
+    .orderBy("wins", "desc")
+    .limit(10)
+    .get()
+    .then((queryResult) => {
+      var topTen = [];
+      queryResult.forEach((user) => {
+        topTen[topTen.length] = {
+          id: user.id,
+          name: user.data().name,
+          wins: user.data().wins,
+        };
+      });
+      res.status(200);
+      res.render("classicRanking", {
+        rankingData: topTen,
+        bg: bgPathSelector(req.device.type),
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+      next(createError(500));
+    });
 });
 
 // generate new unique id (uuid) on request
@@ -191,12 +233,6 @@ app.put("/user/:gid", async (req, res) => {
       res.status(401);
     });
   res.end();
-});
-
-// send a boolean stating if user can play the current game
-app.get("/user/:id/canPlay", (req, res) => {
-  res.status(200);
-  res.send(!winners.includes(req.params.id));
 });
 
 // render requested user's profile page
@@ -248,34 +284,6 @@ app.get("/user/:gid/pokedex", async (req, res, next) => {
     });
 });
 
-// render top 10 classic mode users page
-app.get("/classic/ranking", async (req, res) => {
-  firestore
-    .collection("users")
-    .orderBy("wins", "desc")
-    .limit(10)
-    .get()
-    .then((queryResult) => {
-      var topTen = [];
-      queryResult.forEach((user) => {
-        topTen[topTen.length] = {
-          id: user.id,
-          name: user.data().name,
-          wins: user.data().wins,
-        };
-      });
-      res.status(200);
-      res.render("classicRanking", {
-        rankingData: topTen,
-        bg: bgPathSelector(req.device.type),
-      });
-    })
-    .catch((err) => {
-      console.error(err);
-      next(createError(500));
-    });
-});
-
 app.all("/*", (req, res, next) => {
   next(createError(404));
 });
@@ -290,9 +298,9 @@ app.use(function (err, req, res, next) {
 
 module.exports = app;
 
-async function generatePokemon() {
-  winners = [];
-  gameID = uuid();
+async function classicGeneratePokemon() {
+  classicWinners = [];
+  classicGameID = uuid();
   var previous_bg = bg_desktop_option;
   while (previous_bg == bg_desktop_option)
     bg_desktop_option = Math.floor(Math.random() * bg_desktop_number) + 1;
@@ -300,23 +308,27 @@ async function generatePokemon() {
   while (previous_bg == bg_mobile_option)
     bg_mobile_option = Math.floor(Math.random() * bg_mobile_number) + 1;
   var pokemonID;
-  previousPokemon = currentPokemon;
-  if (previousPokemon == null) pokemonID = Math.floor(Math.random() * 649 + 1);
-  else {
-    pokemonID = previousPokemon.ID;
-    while (pokemonID == previousPokemon.ID)
-      pokemonID = Math.floor(Math.random() * 649 + 1);
-  }
-  generateTimestamp = Date.now();
+  classicPreviousPokemon = classicCurrentPokemon;
+  pokemonID = classicPreviousPokemon.ID;
+  while (pokemonID == classicPreviousPokemon.ID)
+    pokemonID = Math.floor(Math.random() * 649 + 1);
   firestore
     .collection("pokemons")
     .doc(pokemonID.toString())
     .get()
     .then((pokemon) => {
-      currentPokemon = pokemon.data();
-      console.log("#DEV Solution: " + currentPokemon.name);
+      classicCurrentPokemon = pokemon.data();
+      console.log("#DEV Solution: " + classicCurrentPokemon.name);
     })
     .catch((err) => console.error(err));
+  setTimeout(classicGeneratePokemon, getClassicRemainingTime());
+}
+
+function getClassicRemainingTime() {
+  var nextGeneration = new Date();
+  nextGeneration.setDate(nextGeneration.getDate() + 1);
+  nextGeneration.setHours(0, 0, 0, 0);
+  return nextGeneration.getTime() - Date.now();
 }
 
 function bgPathSelector(device) {
@@ -327,20 +339,20 @@ function bgPathSelector(device) {
 }
 
 // verify the client's guess, generate related hints
-function verifyGuess(guess, answer) {
+function classicVerifyGuess(guess, answer) {
   var response = {
-    hasWon: true,
     habitat: "correct",
-    color: "correct",
-    type: "correct",
+    colors: "correct",
+    types: "correct",
     fullyEvolved: "correct",
     evolutionLevel: "correct",
     gen: "correct",
   };
   var count = 0;
+  var hasWon = true;
 
   if (guess.name != answer.name) {
-    response.hasWon = false;
+    hasWon = false;
     if (guess.fullyEvolved != answer.fullyEvolved)
       response.fullyEvolved = "wrong";
     if (guess.evolutionLevel > answer.evolutionLevel)
@@ -351,28 +363,28 @@ function verifyGuess(guess, answer) {
     if (guess.gen > answer.gen) response.gen = "wrong-lower";
     if (guess.gen < answer.gen) response.gen = "wrong-higher";
 
-    var guessColors = guess.color.split(" , ");
+    var guessColors = guess.colors;
     for (var i = 0; i < guessColors.length; i++)
-      if (answer.color.includes(guessColors[i])) count++;
-    var colors = answer.color.split(" , ");
-    if (count == 0) response.color = "wrong";
+      if (answer.colors.includes(guessColors[i])) count++;
+    var colors = answer.colors;
+    if (count == 0) response.colors = "wrong";
     else if (colors.length != count || guessColors.length != count)
-      response.color = "partial";
+      response.colors = "partial";
     count = 0;
 
-    var guessTypes = guess.type.split(" , ");
+    var guessTypes = guess.types;
     for (var i = 0; i < guessTypes.length; i++)
-      if (answer.type.includes(guessTypes[i])) count++;
-    var types = answer.type.split(" , ");
-    if (count == 0) response.type = "wrong";
+      if (answer.types.includes(guessTypes[i])) count++;
+    var types = answer.types;
+    if (count == 0) response.types = "wrong";
     else if (types.length != count || guessTypes.length != count)
-      response.type = "partial";
+      response.types = "partial";
   }
-  return response;
+  return [guess, response, hasWon];
 }
 
 // update a logged user's document on winning
-async function updateStatsOnWinning(id, pokemon, tries) {
+async function updateStatsOnClassicWin(id, pokemon, tries) {
   firestore
     .collection("users")
     .doc(id)
