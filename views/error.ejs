@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="icon" href="/public/images/favicon.ico" />
+    <link rel="icon" href="/public/images/icons/favicon.ico" />
     <link rel="stylesheet" href="/public/stylesheets/style.css" />
     <link
       rel="manifest"
@@ -12,21 +12,33 @@
     <title>Error</title>
   </head>
   <body style="background-image: url('<%= bg %>')">
+    <div id="topnav"></div>
     <div id="container">
       <div id="logo">
         <a aria-label="Go to Home" href="/"
-          ><img alt="" src="/public/images/pokedle-logo.webp"
+          ><img alt="" src="/public/images/icons/pokedle-logo.webp"
         /></a>
       </div>
-      <div id="subtitle" class="fadeIn">
+      <div style="font-size: 1em" class="fadeIn">
         <h1>Error <%= error.status %>: <%= message %></h1>
         <br />
         <img
-          src="/public/images/confused-pikachu.webp"
+          src="/public/images/misc/confused-pikachu.webp"
           width="250px"
           height="250px"
         />
       </div>
     </div>
+    <footer>
+      <p id="author">
+        Created by <a href="https://github.com/maxm33">maxm33</a>
+      </p>
+      <img
+        alt=""
+        src="/public/images/icons/github-mark.webp"
+        width="20px"
+        height="20px"
+      />
+    </footer>
   </body>
 </html>

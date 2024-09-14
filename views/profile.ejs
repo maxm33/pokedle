@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="icon" href="/public/images/favicon.ico" />
+    <link rel="icon" href="/public/images/icons/favicon.ico" />
     <link rel="stylesheet" href="/public/stylesheets/style.css" />
     <link
       rel="manifest"
@@ -12,13 +12,50 @@
     <title>Profile</title>
   </head>
   <body style="background-image: url('<%= bg %>')">
+    <div id="topnav">
+      <div id="buttons-container">
+        <button id="login-button" class="topnav-buttons">
+          <img
+            id="login-img"
+            alt=""
+            src="/public/images/misc/login.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="ranking-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/ranking.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="pokedex-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/pokedex.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="profile-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/profile.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+      </div>
+    </div>
     <div id="container">
       <div id="logo">
         <a aria-label="Go to Home" href="/"
-          ><img alt="" src="/public/images/pokedle-logo.webp"
+          ><img alt="" src="/public/images/icons/pokedle-logo.webp"
         /></a>
       </div>
-      <h1 style="margin-top: 2.2em" class="fadeIn"><%= name %></h1>
+      <h1 style="margin-top: 1.5em" class="fadeIn"><%= name %></h1>
       <div>
         <div id="mode-title">Classic</div>
         <div id="mode-data">
@@ -28,13 +65,27 @@
         </div>
       </div>
     </div>
+    <footer>
+      <p id="author">
+        Created by <a href="https://github.com/maxm33">maxm33</a>
+      </p>
+      <img
+        alt=""
+        src="/public/images/icons/github-mark.webp"
+        width="20px"
+        height="20px"
+      />
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="/public/js/auth.js"></script>
     <script>
-      let pokedexButton = document.getElementById("onprofile-dex-button");
-      pokedexButton.addEventListener("click", () => {
-        var url = window.location.href;
-        var ref = url.substring(0, url.length - 8); // removing "/profile"
-        window.location.href = ref + "/pokedex";
-      });
+      document
+        .getElementById("onprofile-dex-button")
+        .addEventListener("click", () => {
+          var url = window.location.href;
+          var url_cut = url.substring(0, url.length - 8); // removing "/profile"
+          window.location.href = url_cut + "/pokedex";
+        });
     </script>
   </body>
 </html>

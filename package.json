@@ -1,6 +1,6 @@
 {
   "name": "pokedle",
-  "version": "1.5.6",
+  "version": "1.6.0",
   "description": "Pokédle is a game heavily inspired by Wordle and LoLdle, in which you have to guess the daily secret pokémon.",
   "homepage": "https://github.com/maxm33/pokedle#readme",
   "repository": "github:maxm33/pokedle",

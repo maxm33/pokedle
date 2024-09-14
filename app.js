@@ -43,7 +43,14 @@ const app = express(); // new express app
 const auth = admin.auth(); // reference to auth service
 const firestore = admin.firestore(); // reference to firestore cloud storage service
 
-classicGeneratePokemon(); // first pokemon is generated here
+firestore
+  .collection("pokemons")
+  .doc("132")
+  .get()
+  .then((pokemon) => {
+    classicCurrentPokemon = pokemon.data();
+    classicGeneratePokemon(); // first pokemon is generated here
+  });
 
 // view engine setup
 app.set("views", __dirname + "/views");
@@ -56,7 +63,7 @@ app.use(
   "/public/js",
   express.static(__dirname + "/public/js", {
     setHeaders: function (res, path) {
-      res.setHeader("Cache-Control", `public, max-age=86400, must-revalidate`);
+      res.setHeader("Cache-Control", `public, max-age=3600, must-revalidate`);
     },
   })
 );
@@ -64,7 +71,7 @@ app.use(
   "/public/stylesheets",
   express.static(__dirname + "/public/stylesheets", {
     setHeaders: function (res, path) {
-      res.setHeader("Cache-Control", `public, max-age=86400, must-revalidate`);
+      res.setHeader("Cache-Control", `public, max-age=3600, must-revalidate`);
     },
   })
 );
@@ -93,7 +100,10 @@ app.get("/", (req, res) => {
 
 // render home page
 app.get("/classic", (req, res) => {
-  res.render("classicMode", { bg: bgPathSelector(req.device.type) });
+  res.render("classicMode", {
+    bg: bgPathSelector(req.device.type),
+    prev: classicPreviousPokemon,
+  });
 });
 
 // generate hints based on user's guess, check if user has won and, if so, call an update to his stats
@@ -299,13 +309,9 @@ async function classicGeneratePokemon() {
     bg_mobile_option = Math.floor(Math.random() * bg_mobile_number) + 1;
   var pokemonID;
   classicPreviousPokemon = classicCurrentPokemon;
-  if (classicPreviousPokemon == null)
+  pokemonID = classicPreviousPokemon.ID;
+  while (pokemonID == classicPreviousPokemon.ID)
     pokemonID = Math.floor(Math.random() * 649 + 1);
-  else {
-    pokemonID = classicPreviousPokemon.ID;
-    while (pokemonID == classicPreviousPokemon.ID)
-      pokemonID = Math.floor(Math.random() * 649 + 1);
-  }
   firestore
     .collection("pokemons")
     .doc(pokemonID.toString())

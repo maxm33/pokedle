@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="icon" href="/public/images/favicon.ico" />
+    <link rel="icon" href="/public/images/icons/favicon.ico" />
     <link rel="stylesheet" href="/public/stylesheets/style.css" />
     <link rel="preconnect" href="https://www.gstatic.com" />
     <link
@@ -19,43 +19,64 @@
   </head>
   <body style="background-image: url('<%= bg %>')">
     <div id="topnav">
-      <div id="authref">
-        <p>Created by <a href="https://github.com/maxm33">maxm33</a></p>
+      <div id="buttons-container">
+        <button id="login-button" class="topnav-buttons">
+          <img
+            id="login-img"
+            alt=""
+            src="/public/images/misc/login.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="ranking-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/ranking.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="pokedex-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/pokedex.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="profile-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/profile.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
       </div>
-      <input
-        type="button"
-        value="Login "
-        id="login-button"
-        class="topnav-buttons"
-      />
-      <input
-        type="button"
-        value="Ranking"
-        id="ranking-button"
-        class="topnav-buttons"
-      />
-      <input
-        type="button"
-        value="Pokédex"
-        id="pokedex-button"
-        class="topnav-buttons"
-      />
-      <input
-        type="button"
-        value="Profile"
-        id="profile-button"
-        class="topnav-buttons"
-      />
     </div>
     <div id="container">
-      <div id="logo">
-        <a aria-label="Go to Home" href="/"
-          ><img alt="" src="/public/images/pokedle-logo.webp"
-        /></a>
+      <div id="logo-container">
+        <div id="logo">
+          <a aria-label="Go to Home" href="/"
+            ><img alt="" src="/public/images/icons/pokedle-logo.webp"
+          /></a>
+        </div>
+        <div id="mode"><p>Classic</p></div>
       </div>
-      <div id="prev-title"></div>
-      <div id="timer">A new Pokémon is spawning in ...</div>
-      <div id="subtitle"></div>
+      <div id="prev-next">
+        <div id="prev">
+          Last was<br />
+          <%= prev.name %> #<%= prev.ID %>
+        </div>
+        <div id="timer">
+          Reset in<br />
+          ..........
+        </div>
+      </div>
+      <div id="subtitle" style="margin: 0; display: none">
+        <p>Don't move! Next will be legen... Wait for it...</p>
+      </div>
       <div id="textbar-container" style="display: none">
         <div id="autocomplete">
           <input
@@ -94,6 +115,17 @@
         <div id="answers-container"></div>
       </div>
     </div>
+    <footer>
+      <p id="author">
+        Created by <a href="https://github.com/maxm33">maxm33</a>
+      </p>
+      <img
+        alt=""
+        src="/public/images/icons/github-mark.webp"
+        width="20px"
+        height="20px"
+      />
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="/public/js/classicMode.js"></script>
   </body>

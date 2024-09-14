@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="icon" href="/public/images/favicon.ico" />
+    <link rel="icon" href="/public/images/icons/favicon.ico" />
     <link rel="stylesheet" href="/public/stylesheets/style.css" />
     <link
       rel="manifest"
@@ -12,10 +12,47 @@
     <title>Ranking - Classic</title>
   </head>
   <body style="background-image: url('<%= bg %>')">
+    <div id="topnav">
+      <div id="buttons-container">
+        <button id="login-button" class="topnav-buttons">
+          <img
+            id="login-img"
+            alt=""
+            src="/public/images/misc/login.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="ranking-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/ranking.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="pokedex-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/pokedex.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="profile-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/profile.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+      </div>
+    </div>
     <div id="container">
       <div id="logo">
         <a aria-label="Go to Home" href="/"
-          ><img alt="" src="/public/images/pokedle-logo.webp"
+          ><img alt="" src="/public/images/icons/pokedle-logo.webp"
         /></a>
       </div>
       <div id="subtitle" class="fadeIn">
@@ -36,5 +73,18 @@
         <% } %>
       </div>
     </div>
+    <footer>
+      <p id="author">
+        Created by <a href="https://github.com/maxm33">maxm33</a>
+      </p>
+      <img
+        alt=""
+        src="/public/images/icons/github-mark.webp"
+        width="20px"
+        height="20px"
+      />
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="/public/js/auth.js"></script>
   </body>
 </html>

@@ -7,7 +7,7 @@
   -webkit-tap-highlight-color: transparent;
 }
 *::-webkit-scrollbar {
-  width: 0.5em;
+  width: 0.75em;
 }
 *::-webkit-scrollbar-track {
   background: transparent;
@@ -25,90 +25,122 @@ body {
 }
 body {
   margin: 0;
+  display: flex;
+  flex-direction: column;
   background-size: cover;
   background-position: 50%;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
 #topnav {
-  margin: 0.5em 0.75em 0.5em 0.75em;
-  overflow: hidden;
+  width: 100%;
+  padding: 0.5em 0.75em 0em 0.75em;
+  position: sticky;
+  top: 0;
+  z-index: 9999;
   background-color: transparent;
-}
-#authref {
-  font-size: 1em;
-  float: left;
-  animation: fadeIn 1.5s;
+  backdrop-filter: blur(4px);
 }
 .topnav-buttons {
-  font-size: 1.2em;
-  padding: 0.5em 0.8em 0.5em 0.8em;
-  margin: 0.22em 0.3em 0.22em 0.3em;
-  border-radius: 0.8em;
+  padding: 0.6em 1.3em 0.6em 1.3em;
   border: none;
   float: right;
-  background-color: #333;
-}
-.topnav-buttons:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-#profile-button,
-#pokedex-button {
+  transition: all 0.2s;
+  background-color: white;
   visibility: hidden;
 }
-#ranking-button,
+.topnav-buttons:hover {
+  background-color: darkgrey;
+}
+#buttons-container > :first-child {
+  border-top-right-radius: 1.5em;
+  border-bottom-right-radius: 1.5em;
+}
+#buttons-container > :nth-child(2),
+#buttons-container > :last-child {
+  border-top-left-radius: 1.5em;
+  border-bottom-left-radius: 1.5em;
+}
 #login-button {
-  animation: fadeIn 1.5s;
+  background-color: #8cff66;
 }
 #container {
+  flex-grow: 1;
   margin: 0.5em;
   display: flex;
   flex-direction: column;
   text-align: center;
   align-items: center;
 }
+#logo-container {
+  position: relative;
+}
 #logo {
   width: 26em;
   height: 9em;
-  margin-top: 1em;
   display: flex;
   justify-content: center;
   transition: all 0.2s ease-in-out;
   animation: fadeIn 1.5s;
 }
+#mode {
+  position: absolute;
+  top: 80%;
+  right: 0;
+  animation: fadeIn 1.5s;
+}
+#mode p {
+  margin: 0;
+  font-size: 1.2em;
+  font-family: "Script MT", "Brush Script Std", cursive;
+}
 #logo:hover {
   transform: scale(1.1);
 }
-#prev-title {
-  font-size: 1.3em;
-  visibility: hidden;
-}
-#timer {
-  font-size: 1.3rem;
-  margin-top: 0.75em;
-  color: #8cff66;
+#prev-next {
+  display: flex;
+  flex-direction: row;
+  margin-top: 1.5em;
+  margin-bottom: 2em;
+  font-size: 1.1em;
+  align-items: center;
   animation: fadeIn 1.5s;
 }
-#subtitle,
-#mode-title {
-  font-size: 1.3rem;
-  margin-top: 2.2em;
+#timer,
+#prev {
+  margin: 0.7em;
+  padding: 0.3em 1em 0.3em 1em;
+  border-radius: 1.2em;
+}
+#timer {
+  background-color: #8cff66;
+}
+#prev {
+  display: flex;
+  flex-direction: row;
+  background-color: #ff6666;
+}
+#subtitle {
+  font-size: 1.3em;
 }
 #mode-title,
 #mode-data {
   width: inherit;
   height: inherit;
-  border: 0.15em solid #fff;
+  color: black;
+  border: 0.15em solid black;
+  background-color: white;
   animation: fadeIn 1.5s;
 }
 #mode-title {
+  font-size: 1.3em;
   padding: 0.5em;
   border-bottom: 0em solid transparent;
   border-top-left-radius: 1em;
   border-top-right-radius: 1em;
 }
 #mode-data {
-  font-size: 1.3rem;
+  font-size: 1.3em;
   padding: 1em;
   border-bottom-left-radius: 1em;
   border-bottom-right-radius: 1em;
@@ -128,7 +160,7 @@ input[type="text"] {
   font-size: 1.05em;
   padding: 0.65em;
   border: 0.05em solid transparent;
-  border-radius: 0.7em;
+  border-radius: 1em;
   background-color: #333;
 }
 input[type="hidden"] {
@@ -174,7 +206,6 @@ input[type="hidden"] {
   border-radius: 0.96em;
   position: relative;
   display: inline-block;
-  text-align: center;
   text-decoration: none;
   transition: all 0.2s;
   background-color: transparent;
@@ -197,11 +228,10 @@ input[type="hidden"] {
   width: 5em;
   margin-left: 0.7em;
 }
-#titles-container:first-child {
+#titles-container > :last-child {
   margin-left: 0;
 }
 #answers-container {
-  margin-bottom: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -232,7 +262,6 @@ input[type="hidden"] {
   padding: 0.2em 0.2em 0.2em 0.2em;
   border-radius: 0.8em;
   position: relative;
-  text-align: center;
   animation: fadeIn 1.5s;
 }
 .wrong,
@@ -241,11 +270,11 @@ input[type="hidden"] {
   background-color: #ff6666;
 }
 .wrong-higher {
-  background-image: url("../images/up.webp");
+  background-image: url("../images/misc/wrong-higher.webp");
   background-size: cover;
 }
 .wrong-lower {
-  background-image: url("../images/down.webp");
+  background-image: url("../images/misc/wrong-lower.webp");
   background-size: cover;
 }
 .correct {
@@ -306,16 +335,20 @@ input[type="hidden"] {
   padding: 0.8em;
   border-radius: 3em;
   line-height: 1em;
-  border-width: 0;
   cursor: pointer;
   list-style: none;
-  text-align: center;
   color: black;
+  transition: all 0.2s;
   background-color: white;
+}
+#continue-button:hover,
+#onprofile-dex-button:hover {
+  background-color: darkgrey;
 }
 #continue-button {
   font-size: 1em;
   margin-bottom: 2em;
+  border-width: 0;
   margin-top: auto;
   animation: fadeIn 500ms;
 }
@@ -325,12 +358,12 @@ input[type="hidden"] {
 }
 #dex-trainer {
   margin-top: 1.5em;
-  font-size: 1.3rem;
+  font-size: 1.3em;
   animation: fadeIn 1.5s;
 }
 #dex-discovered {
   margin-bottom: 1em;
-  font-size: 1.2rem;
+  font-size: 1.2em;
   animation: fadeIn 1.5s;
 }
 .dex-rows {
@@ -345,23 +378,42 @@ input[type="hidden"] {
   animation: fadeIn 1.5s;
 }
 .dex-rows-numbers,
-.dex-rows-name,
-.dex-rows-guess {
+.dex-rows-names,
+.dex-rows-guesses {
   font-size: 1em;
   color: black;
 }
 .dex-rows-numbers {
   margin: 1.5em;
 }
-.dex-rows-name {
+.dex-rows-names {
   margin: 2.5em;
 }
-.dex-rows-guess {
+.dex-rows-guesses {
   margin-right: 3em;
   margin-left: auto;
 }
 .ranking-rows {
+  font-size: 1.1em;
   margin: 0.3em;
+}
+footer {
+  width: 100%;
+  padding: 1em;
+  position: sticky;
+  bottom: 0;
+  z-index: 9999;
+  background-color: transparent;
+  backdrop-filter: blur(4px);
+}
+#author {
+  margin: 0;
+  font-size: 1em;
+  float: left;
+  animation: fadeIn 1.5s;
+}
+footer img {
+  animation: fadeIn 1.5s;
 }
 .shake {
   animation: horizontal-shaking 0.35s;
@@ -430,15 +482,14 @@ input[type="hidden"] {
 }
 @media (max-width: 480px) {
   #topnav {
-    margin: 0.3em;
+    padding: 0.3em 0.5em 0em 0.5em;
   }
-  #authref {
-    font-size: 0.7em;
+  #topnav button img {
+    width: 25px;
+    height: 25px;
   }
   .topnav-buttons {
-    font-size: 0.9em;
-    padding: 0.35em 0.55em 0.35em 0.55em;
-    margin: 0.15em;
+    padding: 0.5em 1em 0.5em 1em;
   }
   #container {
     margin: 0.3em;
@@ -448,13 +499,9 @@ input[type="hidden"] {
     width: 20em;
     height: 7em;
   }
-  #prev-title {
+  #prev-next {
     font-size: 0.9em;
   }
-  #timer {
-    font-size: 0.9em;
-  }
-  #subtitle,
   #mode-title,
   #mode-data {
     font-size: 1em;
@@ -525,38 +572,45 @@ input[type="hidden"] {
     height: 80px;
   }
   .dex-rows-numbers,
-  .dex-rows-name,
-  .dex-rows-guess {
+  .dex-rows-names,
+  .dex-rows-guesses {
     font-size: 0.9em;
   }
   .dex-rows-numbers {
     margin: 1em;
   }
-  .dex-rows-name {
+  .dex-rows-names {
     margin: 1.2em;
   }
-  .dex-rows-guess {
+  .dex-rows-guesses {
     margin-right: 1.3em;
+  }
+  .ranking-rows {
+    font-size: 1em;
+  }
+  #author {
+    font-size: 0.7em;
+  }
+  footer img {
+    width: 15px;
+    height: 15px;
   }
 }
 @media (max-width: 409px) {
   .topnav-buttons {
-    font-size: 0.75em;
-    padding: 0.25em 0.45em 0.25em 0.45em;
-    margin: 0.5em 0.15em 0.15em 0.15em;
+    padding: 0.35em 0.8em 0.35em 0.8em;
   }
   #logo,
   #logo a img {
     width: 16.66em;
     height: 5.83em;
   }
-  #prev-title {
+  #prev-next {
     font-size: 0.8em;
   }
-  #timer {
-    font-size: 0.8em;
+  #subtitle {
+    font-size: 1.1em;
   }
-  #subtitle,
   #mode-title,
   #mode-data {
     font-size: 0.85em;
@@ -583,6 +637,9 @@ input[type="hidden"] {
   .answers,
   .dex-rows {
     max-width: 23em;
+  }
+  .titles {
+    font-size: 0.7em;
   }
   .answers {
     max-height: 4.2em;
@@ -612,7 +669,10 @@ input[type="hidden"] {
     font-size: 0.6em;
   }
   #dex-trainer,
-  #dex-discovered {
+  #dex-discovered,
+  .dex-rows-numbers,
+  .dex-rows-names,
+  .dex-rows-guesses {
     font-size: 0.85em;
   }
   .dex-rows {
@@ -623,10 +683,16 @@ input[type="hidden"] {
   .dex-rows-numbers {
     margin: 0.5em;
   }
-  .dex-rows-name {
+  .dex-rows-names {
     margin: 1em;
   }
-  .dex-rows-guess {
+  .dex-rows-guesses {
     margin-right: 0.5em;
+  }
+  .ranking-rows {
+    font-size: 0.8em;
+  }
+  footer {
+    padding: 0.75em;
   }
 }

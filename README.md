@@ -10,6 +10,7 @@ This is a web application for Web Application Development course.
   - [V1.0.0](#v100)
   - [V1.1.0](#v110)
   - [V1.5.6](#v156)
+  - [V1.6.0](#v160)
 - [Usage](#usage)
 - [Troubleshooting](#troubleshooting)
 - [Future Plans](#future-plans)
@@ -75,6 +76,16 @@ Several minor updates have been implemented:<br>
 - more `backgrounds` added for both PC and mobile resolutions, implemented a `background randomizer`;<br>
 
 - changed the CSS, EJS views, static .webp assets and client's code.
+
+<br>
+
+## V1.6.0
+
+A new minor update has been implemented:<br>
+
+- reworked the `user interface` style;<br>
+
+- the handling of `authentication` on client-side has been separated and modularized.
 
 <br>
 
