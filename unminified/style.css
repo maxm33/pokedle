@@ -238,10 +238,6 @@ input[type="hidden"] {
   padding-top: 0.6em;
   width: 36em;
 }
-.pokeimage {
-  width: 6.25em;
-  height: 6.25em;
-}
 .wrong,
 .correct,
 .partial,
@@ -261,11 +257,11 @@ input[type="hidden"] {
   background-color: #ff6666;
 }
 .wrong-higher {
-  background-image: url("../images/misc/wrong-higher.webp");
+  background-image: url("../images/classic/wrong-higher.webp");
   background-size: cover;
 }
 .wrong-lower {
-  background-image: url("../images/misc/wrong-lower.webp");
+  background-image: url("../images/classic/wrong-lower.webp");
   background-size: cover;
 }
 .correct {
@@ -516,7 +512,7 @@ footer img {
   .answers {
     margin-top: 0;
   }
-  .pokeimage {
+  .answers > :first-child {
     height: 3.5em;
     margin-right: 0.5em;
     width: 3.5em;

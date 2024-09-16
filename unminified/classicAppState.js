@@ -41,13 +41,13 @@ export class classicAppState {
     var menucontainer = document.getElementById("answers-container");
     var menuoption = document.createElement("DIV");
     menuoption.setAttribute("class", "answers");
-    menuoption.innerHTML = `<img alt="" aria-label="${pokemon.name}" class="pokeimage" src='/public/images/sprites/${pokemon.name}.webp'>`;
+    menuoption.innerHTML = `<img alt="" aria-label="${pokemon.name}" src='/public/images/sprites/${pokemon.name}.webp' width="100px" height="100px">`;
     for (var property in response) {
       var card = document.createElement("DIV");
       card.setAttribute("class", response[property]);
       switch (property) {
         case "habitat":
-          card.innerHTML = `<img alt="" aria-label="${pokemon[property]}" class="habitat" src="/public/images/habitats/${pokemon[property]}.webp"/>`;
+          card.innerHTML = `<img alt="" aria-label="${pokemon[property]}" class="habitat" src="/public/images/classic/habitats/${pokemon[property]}.webp"/>`;
           break;
         case "colors":
           var colors = pokemon[property];
@@ -60,8 +60,8 @@ export class classicAppState {
           var types = pokemon[property];
           card.innerHTML =
             types[1] == null
-              ? `<img alt="" aria-label="${types[0]}" class="types" src="/public/images/types/${types[0]}.webp"/>`
-              : `<img alt="" aria-label="${types[0]}" class="types" src="/public/images/types/${types[0]}.webp"/><img alt="" aria-label="${types[1]}" class="types" src="/public/images/types/${types[1]}.webp"/>`;
+              ? `<img alt="" aria-label="${types[0]}" class="types" src="/public/images/classic/types/${types[0]}.webp"/>`
+              : `<img alt="" aria-label="${types[0]}" class="types" src="/public/images/classic/types/${types[0]}.webp"/><img alt="" aria-label="${types[1]}" class="types" src="/public/images/classic/types/${types[1]}.webp"/>`;
           break;
         case "fullyEvolved":
           card.innerHTML = `<p class="answers-text">${
