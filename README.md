@@ -41,11 +41,6 @@ Visit Pokédle [here](https://pokedle.onrender.com/) and have fun guessing 'em a
 
 <br>
 
-> [!NOTE]
-> This version is not available in commit history due to the presence of sensible hard-coded data.
-
-<br>
-
 ## V1.1.0
 
 A new minor update has been implemented:<br>
