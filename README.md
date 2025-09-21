@@ -6,7 +6,7 @@ This is a web application for Web Application Development course.
 
 ## Index
 
-- Versions
+- Version Changelog
   - [V1.0.0](#v100)
   - [V1.1.0](#v110)
   - [V1.5.6](#v156)
