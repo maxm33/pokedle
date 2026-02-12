@@ -111,9 +111,3 @@ If you are having trouble with the site (e.g. it looks broken), clearing the bro
 due to a unit conversion mistake that I recently made. Check [how to clear cache on Chrome](https://support.google.com/accounts/answer/32050?sjid=9309983268576311148-EU).
 
 <br>
-
-## Future Plans
-
-New game modes and more stuff will be implemented in the near future, so stay tuned!
-
-<br>
