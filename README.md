@@ -13,7 +13,6 @@ This is a web application for Web Application Development course.
   - [V1.6.0](#v160)
 - [Usage](#usage)
 - [Troubleshooting](#troubleshooting)
-- [Future Plans](#future-plans)
 
 <br>
 
@@ -108,11 +107,5 @@ npm start
 ## Troubleshooting
 
 If you are having trouble with the site (e.g. it looks broken), clearing the browser cache relative to this site is most likely the solution. Check [how to clear cache on Chrome](https://support.google.com/accounts/answer/32050?sjid=9309983268576311148-EU).
-
-<br>
-
-## Future Plans
-
-New game modes and more stuff will be implemented in the near future, so stay tuned!
 
 <br>
