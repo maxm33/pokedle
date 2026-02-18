@@ -4,10 +4,11 @@ import { classicAppState } from "./classicAppState.js";
 import { animateFadeIn, auth } from "./auth.js";
 
 // request for browser notifications
-Notification.requestPermission((permission) => {
-  if (permission != "granted") console.log("Notifications: no permission");
-  else console.log("Notifications: enabled");
-});
+if ("Notification" in window)
+  Notification.requestPermission((permission) => {
+    if (permission != "granted") console.log("Notifications: no permission");
+    else console.log("Notifications: enabled");
+  });
 
 // get all important HTML elements to manage
 let timer = document.getElementById("timer");
