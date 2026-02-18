@@ -107,8 +107,7 @@ npm start
 
 ## Troubleshooting
 
-If you are having trouble with the site (e.g. it looks broken), clearing the browser cache relative to this site is most likely the solution,
-due to a unit conversion mistake that I recently made. Check [how to clear cache on Chrome](https://support.google.com/accounts/answer/32050?sjid=9309983268576311148-EU).
+If you are having trouble with the site (e.g. it looks broken), clearing the browser cache relative to this site is most likely the solution. Check [how to clear cache on Chrome](https://support.google.com/accounts/answer/32050?sjid=9309983268576311148-EU).
 
 <br>
 
