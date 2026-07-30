@@ -11,7 +11,7 @@
     <meta name="viewport" content="initial-scale=1, width=device-width" />
     <title>Profile</title>
   </head>
-  <body style="background-image: url('<%= bg %>')">
+  <body style="background-image: url(&quot;<%= bg %>&quot;)">
     <div id="topnav">
       <div id="buttons-container">
         <button id="login-button" class="topnav-buttons">
@@ -62,6 +62,15 @@
           Wins: <%= wins %><br />
           Average Tries: <%= avgTries %><br /><br />
           <button id="onprofile-dex-button">View Pokédex</button>
+        </div>
+      </div>
+      <div>
+        <div style="margin-top: 0.75em" id="mode-title">Sentry Duty</div>
+        <div id="mode-data">
+          Best Score: <%= bestSentryScore %><br />
+          Longest Session: <%= bestSentrySession %> rounds<br />
+          Footprints Seen: <%= sentrySessionsCompleted %><br />
+          Accuracy: <%= sentryAccuracy %>%<br />
         </div>
       </div>
     </div>

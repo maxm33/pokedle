@@ -11,7 +11,7 @@
     <meta name="viewport" content="initial-scale=1, width=device-width" />
     <title>Ranking - Classic</title>
   </head>
-  <body style="background-image: url('<%= bg %>')">
+  <body style="background-image: url(&quot;<%= bg %>&quot;)">
     <div id="topnav">
       <div id="buttons-container">
         <button id="login-button" class="topnav-buttons">
@@ -58,6 +58,7 @@
       <div id="subtitle" class="fadeIn">
         <h1 style="margin-bottom: 0">Champions</h1>
         <h3 style="margin-top: 0">Classic</h3>
+        <p><a class="ranking-switch" href="/sentry/ranking">View Sentry Duty rankings</a></p>
         <% for (var i = 0; i < rankingData.length; i++) { %>
         <div class="ranking-rows">
           <b

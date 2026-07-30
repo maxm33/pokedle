@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" href="/public/images/icons/favicon.ico" />
+    <link rel="stylesheet" href="/public/stylesheets/style.css" />
+    <link rel="preconnect" href="https://www.gstatic.com" />
+    <link
+      rel="preload"
+      as="script"
+      href="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
+    />
+    <link
+      rel="manifest"
+      type="application/manifest+json"
+      href="/public/app.webmanifest"
+    />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <title>Pokédle - Sentry Duty</title>
+  </head>
+  <body
+    class="sentry-page"
+    style="background-image: url(&quot;<%= bg %>&quot;)"
+  >
+    <div id="topnav">
+      <div id="buttons-container">
+        <button id="login-button" class="topnav-buttons">
+          <img
+            id="login-img"
+            alt=""
+            src="/public/images/misc/login.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="ranking-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/ranking.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="pokedex-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/pokedex.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="profile-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/profile.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+      </div>
+    </div>
+    <div id="container">
+      <div id="logo-container">
+        <div id="logo">
+          <a aria-label="Play Sentry Duty" href="/sentry">
+            <img alt="" src="/public/images/icons/pokedle-logo.webp" />
+          </a>
+        </div>
+        <div id="mode">Sentry Duty</div>
+      </div>
+      <div id="mode-switch" class="fadeIn">
+        <a class="mode-link" href="/classic">Play Classic Mode</a>
+      </div>
+      <div id="sentry-status" class="fadeIn">
+        <h2 id="sentry-title" class="fadeIn">Guess the footprint quickly!</h2>
+        <div id="sentry-meta" class="fadeIn">
+          <div id="sentry-timer" class="fadeIn">Time left: --</div>
+          <div id="sentry-failures" class="fadeIn">Failures: 0/3</div>
+          <button
+            id="sentry-mute"
+            class="fadeIn"
+            aria-pressed="false"
+            title="Mute / Unmute"
+          >
+            🔊
+          </button>
+        </div>
+        <div id="sentry-feedback" class="fadeIn">Total score: 0</div>
+      </div>
+      <div id="sentry-footprint-container" class="fadeIn">
+        <img id="sentry-footprint" alt="" />
+        <div id="sentry-overlay" aria-hidden="true"></div>
+      </div>
+      <audio id="sentry-audio" loop preload="auto">
+        <source
+          src="/public/audio/whose_that_footprint.mp3"
+          type="audio/mpeg"
+        />
+      </audio>
+      <audio id="sentry-feedback-audio" preload="auto"></audio>
+      <div id="sentry-options" class="sentry-options fadeIn"></div>
+    </div>
+    <footer>
+      <p id="author">
+        Created by <a href="https://github.com/maxm33">maxm33</a>
+      </p>
+      <img
+        alt=""
+        src="/public/images/icons/github-mark.webp"
+        width="20px"
+        height="20px"
+      />
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="/public/js/sentryMode.js"></script>
+  </body>
+</html>

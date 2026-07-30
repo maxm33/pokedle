@@ -17,7 +17,7 @@
     <meta name="viewport" content="initial-scale=1, width=device-width" />
     <title>Pokédle - Classic</title>
   </head>
-  <body style="background-image: url('<%= bg %>')">
+  <body style="background-image: url(&quot;<%= bg %>&quot;)">
     <div id="topnav">
       <div id="buttons-container">
         <button id="login-button" class="topnav-buttons">
@@ -63,6 +63,9 @@
           /></a>
         </div>
         <div id="mode">Classic</div>
+      </div>
+      <div id="mode-switch" class="fadeIn">
+        <a class="mode-link" href="/sentry">Play Sentry Duty</a>
       </div>
       <div id="prev-next">
         <div id="prev">

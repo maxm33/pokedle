@@ -7,6 +7,7 @@ const createError = require("http-errors");
 const logger = require("morgan");
 const { v4: uuid } = require("uuid");
 const serviceAccount = require("/etc/secrets/service_account_admin_sdk");
+const badFootprints = require("./data/badFootprints.json");
 
 // initialize Firebase with admin privileges
 admin.initializeApp({
@@ -33,11 +34,15 @@ var bg_desktop_option; // to store current background option for rendering deskt
 var bg_mobile_option; // to store current background option for rendering mobile views
 
 var bg_desktop_number = fs.readdirSync(
-  "./public/images/backgrounds_desktop"
+  "./public/images/backgrounds_desktop",
 ).length; // number of desktop background options
 var bg_mobile_number = fs.readdirSync(
-  "./public/images/backgrounds_mobile"
+  "./public/images/backgrounds_mobile",
 ).length; //number of mobile background options
+
+var sentryChallenges = {}; // store active sentry duty challenges
+var sentryDurationMs = 30 * 1000; // duration for each sentry guess
+var sentryFailureLimit = 3; // maximum session failures before game over
 
 const app = express(); // new express app
 const auth = admin.auth(); // reference to auth service
@@ -65,7 +70,7 @@ app.use(
     setHeaders: function (res, path) {
       res.setHeader("Cache-Control", `public, max-age=3600, must-revalidate`);
     },
-  })
+  }),
 );
 app.use(
   "/public/stylesheets",
@@ -73,7 +78,7 @@ app.use(
     setHeaders: function (res, path) {
       res.setHeader("Cache-Control", `public, max-age=3600, must-revalidate`);
     },
-  })
+  }),
 );
 app.use(
   "/public",
@@ -81,10 +86,10 @@ app.use(
     setHeaders: function (res, path) {
       res.setHeader(
         "Cache-Control",
-        `public, max-age=31536000, must-revalidate`
+        `public, max-age=31536000, must-revalidate`,
       );
     },
-  })
+  }),
 );
 
 // send firebase configuration to client
@@ -103,6 +108,13 @@ app.get("/classic", (req, res) => {
   res.render("classicMode", {
     bg: bgPathSelector(req.device.type),
     prev: classicPreviousPokemon,
+  });
+});
+
+// render sentry duty mode page
+app.get("/sentry", (req, res) => {
+  res.render("sentryMode", {
+    bg: bgPathSelector(req.device.type),
   });
 });
 
@@ -131,7 +143,7 @@ app.post("/classic", async (req, res, next) => {
                 updateStatsOnClassicWin(
                   decodedToken.uid,
                   req.body.guess,
-                  req.body.tries
+                  req.body.tries,
                 );
                 classicWinners[classicWinners.length] = decodedToken.uid;
               }
@@ -168,6 +180,74 @@ app.get("/classic/state", (req, res) => {
   ]);
 });
 
+// send current sentry duty challenge to the user
+app.get("/sentry/state", async (req, res, next) => {
+  try {
+    const challenge = await createSentryChallenge();
+    res.status(200);
+    res.send(challenge);
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
+});
+
+// verify the player's sentry duty guess
+app.post("/sentry/guess", async (req, res, next) => {
+  try {
+    const challengeID = req.body.challengeID;
+    const selected = req.body.selected;
+    const challenge = sentryChallenges[challengeID];
+
+    if (!challenge || Date.now() > challenge.expiration) {
+      res.status(410);
+      res.send({ correct: false, timeout: true });
+      return;
+    }
+
+    const elapsedMs = Date.now() - challenge.startTime;
+    const timedOut = elapsedMs > sentryDurationMs;
+    const correct = selected === challenge.answer && !timedOut;
+    const baseScore = 1000;
+    const decayFactor = 0.92;
+    const score = correct
+      ? Math.max(
+          0,
+          Math.ceil(baseScore * Math.pow(decayFactor, elapsedMs / 1000)),
+        )
+      : 0;
+
+    if (req.body.token != null) {
+      auth
+        .verifyIdToken(req.body.token)
+        .then((decodedToken) => {
+          updateStatsOnSentryRound(
+            decodedToken.uid,
+            score,
+            !correct,
+            req.body.sessionTotalScore + (correct ? score : 0),
+            req.body.sessionRounds || 0,
+            req.body.gameOver || false,
+          );
+        })
+        .catch((err) => console.error(err));
+    }
+
+    delete sentryChallenges[challengeID];
+    res.status(200);
+    res.send({
+      correct: correct,
+      score: score,
+      answer: challenge.answer,
+      timeout: timedOut,
+      elapsedMs: elapsedMs,
+    });
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
+});
+
 // render top 10 classic mode users page
 app.get("/classic/ranking", async (req, res) => {
   firestore
@@ -186,6 +266,34 @@ app.get("/classic/ranking", async (req, res) => {
       });
       res.status(200);
       res.render("classicRanking", {
+        rankingData: topTen,
+        bg: bgPathSelector(req.device.type),
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+      next(createError(500));
+    });
+});
+
+// render top 10 sentry duty users page
+app.get("/sentry/ranking", async (req, res) => {
+  firestore
+    .collection("users")
+    .orderBy("bestSentryScore", "desc")
+    .limit(10)
+    .get()
+    .then((queryResult) => {
+      var topTen = [];
+      queryResult.forEach((user) => {
+        topTen[topTen.length] = {
+          id: user.id,
+          name: user.data().name,
+          score: user.data().bestSentryScore || 0,
+        };
+      });
+      res.status(200);
+      res.render("sentryRanking", {
         rankingData: topTen,
         bg: bgPathSelector(req.device.type),
       });
@@ -220,6 +328,10 @@ app.put("/user/:gid", async (req, res) => {
                 wins: 0,
                 avgTries: 0,
                 history: [],
+                bestSentryScore: 0,
+                sentrySessionsCompleted: 0,
+                sentryFailures: 0,
+                bestSentrySession: 0,
               };
               // create the new document
               firestore.collection("users").doc(decodedToken.uid).set(user);
@@ -246,10 +358,20 @@ app.get("/user/:gid/profile", async (req, res, next) => {
       if (user == undefined) next(createError(404, "User does not exist"));
       else {
         res.status(200);
+        var sessions = user.sentrySessionsCompleted || 0;
+        var failures = user.sentryFailures || 0;
+        var accuracy =
+          sessions > 0
+            ? Math.round(((sessions - failures) / sessions) * 1000) / 10
+            : 0;
         res.render("profile", {
           name: user.name,
           wins: user.wins,
           avgTries: Math.round(user.avgTries * 100) / 100,
+          bestSentryScore: user.bestSentryScore || 0,
+          sentrySessionsCompleted: sessions,
+          sentryAccuracy: accuracy,
+          bestSentrySession: user.bestSentrySession || 0,
           bg: bgPathSelector(req.device.type),
         });
       }
@@ -410,4 +532,96 @@ async function updateStatsOnClassicWin(id, pokemon, tries) {
       }
     })
     .catch((err) => console.error(err));
+}
+
+// update a logged user's sentry duty stats
+async function updateStatsOnSentryRound(
+  id,
+  score,
+  failed,
+  sessionTotal,
+  sessionRounds,
+  gameOver,
+) {
+  firestore
+    .collection("users")
+    .doc(id)
+    .get()
+    .then((doc) => {
+      var user = doc.data();
+      if (user != undefined) {
+        user.bestSentryScore = user.bestSentryScore || 0;
+        if (sessionTotal > user.bestSentryScore)
+          user.bestSentryScore = sessionTotal;
+        user.sentrySessionsCompleted = (user.sentrySessionsCompleted || 0) + 1;
+        user.sentryFailures = user.sentryFailures || 0;
+        if (failed) user.sentryFailures++;
+        user.bestSentrySession = user.bestSentrySession || 0;
+        if (gameOver && sessionRounds > user.bestSentrySession)
+          user.bestSentrySession = sessionRounds;
+        firestore.collection("users").doc(id).set(user);
+      }
+    })
+    .catch((err) => console.error(err));
+}
+
+async function createSentryChallenge() {
+  const challengeID = uuid();
+  let answerID;
+  let answerDoc;
+  let answer;
+  // pick a random pokemon that is not in the bad footprints list
+  for (let tries = 0; tries < 100; tries++) {
+    answerID = Math.floor(Math.random() * 649 + 1);
+    answerDoc = await firestore
+      .collection("pokemons")
+      .doc(answerID.toString())
+      .get();
+    if (!answerDoc.exists) continue;
+    const candidate = answerDoc.data();
+    if (badFootprints.includes(candidate.name)) continue;
+    answer = candidate;
+    break;
+  }
+  if (!answer) throw new Error("Pokémon not found for sentry challenge");
+  const options = [answer.name];
+  while (options.length < 4) {
+    const optionID = Math.floor(Math.random() * 649 + 1);
+    if (optionID == answerID) continue;
+    const optionDoc = await firestore
+      .collection("pokemons")
+      .doc(optionID.toString())
+      .get();
+    if (!optionDoc.exists) continue;
+    const optionName = optionDoc.data().name;
+    if (!options.includes(optionName)) options.push(optionName);
+  }
+
+  for (let i = options.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [options[i], options[j]] = [options[j], options[i]];
+  }
+
+  const startTime = Date.now();
+  const footprintUrl = getFootprintUrl(answer.name);
+  sentryChallenges[challengeID] = {
+    answer: answer.name,
+    options: options,
+    startTime: startTime,
+    expiration: startTime + sentryDurationMs,
+  };
+  setTimeout(() => {
+    delete sentryChallenges[challengeID];
+  }, sentryDurationMs * 2);
+  return {
+    challengeID: challengeID,
+    options: options,
+    durationMs: sentryDurationMs,
+    createdAt: startTime,
+    footprintUrl: footprintUrl,
+  };
+}
+
+function getFootprintUrl(pokemonName) {
+  return `/public/images/footprints/${encodeURIComponent(pokemonName)}.png`;
 }

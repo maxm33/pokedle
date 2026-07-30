@@ -83,6 +83,14 @@ A new minor update has been implemented:<br>
 
 <br>
 
+## V1.7.0
+
+A new minor update has been implemented:<br>
+
+- Added new mode "Sentry Duty" / "Whose that footprint", based on the PMD2 mini-game;
+
+<br>
+
 ## Usage
 
 - Install all the dependencies

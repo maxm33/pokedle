@@ -11,7 +11,7 @@
     <meta name="viewport" content="initial-scale=1, width=device-width" />
     <title>Pokédex</title>
   </head>
-  <body style="background-image: url('<%= bg %>')">
+  <body style="background-image: url(&quot;<%= bg %>&quot;)">
     <div id="topnav">
       <div id="buttons-container">
         <button id="login-button" class="topnav-buttons">
@@ -97,9 +97,8 @@
       // replacing unknown rows with known ones (according to the user's history)
       var history = `<%- JSON.stringify(history) %>`;
       history = JSON.parse(history);
-      document.getElementById(
-        "dex-discovered"
-      ).textContent = `${history.length}/${pokemons.length} Pokémons discovered`;
+      document.getElementById("dex-discovered").textContent =
+        `${history.length}/${pokemons.length} Pokémons discovered`;
       for (var i = 0; i < history.length; i++) {
         var subdiv = document.getElementById(history[i].pokemon);
         subdiv.innerHTML = `<p class="dex-rows-numbers">${subdiv.firstChild.innerHTML}</p>

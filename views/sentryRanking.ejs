@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" href="/public/images/icons/favicon.ico" />
+    <link rel="stylesheet" href="/public/stylesheets/style.css" />
+    <link rel="manifest" type="application/manifest+json" href="/public/app.webmanifest" />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <title>Ranking - Sentry Duty</title>
+  </head>
+  <body style="background-image: url(&quot;<%= bg %>&quot;)">
+    <div id="topnav">
+      <div id="buttons-container">
+        <button id="login-button" class="topnav-buttons">
+          <img
+            id="login-img"
+            alt=""
+            src="/public/images/misc/login.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="ranking-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/ranking.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="pokedex-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/pokedex.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="profile-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/profile.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+      </div>
+    </div>
+    <div id="container">
+      <div id="logo" class="fadeIn">
+        <a aria-label="Play Sentry Duty" href="/sentry">
+            <img alt="" src="/public/images/icons/pokedle-logo.webp" />
+        </a>
+      </div>
+      <div id="subtitle" class="fadeIn">
+        <h1 style="margin-bottom: 0">Champions</h1>
+        <h3 style="margin-top: 0">Sentry Duty</h3>
+        <p><a class="ranking-switch" href="/classic/ranking">View Classic Mode rankings</a></p>
+        <% for (var i = 0; i < rankingData.length; i++) { %>
+        <div class="ranking-rows">
+          <b
+            ><%= i+1 %>.
+            <a
+              aria-label="<%= rankingData[i].id %>'s profile"
+              href="/user/<%= rankingData[i].id %>/profile"
+              ><%= rankingData[i].name %></a
+            ></b
+          >
+          - <%= rankingData[i].score %> points<br />
+        </div>
+        <% } %>
+      </div>
+    </div>
+    <footer>
+      <p id="author">
+        Created by <a href="https://github.com/maxm33">maxm33</a>
+      </p>
+      <img
+        alt=""
+        src="/public/images/icons/github-mark.webp"
+        width="20px"
+        height="20px"
+      />
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="/public/js/auth.js"></script>
+  </body>
+</html>
