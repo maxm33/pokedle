@@ -70,6 +70,10 @@
         Trainer: <a id="dex-profile-link"><%= name %></a>
       </h1>
       <h2 id="dex-discovered"></h2>
+      <label id="dex-filter-label" for="hide-undiscovered">
+        <input id="hide-undiscovered" type="checkbox" checked />
+        Hide undiscovered Pokémon
+      </label>
     </div>
     <script type="module">
       import { pokemons } from "../../public/js/pokemons.js";
@@ -97,15 +101,34 @@
       // replacing unknown rows with known ones (according to the user's history)
       var history = `<%- JSON.stringify(history) %>`;
       history = JSON.parse(history);
+      var discoveredPokemon = new Set(history.map((entry) => entry.pokemon));
       document.getElementById("dex-discovered").textContent =
         `${history.length}/${pokemons.length} Pokémons discovered`;
       for (var i = 0; i < history.length; i++) {
         var subdiv = document.getElementById(history[i].pokemon);
+        var pokemonName = history[i].pokemon;
+        var pokemonSlug = pokemonName
+          .toLowerCase()
+          .replace("mr. mime", "mr-mime")
+          .replace("nidoranf", "nidoran-female")
+          .replace("nidoranm", "nidoran-male")
+          .replaceAll(" ", "-");
         subdiv.innerHTML = `<p class="dex-rows-numbers">${subdiv.firstChild.innerHTML}</p>
-          <img alt="" src="/public/images/sprites/${history[i].pokemon}.webp" width="100px" height="100px"/>
-          <p class="dex-rows-names">${history[i].pokemon}</p>
+          <img alt="" src="/public/images/sprites/${pokemonName}.webp" width="100px" height="100px"/>
+          <a class="dex-rows-names" href="https://www.pokemon.com/it/pokedex/${pokemonSlug}">${pokemonName}</a>
           <p class="dex-rows-guesses">Guessed: ${history[i].timesGuessed}</p>`;
       }
+
+      var hideUndiscovered = document.getElementById("hide-undiscovered");
+      var rows = document.querySelectorAll(".dex-rows");
+      function updateUndiscoveredVisibility() {
+        for (var i = 0; i < rows.length; i++) {
+          rows[i].hidden =
+            hideUndiscovered.checked && !discoveredPokemon.has(rows[i].id);
+        }
+      }
+      hideUndiscovered.addEventListener("change", updateUndiscoveredVisibility);
+      updateUndiscoveredVisibility();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="/public/js/auth.js"></script>

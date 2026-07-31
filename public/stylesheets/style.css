@@ -522,6 +522,17 @@ input[type="hidden"] {
   font-size: 1.2em;
   margin-bottom: 1em;
 }
+#dex-filter-label {
+  align-items: center;
+  animation: fadeIn 1.5s;
+  display: flex;
+  gap: 0.5em;
+  margin-bottom: 1.5em;
+}
+#hide-undiscovered {
+  height: 1em;
+  width: 1em;
+}
 .dex-rows {
   animation: fadeIn 1.5s;
   align-items: center;
