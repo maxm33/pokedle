@@ -544,6 +544,9 @@ input[type="hidden"] {
   margin-bottom: 1em;
   width: 32em;
 }
+.dex-rows[hidden] {
+  display: none;
+}
 .dex-rows-numbers,
 .dex-rows-names,
 .dex-rows-guesses {
