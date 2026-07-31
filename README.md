@@ -88,7 +88,7 @@ A new minor update has been implemented:<br>
 
 A new minor update has been implemented:<br>
 
-- Added new mode "Sentry Duty" / "Whose that footprint", based on the PMD2 mini-game;
+- Added new mode `Sentry Duty`, based on the PMD2 mini-game;
 
 <br>
 
