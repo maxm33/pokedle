@@ -13,6 +13,17 @@
   </head>
   <body style="background-image: url(&quot;<%= bg %>&quot;)">
     <div id="topnav">
+      <div id="credits">
+        <p id="author">
+          Created by <a href="https://github.com/maxm33">maxm33</a>
+        </p>
+        <img
+          alt=""
+          src="/public/images/icons/github-mark.webp"
+          width="20px"
+          height="20px"
+        />
+      </div>
       <div id="buttons-container">
         <button id="login-button" class="topnav-buttons">
           <img
@@ -74,17 +85,6 @@
         <% } %>
       </div>
     </div>
-    <footer>
-      <p id="author">
-        Created by <a href="https://github.com/maxm33">maxm33</a>
-      </p>
-      <img
-        alt=""
-        src="/public/images/icons/github-mark.webp"
-        width="20px"
-        height="20px"
-      />
-    </footer>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="/public/js/auth.js"></script>
   </body>
