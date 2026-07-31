@@ -11,6 +11,7 @@ This is a web application for Web Application Development course.
   - [V1.1.0](#v110)
   - [V1.5.6](#v156)
   - [V1.6.0](#v160)
+  - [V1.7.0](#v170)
 - [Usage](#usage)
 - [Troubleshooting](#troubleshooting)
 
