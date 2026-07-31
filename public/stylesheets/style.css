@@ -554,10 +554,9 @@ input[type="hidden"] {
   margin: 0.3em;
 }
 #credits {
-  left: 0;
+  float: left;
   padding: 1em;
   position: sticky;
-  width: 100%;
   z-index: 9999;
 }
 #author {
