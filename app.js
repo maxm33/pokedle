@@ -1,13 +1,13 @@
+const fs = require("fs");
+const { v4: uuid } = require("uuid");
 const express = require("express");
 const device = require("express-device");
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
-const fs = require("fs");
-const createError = require("http-errors");
 const logger = require("morgan");
-const { v4: uuid } = require("uuid");
-const serviceAccount = require("/etc/secrets/service_account_admin_sdk");
+const createError = require("http-errors");
 const badFootprints = require("./data/badFootprints.json");
+const serviceAccount = require("/etc/secrets/service_account_admin_sdk");
 
 // initialize Firebase with admin privileges
 admin.initializeApp({
@@ -26,10 +26,18 @@ const firebaseConfig = {
   measurementId: process.env.MEASUREMENT_ID,
 };
 
+// --- CLASSIC MODE VARIABLES ---
 var classicWinners = []; // to store uuid of players who have won the current game
 var classicGameID; // to store uuid of current game
 var classicPreviousPokemon; // to store the previous generated pokemon
 var classicCurrentPokemon; // to store the current generated pokemon
+
+// --- SENTRY DUTY MODE VARIABLES ---
+var sentryChallenges = {}; // store active sentry duty challenges
+var sentryDurationMs = 30 * 1000; // duration for each sentry guess
+var sentryFailureLimit = 3; // maximum session failures before game over
+
+// Background images per device type
 var bg_desktop_option; // to store current background option for rendering desktop views
 var bg_mobile_option; // to store current background option for rendering mobile views
 
@@ -39,10 +47,6 @@ var bg_desktop_number = fs.readdirSync(
 var bg_mobile_number = fs.readdirSync(
   "./public/images/backgrounds_mobile",
 ).length; //number of mobile background options
-
-var sentryChallenges = {}; // store active sentry duty challenges
-var sentryDurationMs = 30 * 1000; // duration for each sentry guess
-var sentryFailureLimit = 3; // maximum session failures before game over
 
 const app = express(); // new express app
 const auth = admin.auth(); // reference to auth service
@@ -57,13 +61,15 @@ firestore
     classicGeneratePokemon(); // first pokemon is generated here
   });
 
-// view engine setup
+// EJS view engine setup
 app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
 
 app.use(logger("dev"));
 app.use(express.json());
 app.use(device.capture());
+
+// JS/CSS/assets cache control policies
 app.use(
   "/public/js",
   express.static(__dirname + "/public/js", {
@@ -98,23 +104,16 @@ app.get("/env/fb", (req, res) => {
   res.send(firebaseConfig);
 });
 
-// remove if there will be more game modes in the future
+// classic mode redirected as home page
 app.get("/", (req, res) => {
   res.redirect("/classic");
 });
 
-// render home page
+// render classic mode page
 app.get("/classic", (req, res) => {
   res.render("classicMode", {
     bg: bgPathSelector(req.device.type),
     prev: classicPreviousPokemon,
-  });
-});
-
-// render sentry duty mode page
-app.get("/sentry", (req, res) => {
-  res.render("sentryMode", {
-    bg: bgPathSelector(req.device.type),
   });
 });
 
@@ -159,6 +158,18 @@ app.post("/classic", async (req, res, next) => {
     });
 });
 
+// send game ID and remaining time before next generation
+app.get("/classic/state", (req, res) => {
+  res.status(200);
+  res.send([
+    classicGameID,
+    classicGetRemainingTime(),
+    classicPreviousPokemon == null
+      ? null
+      : { ID: classicPreviousPokemon.ID, name: classicPreviousPokemon.name },
+  ]);
+});
+
 // send a boolean stating if user can play the current game
 app.get("/classic/canPlay/uid=:uid&gid=:gid", (req, res) => {
   var canPlay = !classicWinners.includes(req.params.uid);
@@ -168,22 +179,45 @@ app.get("/classic/canPlay/uid=:uid&gid=:gid", (req, res) => {
   res.send(canPlay);
 });
 
-// send game ID and remaining time before next generation
-app.get("/classic/state", (req, res) => {
-  res.status(200);
-  res.send([
-    classicGameID,
-    getClassicRemainingTime(),
-    classicPreviousPokemon == null
-      ? null
-      : { ID: classicPreviousPokemon.ID, name: classicPreviousPokemon.name },
-  ]);
+// render top 10 classic mode users page
+app.get("/classic/ranking", async (req, res) => {
+  firestore
+    .collection("users")
+    .orderBy("wins", "desc")
+    .limit(10)
+    .get()
+    .then((queryResult) => {
+      var topTen = [];
+      queryResult.forEach((user) => {
+        topTen[topTen.length] = {
+          id: user.id,
+          name: user.data().name,
+          wins: user.data().wins,
+        };
+      });
+      res.status(200);
+      res.render("classicRanking", {
+        rankingData: topTen,
+        bg: bgPathSelector(req.device.type),
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+      next(createError(500));
+    });
+});
+
+// render sentry duty mode page
+app.get("/sentry", (req, res) => {
+  res.render("sentryMode", {
+    bg: bgPathSelector(req.device.type),
+  });
 });
 
 // send current sentry duty challenge to the user
 app.get("/sentry/state", async (req, res, next) => {
   try {
-    const challenge = await createSentryChallenge();
+    const challenge = await generateSentryChallenge();
     res.status(200);
     res.send(challenge);
   } catch (err) {
@@ -193,7 +227,7 @@ app.get("/sentry/state", async (req, res, next) => {
 });
 
 // verify the player's sentry duty guess
-app.post("/sentry/guess", async (req, res, next) => {
+app.post("/sentry", async (req, res, next) => {
   try {
     const challengeID = req.body.challengeID;
     const selected = req.body.selected;
@@ -246,34 +280,6 @@ app.post("/sentry/guess", async (req, res, next) => {
     console.error(err);
     next(createError(500));
   }
-});
-
-// render top 10 classic mode users page
-app.get("/classic/ranking", async (req, res) => {
-  firestore
-    .collection("users")
-    .orderBy("wins", "desc")
-    .limit(10)
-    .get()
-    .then((queryResult) => {
-      var topTen = [];
-      queryResult.forEach((user) => {
-        topTen[topTen.length] = {
-          id: user.id,
-          name: user.data().name,
-          wins: user.data().wins,
-        };
-      });
-      res.status(200);
-      res.render("classicRanking", {
-        rankingData: topTen,
-        bg: bgPathSelector(req.device.type),
-      });
-    })
-    .catch((err) => {
-      console.error(err);
-      next(createError(500));
-    });
 });
 
 // render top 10 sentry duty users page
@@ -418,8 +424,6 @@ app.use(function (err, req, res, next) {
   res.render("error", { bg: bgPathSelector(req.device.type) });
 });
 
-module.exports = app;
-
 async function classicGeneratePokemon() {
   classicWinners = [];
   classicGameID = uuid();
@@ -443,21 +447,7 @@ async function classicGeneratePokemon() {
       console.log("#DEV Solution: " + classicCurrentPokemon.name);
     })
     .catch((err) => console.error(err));
-  setTimeout(classicGeneratePokemon, getClassicRemainingTime());
-}
-
-function getClassicRemainingTime() {
-  var nextGeneration = new Date();
-  nextGeneration.setDate(nextGeneration.getDate() + 1);
-  nextGeneration.setHours(0, 0, 0, 0);
-  return nextGeneration.getTime() - Date.now();
-}
-
-function bgPathSelector(device) {
-  if (device == "phone")
-    return "/public/images/backgrounds_mobile/" + bg_mobile_option + ".webp";
-  else
-    return "/public/images/backgrounds_desktop/" + bg_desktop_option + ".webp";
+  setTimeout(classicGeneratePokemon, classicGetRemainingTime());
 }
 
 // verify the client's guess, generate related hints
@@ -505,6 +495,13 @@ function classicVerifyGuess(guess, answer) {
   return [guess, response, hasWon];
 }
 
+function classicGetRemainingTime() {
+  var nextGeneration = new Date();
+  nextGeneration.setDate(nextGeneration.getDate() + 1);
+  nextGeneration.setHours(0, 0, 0, 0);
+  return nextGeneration.getTime() - Date.now();
+}
+
 // update a logged user's document on winning
 async function updateStatsOnClassicWin(id, pokemon, tries) {
   firestore
@@ -532,6 +529,63 @@ async function updateStatsOnClassicWin(id, pokemon, tries) {
       }
     })
     .catch((err) => console.error(err));
+}
+
+async function generateSentryChallenge() {
+  const challengeID = uuid();
+  var answerID;
+  var answerDoc;
+  var answer;
+  // pick a random pokemon that is not in the bad footprints list
+  for (var tries = 0; tries < 100; tries++) {
+    answerID = Math.floor(Math.random() * 649 + 1);
+    answerDoc = await firestore
+      .collection("pokemons")
+      .doc(answerID.toString())
+      .get();
+    if (!answerDoc.exists) continue;
+    const candidate = answerDoc.data();
+    if (badFootprints.includes(candidate.name)) continue;
+    answer = candidate;
+    break;
+  }
+  if (!answer) throw new Error("Pokémon not found for sentry challenge");
+  const options = [answer.name];
+  while (options.length < 4) {
+    const optionID = Math.floor(Math.random() * 649 + 1);
+    if (optionID == answerID) continue;
+    const optionDoc = await firestore
+      .collection("pokemons")
+      .doc(optionID.toString())
+      .get();
+    if (!optionDoc.exists) continue;
+    const optionName = optionDoc.data().name;
+    if (!options.includes(optionName)) options.push(optionName);
+  }
+
+  for (var i = options.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [options[i], options[j]] = [options[j], options[i]];
+  }
+
+  const startTime = Date.now();
+  const footprintUrl = getFootprintUrl(answer.name);
+  sentryChallenges[challengeID] = {
+    answer: answer.name,
+    options: options,
+    startTime: startTime,
+    expiration: startTime + sentryDurationMs,
+  };
+  setTimeout(() => {
+    delete sentryChallenges[challengeID];
+  }, sentryDurationMs * 2);
+  return {
+    challengeID: challengeID,
+    options: options,
+    durationMs: sentryDurationMs,
+    createdAt: startTime,
+    footprintUrl: footprintUrl,
+  };
 }
 
 // update a logged user's sentry duty stats
@@ -565,63 +619,15 @@ async function updateStatsOnSentryRound(
     .catch((err) => console.error(err));
 }
 
-async function createSentryChallenge() {
-  const challengeID = uuid();
-  let answerID;
-  let answerDoc;
-  let answer;
-  // pick a random pokemon that is not in the bad footprints list
-  for (let tries = 0; tries < 100; tries++) {
-    answerID = Math.floor(Math.random() * 649 + 1);
-    answerDoc = await firestore
-      .collection("pokemons")
-      .doc(answerID.toString())
-      .get();
-    if (!answerDoc.exists) continue;
-    const candidate = answerDoc.data();
-    if (badFootprints.includes(candidate.name)) continue;
-    answer = candidate;
-    break;
-  }
-  if (!answer) throw new Error("Pokémon not found for sentry challenge");
-  const options = [answer.name];
-  while (options.length < 4) {
-    const optionID = Math.floor(Math.random() * 649 + 1);
-    if (optionID == answerID) continue;
-    const optionDoc = await firestore
-      .collection("pokemons")
-      .doc(optionID.toString())
-      .get();
-    if (!optionDoc.exists) continue;
-    const optionName = optionDoc.data().name;
-    if (!options.includes(optionName)) options.push(optionName);
-  }
-
-  for (let i = options.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [options[i], options[j]] = [options[j], options[i]];
-  }
-
-  const startTime = Date.now();
-  const footprintUrl = getFootprintUrl(answer.name);
-  sentryChallenges[challengeID] = {
-    answer: answer.name,
-    options: options,
-    startTime: startTime,
-    expiration: startTime + sentryDurationMs,
-  };
-  setTimeout(() => {
-    delete sentryChallenges[challengeID];
-  }, sentryDurationMs * 2);
-  return {
-    challengeID: challengeID,
-    options: options,
-    durationMs: sentryDurationMs,
-    createdAt: startTime,
-    footprintUrl: footprintUrl,
-  };
-}
-
 function getFootprintUrl(pokemonName) {
   return `/public/images/footprints/${encodeURIComponent(pokemonName)}.png`;
 }
+
+function bgPathSelector(device) {
+  if (device == "phone")
+    return "/public/images/backgrounds_mobile/" + bg_mobile_option + ".webp";
+  else
+    return "/public/images/backgrounds_desktop/" + bg_desktop_option + ".webp";
+}
+
+module.exports = app;

@@ -6,11 +6,38 @@ let optionsContainer = document.getElementById("sentry-options");
 let audio = document.getElementById("sentry-audio");
 let feedbackAudio = document.getElementById("sentry-feedback-audio");
 let muteButton = document.getElementById("sentry-mute");
-let currentChallenge = null;
+
 let totalScore = 0;
 let sessionFailed = 0;
 let sessionRounds = 0;
+let currentChallenge = null;
 let countdownInterval = null;
+
+if (muteButton && audio) {
+  // restore state from localStorage
+  const stored = localStorage.getItem("sentry-muted");
+  const shouldMute = stored === "true";
+  setAudioMuted(shouldMute);
+  if (shouldMute) {
+    muteButton.textContent = "🔇";
+    muteButton.setAttribute("aria-pressed", "true");
+  } else {
+    muteButton.textContent = "🔊";
+    muteButton.setAttribute("aria-pressed", "false");
+  }
+
+  if (audio) {
+    audio.volume = 0.5;
+    audio.play().catch(() => {});
+  }
+  muteButton.addEventListener("click", () => {
+    const muted = !audio.muted;
+    setAudioMuted(muted);
+    muteButton.textContent = muted ? "🔇" : "🔊";
+    muteButton.setAttribute("aria-pressed", muted ? "true" : "false");
+    localStorage.setItem("sentry-muted", muted ? "true" : "false");
+  });
+}
 
 async function loadChallenge(resetSession = false) {
   try {
@@ -69,7 +96,7 @@ function startCountdown(duration) {
     if (remaining <= 0) {
       clearInterval(countdownInterval);
       timer.textContent = "Time left: 0s";
-      handleFailure("Time expired! The footprint fades away...");
+      handleFailure();
     } else {
       timer.textContent = `Time left: ${Math.ceil(remaining / 1000)}s`;
     }
@@ -83,7 +110,7 @@ async function submitGuess(option) {
   const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
   try {
     sessionRounds++;
-    const res = await axios.post("/sentry/guess", {
+    const res = await axios.post("/sentry", {
       token: token,
       challengeID: currentChallenge.challengeID,
       selected: option,
@@ -143,37 +170,6 @@ function disableOptions() {
   });
 }
 
-if (muteButton && audio) {
-  // restore state from localStorage
-  const stored = localStorage.getItem("sentry-muted");
-  const shouldMute = stored === "true";
-  setAudioMuted(shouldMute);
-  if (shouldMute) {
-    muteButton.textContent = "🔇";
-    muteButton.setAttribute("aria-pressed", "true");
-  } else {
-    muteButton.textContent = "🔊";
-    muteButton.setAttribute("aria-pressed", "false");
-  }
-
-  if (audio) {
-    audio.volume = 0.5;
-    audio.play().catch(() => {});
-  }
-  muteButton.addEventListener("click", () => {
-    const muted = !audio.muted;
-    setAudioMuted(muted);
-    muteButton.textContent = muted ? "🔇" : "🔊";
-    muteButton.setAttribute("aria-pressed", muted ? "true" : "false");
-    localStorage.setItem("sentry-muted", muted ? "true" : "false");
-  });
-}
-
-function setAudioMuted(muted) {
-  if (audio) audio.muted = muted;
-  if (feedbackAudio) feedbackAudio.muted = muted;
-}
-
 function playFeedbackSound(type) {
   if (!feedbackAudio) return;
 
@@ -181,10 +177,15 @@ function playFeedbackSound(type) {
   feedbackAudio.currentTime = 0;
   feedbackAudio.src =
     type === "correct"
-      ? "/public/audio/correct_footprint.mp3"
-      : "/public/audio/wrong_footprint.mp3";
+      ? "/public/audio/correct_footprint_SE.mp3"
+      : "/public/audio/wrong_footprint_SE.mp3";
   feedbackAudio.load();
   feedbackAudio.play().catch(() => {});
+}
+
+function setAudioMuted(muted) {
+  if (audio) audio.muted = muted;
+  if (feedbackAudio) feedbackAudio.muted = muted;
 }
 
 loadChallenge(true);

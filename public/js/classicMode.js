@@ -42,7 +42,7 @@ onAuthStateChanged(auth, (user) => {
       "/classic/canPlay/uid=" +
         userID +
         "&gid=" +
-        (auth.currentUser ? auth.currentUser.uid : null)
+        (auth.currentUser ? auth.currentUser.uid : null),
     )
     .then((res) => {
       // manage the elements according whether the user can play or not
@@ -165,7 +165,7 @@ function manageGameState(id, remainingTime) {
 }
 
 function onVictory(tries, pokemon) {
-  var audio = new Audio("public/audio/victory-sound.mp3");
+  var audio = new Audio("public/audio/classic_victory_ost.mp3");
   audio.volume = 0.1;
   audio.play();
   setTimeout(() => {
@@ -194,7 +194,7 @@ function initializeAutocomplete(element, array) {
         }.webp' width='70px' height='70px'><strong style="color: #8cff66;">${array[
           i
         ].substr(0, val.length)}</strong>${array[i].substr(
-          val.length
+          val.length,
         )}<input type='hidden' value='${array[i]}'>`;
         option.addEventListener("click", function () {
           element.value = this.getElementsByTagName("input")[0].value;
