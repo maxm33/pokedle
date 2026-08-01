@@ -41,7 +41,6 @@ var sentryFailureLimit = 3; // maximum session failures before game over
 // Background images per device type
 var bg_desktop_option; // to store current background option for rendering desktop views
 var bg_mobile_option; // to store current background option for rendering mobile views
-
 var bg_desktop_number = fs.readdirSync(
   "./public/images/backgrounds_desktop",
 ).length; // number of desktop background options
@@ -196,15 +195,6 @@ app.get("/classic/state", (req, res) => {
   ]);
 });
 
-// send a boolean stating if user can play the current game
-app.get("/classic/canPlay/uid=:uid&gid=:gid", (req, res) => {
-  var canPlay = !classicWinners.includes(req.params.uid);
-  if (canPlay && req.params.gid != null)
-    canPlay = !classicWinners.includes(req.params.gid);
-  res.status(200);
-  res.send(canPlay);
-});
-
 // render top 10 classic mode users page
 app.get("/classic/ranking", async (req, res) => {
   firestore
@@ -233,23 +223,20 @@ app.get("/classic/ranking", async (req, res) => {
     });
 });
 
+// send a boolean stating if user can play the current game
+app.get("/classic/canPlay/uid=:uid&gid=:gid", (req, res) => {
+  var canPlay = !classicWinners.includes(req.params.uid);
+  if (canPlay && req.params.gid != null)
+    canPlay = !classicWinners.includes(req.params.gid);
+  res.status(200);
+  res.send(canPlay);
+});
+
 // render sentry duty mode page
 app.get("/sentry", (req, res) => {
   res.render("sentryMode", {
     bg: bgPathSelector(req.device.type),
   });
-});
-
-// send current sentry duty challenge to the user
-app.get("/sentry/state", async (req, res, next) => {
-  try {
-    const challenge = await generateSentryChallenge();
-    res.status(200);
-    res.send(challenge);
-  } catch (err) {
-    console.error(err);
-    next(createError(500));
-  }
 });
 
 // verify the player's sentry duty guess
@@ -302,6 +289,18 @@ app.post("/sentry", async (req, res, next) => {
       timeout: timedOut,
       elapsedMs: elapsedMs,
     });
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
+});
+
+// send current sentry duty challenge to the user
+app.get("/sentry/state", async (req, res, next) => {
+  try {
+    const challenge = await generateSentryChallenge();
+    res.status(200);
+    res.send(challenge);
   } catch (err) {
     console.error(err);
     next(createError(500));
