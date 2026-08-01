@@ -15,6 +15,9 @@ let pokedexButton = document.getElementById("pokedex-button");
 let profileButton = document.getElementById("profile-button");
 
 let provider = new GoogleAuthProvider();
+
+await syncAppVersion();
+
 let config = await axios.get("/env/fb");
 export const auth = getAuth(initializeApp(config.data));
 
@@ -80,4 +83,31 @@ export function animateFadeIn(element, duration) {
 function animateFadeOut(element, duration) {
   element.style.animation = "fadeOut " + duration;
   setTimeout(() => (element.style.visibility = "hidden"), 750);
+}
+
+function getStoredAppVersion() {
+  return localStorage.getItem("pokedleAppVersion");
+}
+
+function setStoredAppVersion(version) {
+  if (!version) return;
+  localStorage.setItem("pokedleAppVersion", version);
+  axios.defaults.headers.common["X-Client-Version"] = version;
+}
+
+async function syncAppVersion() {
+  const storedVersion = getStoredAppVersion();
+  if (storedVersion) {
+    axios.defaults.headers.common["X-Client-Version"] = storedVersion;
+  }
+
+  try {
+    const response = await axios.get("/app/version", {
+      headers: storedVersion ? { "X-Client-Version": storedVersion } : {},
+    });
+    const version = response.data?.version;
+    if (version) setStoredAppVersion(version);
+  } catch (err) {
+    console.error(err);
+  }
 }

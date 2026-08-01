@@ -6,6 +6,7 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const logger = require("morgan");
 const createError = require("http-errors");
+const packageJson = require("./package.json");
 const badFootprints = require("./data/badFootprints.json");
 const serviceAccount = require("/etc/secrets/service_account_admin_sdk");
 
@@ -51,6 +52,7 @@ var bg_mobile_number = fs.readdirSync(
 const app = express(); // new express app
 const auth = admin.auth(); // reference to auth service
 const firestore = admin.firestore(); // reference to firestore cloud storage service
+const appVersion = packageJson.version;
 
 firestore
   .collection("pokemons")
@@ -69,12 +71,33 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(device.capture());
 
+// Client app version check, ignores cache policies if not synchronized with server's
+app.use((req, res, next) => {
+  const clientVersion = req.headers["x-client-version"];
+
+  if (
+    req.path.startsWith("/public/") &&
+    clientVersion &&
+    clientVersion !== appVersion
+  ) {
+    res.setHeader(
+      "Cache-Control",
+      "no-store, no-cache, must-revalidate, proxy-revalidate",
+    );
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+  }
+
+  res.setHeader("X-App-Version", appVersion);
+  next();
+});
+
 // JS/CSS/assets cache control policies
 app.use(
   "/public/js",
   express.static(__dirname + "/public/js", {
     setHeaders: function (res, path) {
-      res.setHeader("Cache-Control", `public, max-age=3600, must-revalidate`);
+      applyAssetCacheHeaders(res, 3600);
     },
   }),
 );
@@ -82,7 +105,7 @@ app.use(
   "/public/stylesheets",
   express.static(__dirname + "/public/stylesheets", {
     setHeaders: function (res, path) {
-      res.setHeader("Cache-Control", `public, max-age=3600, must-revalidate`);
+      applyAssetCacheHeaders(res, 3600);
     },
   }),
 );
@@ -90,13 +113,16 @@ app.use(
   "/public",
   express.static(__dirname + "/public", {
     setHeaders: function (res, path) {
-      res.setHeader(
-        "Cache-Control",
-        `public, max-age=31536000, must-revalidate`,
-      );
+      applyAssetCacheHeaders(res, 31536000);
     },
   }),
 );
+
+app.get("/app/version", (req, res) => {
+  res.status(200);
+  res.setHeader("X-App-Version", appVersion);
+  res.send({ version: appVersion });
+});
 
 // send firebase configuration to client
 app.get("/env/fb", (req, res) => {
@@ -621,6 +647,10 @@ async function updateStatsOnSentryRound(
 
 function getFootprintUrl(pokemonName) {
   return `/public/images/footprints/${encodeURIComponent(pokemonName)}.png`;
+}
+
+function applyAssetCacheHeaders(res, maxAge) {
+  res.setHeader("Cache-Control", `public, max-age=${maxAge}, must-revalidate`);
 }
 
 function bgPathSelector(device) {
