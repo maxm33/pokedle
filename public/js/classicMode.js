@@ -84,16 +84,18 @@ guessButton.addEventListener("click", async () => {
 
 async function submitGuess(guess, inputElement = textbar) {
   var normalizedGuess = guess?.trim();
-  inputElement.value = "";
   // in case of type errors, textbar will shake
   if (normalizedGuess == "" || !pokemons.includes(normalizedGuess)) {
+    inputElement.value = "";
     triggerElementAnimation(inputElement, "shake");
     return;
   }
   if (classicState.isPokemonGuessed(normalizedGuess)) {
+    inputElement.value = "";
     triggerElementAnimation(inputElement, "shake");
     return;
   }
+  inputElement.value = "";
   if (isAndroidDevice()) {
     inputElement.blur();
     window.setTimeout(() => inputElement.blur(), 0);
