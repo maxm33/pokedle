@@ -86,6 +86,10 @@ guessButton.addEventListener("click", async () => {
     triggerElementAnimation(textbar, "shake");
     return;
   }
+  if (classicState.isPokemonGuessed(guess)) {
+    triggerElementAnimation(textbar, "shake");
+    return;
+  }
   var token = null;
   if (auth.currentUser != null) token = await auth.currentUser.getIdToken();
   axios
@@ -185,23 +189,26 @@ function initializeAutocomplete(element, array) {
     list.setAttribute("id", "autocomplete-list");
     list.setAttribute("class", "autocomplete-items");
     this.parentNode.appendChild(list);
-    for (var i = 0; i < array.length; i++) {
-      if (array[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-        var option = document.createElement("DIV");
-        option.className = "list-options";
-        option.innerHTML = `<img alt="" src='/public/images/sprites/${
-          array[i]
-        }.webp' width='70px' height='70px'><strong style="color: #8cff66;">${array[
-          i
-        ].substr(0, val.length)}</strong>${array[i].substr(
-          val.length,
-        )}<input type='hidden' value='${array[i]}'>`;
-        option.addEventListener("click", function () {
-          element.value = this.getElementsByTagName("input")[0].value;
-          closeList();
-        });
-        list.appendChild(option);
-      }
+    var availableOptions = array.filter(
+      (name) =>
+        !classicState.isPokemonGuessed(name) &&
+        name.substr(0, val.length).toUpperCase() == val.toUpperCase(),
+    );
+    for (var i = 0; i < availableOptions.length; i++) {
+      var option = document.createElement("DIV");
+      option.className = "list-options";
+      option.innerHTML = `<img alt="" src='/public/images/sprites/${
+        availableOptions[i]
+      }.webp' width='70px' height='70px'><strong style="color: #8cff66;">${availableOptions[
+        i
+      ].substr(0, val.length)}</strong>${availableOptions[i].substr(
+        val.length,
+      )}<input type='hidden' value='${availableOptions[i]}'>`;
+      option.addEventListener("click", function () {
+        element.value = this.getElementsByTagName("input")[0].value;
+        closeList();
+      });
+      list.appendChild(option);
     }
   });
 

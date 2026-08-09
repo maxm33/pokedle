@@ -18,6 +18,16 @@ export class classicAppState {
     this.refreshState();
     return this.guesses.length;
   }
+  getGuessedPokemonNames() {
+    this.refreshState();
+    return this.guesses
+      .map((guess) => guess?.[0]?.name)
+      .filter((name) => typeof name === "string" && name.length > 0);
+  }
+  isPokemonGuessed(pokemonName) {
+    this.refreshState();
+    return isPokemonAlreadyGuessed(pokemonName, this.guesses);
+  }
   notRendered() {
     return this.rendered.length == 0 ? true : false;
   }
@@ -90,4 +100,18 @@ export class classicAppState {
     }
     for (var i = copy.length - 1; i >= 0; i--) this.renderGuess(copy[i]);
   }
+}
+
+function getGuessedPokemonNames(guesses = []) {
+  return guesses
+    .map((guess) => guess?.[0]?.name)
+    .filter((name) => typeof name === "string" && name.length > 0);
+}
+
+function isPokemonAlreadyGuessed(pokemonName, guesses = []) {
+  const normalizedGuess = pokemonName?.trim().toLowerCase();
+  if (!normalizedGuess) return false;
+  return getGuessedPokemonNames(guesses).some(
+    (name) => name.trim().toLowerCase() === normalizedGuess,
+  );
 }
