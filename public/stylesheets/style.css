@@ -412,6 +412,7 @@ input[type="hidden"] {
   gap: 0.4em;
   grid-template-columns: repeat(7, 5.5em);
   justify-content: center;
+  justify-items: center;
   margin-top: 0.6em;
   margin-bottom: 0.8em;
   visibility: hidden;
@@ -420,11 +421,14 @@ input[type="hidden"] {
 }
 .titles {
   align-items: center;
-  display: flex;
+  align-self: center;
+  display: grid;
   font-size: 0.7em;
   justify-content: center;
+  justify-self: center;
   margin: 0;
   min-height: 2.2em;
+  place-items: center;
   text-align: center;
   width: 5.5em;
 }
