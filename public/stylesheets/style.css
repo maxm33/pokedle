@@ -3,6 +3,11 @@
   src: url("/public/fonts/PokemonGb-RAeo.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "PokemonUnownGB";
+  src: url("/public/fonts/PokemonUnownGb-YAWa.ttf") format("truetype");
+}
+
 * {
   box-sizing: border-box;
   color: white;
@@ -403,17 +408,26 @@ input[type="hidden"] {
   color: black;
 }
 #titles-container {
-  display: flex;
-  flex-direction: row;
-  height: 3em;
+  align-items: center;
+  display: grid;
+  gap: 0.4em;
+  grid-template-columns: repeat(7, 5.5em);
+  justify-content: center;
   margin-top: 0.6em;
   margin-bottom: 0.8em;
   visibility: hidden;
-  width: 36em;
+  width: 100%;
+  max-width: 36em;
 }
 .titles {
-  margin-left: 0.7em;
-  width: 5em;
+  align-items: center;
+  display: flex;
+  font-size: 0.7em;
+  justify-content: center;
+  margin: 0;
+  min-height: 2.2em;
+  text-align: center;
+  width: 5.5em;
 }
 #titles-container > :last-child {
   margin-left: 0;
@@ -583,13 +597,20 @@ input[type="hidden"] {
 .dex-rows-names {
   margin: 2.5em;
 }
+.dex-rows-unknown-name {
+  color: #3b3b3b;
+  font-family: "PokemonUnownGB", "PokemonGB-RAeo", "Lucida Sans", sans-serif;
+  font-size: 1.2em;
+  letter-spacing: 0.08em;
+}
 .dex-rows-guesses {
   margin-left: auto;
   margin-right: 3em;
 }
 .ranking-rows {
-  font-size: 1.1em;
-  margin: 0.3em;
+  text-align: left;
+  font-size: 0.9em;
+  margin: 0.4em;
 }
 #credits {
   float: left;
@@ -693,9 +714,11 @@ input[type="hidden"] {
   #prev-next {
     font-size: 0.9em;
   }
-  #mode-title,
-  #mode-data {
+  #mode-title {
     font-size: 1em;
+  }
+  #mode-data {
+    font-size: 0.8em;
   }
   #autocomplete {
     margin-left: 0;
@@ -754,6 +777,15 @@ input[type="hidden"] {
   #victory-text4 {
     font-size: 0.8em;
   }
+  #dex-trainer {
+    font-size: 1em;
+  }
+  #dex-discovered {
+    font-size: 0.8em;
+  }
+  #dex-filter-label {
+    font-size: 0.7em;
+  }
   .dex-rows {
     height: 6em;
     width: 23em;
@@ -765,7 +797,7 @@ input[type="hidden"] {
   .dex-rows-numbers,
   .dex-rows-names,
   .dex-rows-guesses {
-    font-size: 0.9em;
+    font-size: 0.55em;
   }
   .dex-rows-numbers {
     margin: 1em;
@@ -776,8 +808,11 @@ input[type="hidden"] {
   .dex-rows-guesses {
     margin-right: 1.3em;
   }
+  .ranking-switch {
+    font-size: 0.75em;
+  }
   .ranking-rows {
-    font-size: 1em;
+    font-size: 0.65em;
   }
   #author {
     font-size: 0.7em;
@@ -802,8 +837,7 @@ input[type="hidden"] {
   #subtitle {
     font-size: 1.1em;
   }
-  #mode-title,
-  #mode-data {
+  #mode-title {
     font-size: 0.85em;
   }
   input[type="text"] {
@@ -859,12 +893,14 @@ input[type="hidden"] {
   .answers-text {
     font-size: 0.6em;
   }
-  #dex-trainer,
-  #dex-discovered,
-  .dex-rows-numbers,
-  .dex-rows-names,
-  .dex-rows-guesses {
-    font-size: 0.85em;
+  #dex-trainer {
+    font-size: 0.75em;
+  }
+  #dex-discovered {
+    font-size: 0.65em;
+  }
+  #dex-filter-label {
+    font-size: 0.55em;
   }
   .dex-rows {
     height: 6em;
@@ -880,8 +916,8 @@ input[type="hidden"] {
   .dex-rows-guesses {
     margin-right: 0.5em;
   }
-  .ranking-rows {
-    font-size: 0.8em;
+  .ranking-switch {
+    font-size: 0.7em;
   }
   #credits {
     padding: 0.75em;
