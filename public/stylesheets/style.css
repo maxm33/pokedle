@@ -750,11 +750,15 @@ input[type="hidden"] {
     max-width: 26em;
   }
   #titles-container {
+    gap: 0.25em;
+    grid-template-columns: repeat(7, minmax(0, 3.2em));
     margin-bottom: 0;
+    width: calc(7 * 3.2em + 6 * 0.25em);
   }
   .titles {
     font-size: 0.8em;
     margin: 0.2em;
+    width: 3.2em;
   }
   .answers {
     margin-top: 0;
@@ -904,8 +908,14 @@ input[type="hidden"] {
   .dex-rows {
     max-width: 23em;
   }
+  #titles-container {
+    gap: 0.2em;
+    grid-template-columns: repeat(7, minmax(0, 2.8em));
+    width: calc(7 * 2.8em + 6 * 0.2em);
+  }
   .titles {
     font-size: 0.7em;
+    width: 2.8em;
   }
   .answers {
     max-height: 4.2em;
