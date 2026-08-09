@@ -20,15 +20,14 @@
   -webkit-tap-highlight-color: transparent;
 }
 *::-webkit-scrollbar {
-  width: 0.75em;
+  width: 0;
+  height: 0;
 }
 *::-webkit-scrollbar-track {
   background: transparent;
 }
 *::-webkit-scrollbar-thumb {
-  background-color: #d3d3d3;
-  border: 0.15em solid transparent;
-  border-radius: 1em;
+  background-color: transparent;
 }
 html,
 body {
