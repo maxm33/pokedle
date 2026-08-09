@@ -178,6 +178,10 @@ input[type="text"] {
   padding: 0.65em;
   width: 100%;
 }
+input[type="text"]::placeholder {
+  overflow: visible;
+  text-overflow: clip;
+}
 input[type="hidden"] {
   background-color: transparent !important;
 }
