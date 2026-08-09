@@ -192,6 +192,9 @@ input[type="hidden"] {
 #sentry-status * {
   font-size: 0.95em;
 }
+#sentry-feedback {
+  margin-top: 0.5em;
+}
 .autocomplete-items {
   border-bottom: none;
   border-top: none;
@@ -594,7 +597,8 @@ input[type="hidden"] {
 }
 .dex-rows-unknown-name {
   color: #3b3b3b;
-  font-family: "PokemonUnownGB", "PokemonGB-RAeo", "Lucida Sans", sans-serif;
+  font-family:
+    "PokemonUnownGb-YAWa", "PokemonGB-RAeo", "Lucida Sans", sans-serif;
   font-size: 1.2em;
   letter-spacing: 0.08em;
 }
