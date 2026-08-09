@@ -176,6 +176,7 @@ input[type="text"] {
   border-radius: 1em;
   font-size: 1.05em;
   padding: 0.65em;
+  text-overflow: clip;
   width: 100%;
 }
 input[type="text"]::placeholder {
