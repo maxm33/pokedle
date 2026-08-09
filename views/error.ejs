@@ -12,10 +12,13 @@
     <title>Error</title>
   </head>
   <body style="background-image: url(&quot;<%= bg %>&quot;)">
-    <div id="container">
+    <div id="container" role="main">
       <div id="logo" class="fadeIn">
         <a aria-label="Go to Home" href="/"
-          ><img alt="" src="/public/images/icons/pokedle-logo.webp"
+          ><img
+            fetchpriority="high"
+            alt=""
+            src="/public/images/icons/pokedle-logo.webp"
         /></a>
       </div>
       <div style="font-size: 1em" class="fadeIn">

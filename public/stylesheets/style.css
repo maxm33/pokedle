@@ -1,6 +1,7 @@
 @font-face {
   font-family: "PokemonGB";
   src: url("/public/fonts/PokemonGb-RAeo.ttf") format("truetype");
+  font-display: swap;
 }
 
 @font-face {

@@ -18,7 +18,7 @@
     <title>Pokédle - Classic</title>
   </head>
   <body style="background-image: url(&quot;<%= bg %>&quot;)">
-    <div id="topnav">
+    <div id="topnav" role="banner">
       <div id="credits">
         <p id="author">
           Created by <a href="https://github.com/maxm33">maxm33</a>
@@ -66,11 +66,11 @@
         </button>
       </div>
     </div>
-    <div id="container">
+    <div id="container" role="main">
       <div id="logo-container">
         <div id="logo">
           <a aria-label="Go to Home" href="/"
-            ><img alt="" src="/public/images/icons/pokedle-logo.webp"
+            ><img fetchpriority="high" alt="" src="/public/images/icons/pokedle-logo.webp"
           /></a>
         </div>
         <div id="mode">Classic</div>
