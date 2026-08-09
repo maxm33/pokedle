@@ -596,7 +596,7 @@ input[type="hidden"] {
 .dex-rows-names,
 .dex-rows-guesses {
   color: black;
-  font-size: 1em;
+  font-size: 0.7em;
 }
 .dex-rows-numbers {
   margin: 1.5em;
