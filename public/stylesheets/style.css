@@ -1,6 +1,6 @@
 @font-face {
   font-family: "PokemonGB-RAeo";
-  src: url("/public/fonts/PokemonGB-RAeo.ttf") format("truetype");
+  src: url("/public/fonts/PokemonGb-RAeo.ttf") format("truetype");
 }
 
 * {
@@ -76,7 +76,12 @@ body {
     "PokemonGB-RAeo", "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
-
+#container input,
+#container button,
+#container textarea,
+#container select {
+  font-family: inherit;
+}
 #container {
   align-items: center;
   display: flex;
