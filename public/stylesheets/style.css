@@ -72,8 +72,9 @@ body {
 }
 #container,
 #container * {
-  font-family: "PokemonGB-RAeo", "Lucida Sans", "Lucida Sans Regular",
-    "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-family:
+    "PokemonGB-RAeo", "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
 #container {
