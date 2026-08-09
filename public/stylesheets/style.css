@@ -187,6 +187,13 @@ input[type="hidden"] {
   position: relative;
   width: 16em;
 }
+#textbar {
+  font-size: 0.55em;
+}
+#sentry-status,
+#sentry-status * {
+  font-size: 0.65em;
+}
 .autocomplete-items {
   border-bottom: none;
   border-top: none;
@@ -211,7 +218,7 @@ input[type="hidden"] {
   align-items: center;
   border-radius: 0.36em;
   display: flex;
-  font-size: 1.1em;
+  font-size: 0.8em;
   font-weight: 100;
 }
 #sentry-footprint-container {
@@ -282,7 +289,7 @@ input[type="hidden"] {
   align-items: flex-start;
 }
 .sentry-name {
-  font-size: 1.05em;
+  font-size: 0.65em;
   font-weight: 600;
 }
 .sentry-mini {
@@ -810,7 +817,7 @@ input[type="hidden"] {
     max-height: 17.5em;
   }
   .list-options {
-    font-size: 0.8em;
+    font-size: 0.65em;
   }
   #guess-button {
     font-size: 0.7em;
