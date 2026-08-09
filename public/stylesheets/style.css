@@ -408,9 +408,9 @@ input[type="hidden"] {
 }
 #titles-container {
   align-items: center;
-  display: grid;
+  display: flex;
+  flex-direction: row;
   gap: 0.4em;
-  grid-template-columns: repeat(7, 5.5em);
   justify-content: center;
   margin-top: 0.6em;
   margin-bottom: 0.8em;
@@ -435,6 +435,14 @@ input[type="hidden"] {
   align-items: center;
   display: flex;
   flex-direction: column;
+}
+#state-container {
+  display: grid;
+  gap: 0.4em;
+  grid-template-columns: repeat(7, 5.5em);
+  justify-content: center;
+  max-width: 36em;
+  width: 100%;
 }
 .answers {
   animation: fadeIn 1.5s;
