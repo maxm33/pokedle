@@ -91,9 +91,15 @@
         var subdiv = document.createElement("DIV");
         subdiv.setAttribute("class", "dex-rows");
         subdiv.setAttribute("id", pokemons[i]);
+        var pokemonSlug = pokemons[i]
+          .toLowerCase()
+          .replace("mr. mime", "mr-mime")
+          .replace("nidoranf", "nidoran-female")
+          .replace("nidoranm", "nidoran-male")
+          .replaceAll(" ", "-");
         subdiv.innerHTML = `<p class="dex-rows-numbers">${i + 1}.</p>
         <img alt="" src="/public/images/sprites/unknown.webp" width="90px" height="90px"/>
-        <p class="dex-rows-names dex-rows-unknown-name">${pokemons[i]}</p>`;
+        <p class="dex-rows-names dex-rows-unknown-name">${pokemonSlug}</p>`;
         div.appendChild(subdiv);
       }
       container.appendChild(div);

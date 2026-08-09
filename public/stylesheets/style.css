@@ -1,5 +1,5 @@
 @font-face {
-  font-family: "PokemonGB-RAeo";
+  font-family: "PokemonGB";
   src: url("/public/fonts/PokemonGb-RAeo.ttf") format("truetype");
 }
 
@@ -79,7 +79,7 @@ body {
 #container,
 #container * {
   font-family:
-    "PokemonGB-RAeo", "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "PokemonGB", "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 #container {
@@ -598,7 +598,8 @@ input[type="hidden"] {
 }
 .dex-rows-unknown-name {
   color: #3b3b3b;
-  font-family: "PokemonUnownGB", "PokemonGB-RAeo", "Lucida Sans", sans-serif;
+  font-family:
+    "PokemonUnownGB", "PokemonGB", "Lucida Sans", sans-serif !important;
   font-size: 1.2em;
   letter-spacing: 0.08em;
   font-weight: 400;
