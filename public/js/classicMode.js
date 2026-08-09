@@ -79,16 +79,24 @@ onAuthStateChanged(auth, (user) => {
 });
 
 guessButton.addEventListener("click", async () => {
-  var guess = textbar.value;
-  textbar.value = "";
+  await submitGuess(textbar.value);
+});
+
+async function submitGuess(guess, inputElement = textbar) {
+  var normalizedGuess = guess?.trim();
+  inputElement.value = "";
   // in case of type errors, textbar will shake
-  if (guess == "" || !pokemons.includes(guess)) {
-    triggerElementAnimation(textbar, "shake");
+  if (normalizedGuess == "" || !pokemons.includes(normalizedGuess)) {
+    triggerElementAnimation(inputElement, "shake");
     return;
   }
-  if (classicState.isPokemonGuessed(guess)) {
-    triggerElementAnimation(textbar, "shake");
+  if (classicState.isPokemonGuessed(normalizedGuess)) {
+    triggerElementAnimation(inputElement, "shake");
     return;
+  }
+  if (isAndroidDevice()) {
+    inputElement.blur();
+    window.setTimeout(() => inputElement.blur(), 0);
   }
   var token = null;
   if (auth.currentUser != null) token = await auth.currentUser.getIdToken();
@@ -96,7 +104,7 @@ guessButton.addEventListener("click", async () => {
     .post("/classic", {
       token: token,
       uid: userID,
-      guess: guess,
+      guess: normalizedGuess,
       tries: classicState.getTries() + 1,
     })
     .then((res) => {
@@ -105,13 +113,13 @@ guessButton.addEventListener("click", async () => {
       if (classicState.notRendered()) animateFadeIn(containertitles, "1.5s"); // hint categories will be shown
       classicState.addGuess(res.data); // rendering hints related to current guess
       if (hasWon) {
-        textbar.disabled = true; // textbar is disabled
+        inputElement.disabled = true; // textbar is disabled
         onVictory(classicState.getTries(), pokemon);
         classicState.removeState(); // reset the state
       }
     })
     .catch((err) => console.error(err));
-});
+}
 
 // where timer and initial guess rendering are managed
 function manageGameState(id, remainingTime) {
@@ -204,9 +212,10 @@ function initializeAutocomplete(element, array) {
       ].substr(0, val.length)}</strong>${availableOptions[i].substr(
         val.length,
       )}<input type='hidden' value='${availableOptions[i]}'>`;
-      option.addEventListener("click", function () {
+      option.addEventListener("click", async function () {
         element.value = this.getElementsByTagName("input")[0].value;
         closeList();
+        await submitGuess(element.value, element);
       });
       list.appendChild(option);
     }
@@ -222,6 +231,10 @@ function initializeAutocomplete(element, array) {
   document.addEventListener("click", (e) => {
     closeList(e.target);
   });
+}
+
+function isAndroidDevice() {
+  return /android/i.test(navigator.userAgent || "");
 }
 
 function triggerElementAnimation(element, animationClass) {
