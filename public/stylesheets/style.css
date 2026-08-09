@@ -415,8 +415,8 @@ input[type="hidden"] {
   margin-top: 0.6em;
   margin-bottom: 0.8em;
   visibility: hidden;
-  width: 100%;
-  max-width: 36em;
+  width: calc(7 * 5.5em + 6 * 0.4em);
+  max-width: 100%;
 }
 .titles {
   align-items: center;
@@ -444,7 +444,7 @@ input[type="hidden"] {
   gap: 0.4em;
   grid-template-columns: repeat(7, 5.5em);
   justify-content: center;
-  max-width: 36em;
+  max-width: calc(7 * 5.5em + 6 * 0.4em);
   width: 100%;
 }
 .answers {
@@ -453,7 +453,7 @@ input[type="hidden"] {
   display: flex;
   height: 5em;
   padding-top: 0.6em;
-  width: 36em;
+  width: 100%;
 }
 .wrong,
 .correct,
