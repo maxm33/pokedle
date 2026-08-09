@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "PokemonGB-RAeo";
+  src: url("/public/fonts/PokemonGB-RAeo.ttf") format("truetype");
+}
+
 * {
   box-sizing: border-box;
   color: white;
@@ -65,6 +70,12 @@ body {
 #login-button {
   background-color: #8cff66;
 }
+#container,
+#container * {
+  font-family: "PokemonGB-RAeo", "Lucida Sans", "Lucida Sans Regular",
+    "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+
 #container {
   align-items: center;
   display: flex;
