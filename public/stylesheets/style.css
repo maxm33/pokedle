@@ -174,7 +174,9 @@ input[type="text"] {
   background-color: #333;
   border: 0.05em solid transparent;
   border-radius: 1em;
+  box-sizing: border-box;
   font-size: 1.05em;
+  line-height: 1.2;
   padding: 0.65em;
   text-overflow: clip;
   width: 100%;
