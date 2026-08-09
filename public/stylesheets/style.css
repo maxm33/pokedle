@@ -81,12 +81,6 @@ body {
     "PokemonGB-RAeo", "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
-#container input,
-#container button,
-#container textarea,
-#container select {
-  font-family: inherit;
-}
 #container {
   align-items: center;
   display: flex;
@@ -110,11 +104,10 @@ body {
   transform: scale(1.1);
 }
 #mode {
-  font-family: "Script MT", "Brush Script Std", cursive;
-  font-size: 1.2em;
+  font-size: 0.7em;
   position: absolute;
-  right: 0;
-  top: 80%;
+  right: -10%;
+  top: 90%;
 }
 #prev-next {
   align-items: center;
@@ -197,7 +190,7 @@ input[type="hidden"] {
 }
 #sentry-status,
 #sentry-status * {
-  font-size: 0.65em;
+  font-size: 0.95em;
 }
 .autocomplete-items {
   border-bottom: none;
@@ -273,10 +266,12 @@ input[type="hidden"] {
 .sentry-options {
   align-items: center;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
   gap: 0.6em;
-  margin-top: 1em;
-  width: 20%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  justify-content: center;
+  margin: 1em auto 0;
+  max-width: 22em;
+  width: min(90vw, 22em);
 }
 .sentry-option {
   align-items: center;
@@ -720,6 +715,10 @@ input[type="hidden"] {
   #mode-data {
     font-size: 0.8em;
   }
+  #sentry-status,
+  #sentry-status * {
+    font-size: 0.85em;
+  }
   #autocomplete {
     margin-left: 0;
   }
@@ -839,6 +838,12 @@ input[type="hidden"] {
   }
   #mode-title {
     font-size: 0.85em;
+  }
+  #sentry-title {
+    font-size: 0.6em;
+  }
+  #sentry-meta * {
+    font-size: 0.9em;
   }
   input[type="text"] {
     font-size: 0.7em;
