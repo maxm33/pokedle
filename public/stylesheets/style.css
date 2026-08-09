@@ -408,9 +408,9 @@ input[type="hidden"] {
 }
 #titles-container {
   align-items: center;
-  display: flex;
-  flex-direction: row;
+  display: grid;
   gap: 0.4em;
+  grid-template-columns: repeat(7, 5.5em);
   justify-content: center;
   margin-top: 0.6em;
   margin-bottom: 0.8em;
@@ -427,6 +427,9 @@ input[type="hidden"] {
   min-height: 2.2em;
   text-align: center;
   width: 5.5em;
+}
+.titles:first-child {
+  visibility: hidden;
 }
 #titles-container > :last-child {
   margin-left: 0;
@@ -608,7 +611,7 @@ input[type="hidden"] {
   color: #3b3b3b;
   font-family:
     "PokemonUnownGB", "PokemonGB", "Lucida Sans", sans-serif !important;
-  font-size: 1.2em;
+  font-size: 0.9em;
   letter-spacing: 0.08em;
   font-weight: 400;
 }
@@ -853,11 +856,26 @@ input[type="hidden"] {
   #mode-title {
     font-size: 0.85em;
   }
+  #mode-switch {
+    font-size: 0.65em;
+    margin-top: 0.5em;
+  }
   #sentry-title {
     font-size: 0.6em;
   }
   #sentry-meta * {
     font-size: 0.9em;
+  }
+  #sentry-feedback {
+    font-size: 0.6em;
+  }
+  .sentry-name {
+    font-size: 0.55em;
+  }
+  .sentry-mini {
+    width: 48px;
+    height: 48px;
+    margin-left: 0.1em;
   }
   input[type="text"] {
     font-size: 0.7em;
