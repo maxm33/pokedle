@@ -6,6 +6,7 @@
 @font-face {
   font-family: "PokemonUnownGB";
   src: url("/public/fonts/PokemonUnownGb-YAWa.ttf") format("truetype");
+  font-display: swap;
 }
 
 * {
@@ -597,10 +598,10 @@ input[type="hidden"] {
 }
 .dex-rows-unknown-name {
   color: #3b3b3b;
-  font-family:
-    "PokemonUnownGb-YAWa", "PokemonGB-RAeo", "Lucida Sans", sans-serif;
+  font-family: "PokemonUnownGB", "PokemonGB-RAeo", "Lucida Sans", sans-serif;
   font-size: 1.2em;
   letter-spacing: 0.08em;
+  font-weight: 400;
 }
 .dex-rows-guesses {
   margin-left: auto;
