@@ -750,10 +750,12 @@ input[type="hidden"] {
     max-width: 26em;
   }
   #titles-container {
-    gap: 0.25em;
+    gap: 0em;
     grid-template-columns: repeat(7, minmax(0, 3.2em));
     margin-bottom: 0;
-    width: calc(7 * 3.2em + 6 * 0.25em);
+    margin-left: auto;
+    margin-right: auto;
+    width: calc(7 * 3.2em + 6 * 1.5em);
   }
   .titles {
     font-size: 0.8em;
@@ -909,12 +911,14 @@ input[type="hidden"] {
     max-width: 23em;
   }
   #titles-container {
-    gap: 0.2em;
+    gap: 0em;
     grid-template-columns: repeat(7, minmax(0, 2.8em));
-    width: calc(7 * 2.8em + 6 * 0.2em);
+    margin-left: auto;
+    margin-right: auto;
+    width: calc(7 * 2.8em + 6 * 0.6em);
   }
   .titles {
-    font-size: 0.7em;
+    font-size: 0.5em;
     width: 2.8em;
   }
   .answers {
