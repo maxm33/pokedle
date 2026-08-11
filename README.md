@@ -113,6 +113,9 @@ npm start
 > [!NOTE]
 > Locally, Pokédle is available at `localhost:3000`.
 
+> [!NOTE]
+> Firebase/Firestore API interactions are not available on localhost, unless you build your own storage and choose to abilitate it to do so.
+
 <br>
 
 ## Troubleshooting
