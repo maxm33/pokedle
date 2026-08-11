@@ -90,7 +90,7 @@ A new minor update has been implemented:<br>
 
 - added new mode `Sentry Duty`, based on the PMD2 mini-game;
 
-- added new logo image and new pokemon-gameboy-like font.
+- added new logo image and new gameboy-like pokémon font.
 
 <br>
 
