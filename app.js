@@ -518,7 +518,7 @@ function classicVerifyGuess(guess, answer) {
 
         const distance = colorDistance(guessColor, answerColor);
 
-        if (distance <= 8) {
+        if (distance <= 25) {
           partialMatches++;
           break;
         }

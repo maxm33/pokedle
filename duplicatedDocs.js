@@ -84,11 +84,9 @@ async function main() {
   }
 
   duplicateGroups.forEach((documents, index) => {
-    console.log(
-      `\n------------------------------------------------------------`,
-    );
+    console.log(`\n--------------------------------------------------`);
     console.log(`DUPLICATE GROUP ${index + 1}`);
-    console.log(`------------------------------------------------------------`);
+    console.log(`--------------------------------------------------`);
     console.log(`Documents: ${documents.length}`);
     console.log(`Pokémon:`);
 
