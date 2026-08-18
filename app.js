@@ -500,14 +500,43 @@ function classicVerifyGuess(guess, answer) {
     if (guess.gen > answer.gen) response.gen = "wrong-lower";
     if (guess.gen < answer.gen) response.gen = "wrong-higher";
 
-    var guessColors = guess.colors;
-    for (var i = 0; i < guessColors.length; i++)
-      if (answer.colors.includes(guessColors[i])) count++;
-    var colors = answer.colors;
-    if (count == 0) response.colors = "wrong";
-    else if (colors.length != count || guessColors.length != count)
+    var guessColors = guess.colors || [];
+    var answerColors = answer.colors || [];
+    var exactMatches = 0;
+    var partialMatches = 0;
+
+    for (var i = 0; i < guessColors.length; i++) {
+      const guessColor = guessColors[i].toLowerCase();
+
+      for (var j = 0; j < answerColors.length; j++) {
+        const answerColor = answerColors[j].toLowerCase();
+
+        if (guessColor === answerColor) {
+          exactMatches++;
+          break;
+        }
+
+        const distance = colorDistance(guessColor, answerColor);
+
+        if (distance <= 8) {
+          partialMatches++;
+          break;
+        }
+      }
+    }
+
+    const totalMatches = exactMatches + partialMatches;
+
+    if (
+      exactMatches === answerColors.length &&
+      guessColors.length === answerColors.length
+    ) {
+      response.colors = "correct";
+    } else if (totalMatches > 0) {
       response.colors = "partial";
-    count = 0;
+    } else {
+      response.colors = "wrong";
+    }
 
     var guessTypes = guess.types;
     for (var i = 0; i < guessTypes.length; i++)
@@ -642,6 +671,52 @@ async function updateStatsOnSentryRound(
       }
     })
     .catch((err) => console.error(err));
+}
+
+function hexToRgb(hex) {
+  hex = hex.replace("#", "");
+  return {
+    r: parseInt(hex.substring(0, 2), 16),
+    g: parseInt(hex.substring(2, 4), 16),
+    b: parseInt(hex.substring(4, 6), 16),
+  };
+}
+
+function rgbToLab({ r, g, b }) {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+
+  r = r > 0.04045 ? Math.pow((r + 0.055) / 1.055, 2.4) : r / 12.92;
+  g = g > 0.04045 ? Math.pow((g + 0.055) / 1.055, 2.4) : g / 12.92;
+  b = b > 0.04045 ? Math.pow((b + 0.055) / 1.055, 2.4) : b / 12.92;
+
+  const x = (r * 0.4124 + g * 0.3576 + b * 0.1805) / 0.95047;
+  const y = (r * 0.2126 + g * 0.7152 + b * 0.0722) / 1.0;
+  const z = (r * 0.0193 + g * 0.1192 + b * 0.9505) / 1.08883;
+
+  const transform = (value) =>
+    value > 0.008856 ? Math.pow(value, 1 / 3) : 7.787 * value + 16 / 116;
+
+  const fx = transform(x);
+  const fy = transform(y);
+  const fz = transform(z);
+
+  return {
+    l: 116 * fy - 16,
+    a: 500 * (fx - fy),
+    b: 200 * (fy - fz),
+  };
+}
+
+function colorDistance(hex1, hex2) {
+  const lab1 = rgbToLab(hexToRgb(hex1));
+  const lab2 = rgbToLab(hexToRgb(hex2));
+  return Math.sqrt(
+    Math.pow(lab1.l - lab2.l, 2) +
+      Math.pow(lab1.a - lab2.a, 2) +
+      Math.pow(lab1.b - lab2.b, 2),
+  );
 }
 
 function getFootprintUrl(pokemonName) {
