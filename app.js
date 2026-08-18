@@ -511,14 +511,12 @@ function classicVerifyGuess(guess, answer) {
       for (var j = 0; j < answerColors.length; j++) {
         const answerColor = answerColors[j].toLowerCase();
 
-        if (guessColor === answerColor) {
-          exactMatches++;
-          break;
-        }
-
         const distance = colorDistance(guessColor, answerColor);
 
-        if (distance <= 25) {
+        if (distance <= 10) {
+          exactMatches++;
+          break;
+        } else if (distance <= 25) {
           partialMatches++;
           break;
         }
