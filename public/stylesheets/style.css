@@ -955,6 +955,10 @@ input[type="hidden"] {
   .answers-text {
     font-size: 0.6em;
   }
+  .dex-rows img {
+    height: 70px;
+    width: 70px;
+  }
   #dex-trainer {
     font-size: 0.75em;
   }
