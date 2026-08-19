@@ -513,7 +513,7 @@ function classicVerifyGuess(guess, answer) {
 
         const distance = colorDistance(guessColor, answerColor);
 
-        if (distance <= 5) {
+        if (distance <= 7.5) {
           exactMatches++;
           break;
         } else if (distance <= 10) {
