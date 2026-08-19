@@ -513,10 +513,10 @@ function classicVerifyGuess(guess, answer) {
 
         const distance = colorDistance(guessColor, answerColor);
 
-        if (distance <= 10) {
+        if (distance <= 7.5) {
           exactMatches++;
           break;
-        } else if (distance <= 25) {
+        } else if (distance <= 15) {
           partialMatches++;
           break;
         }
@@ -710,10 +710,27 @@ function rgbToLab({ r, g, b }) {
 function colorDistance(hex1, hex2) {
   const lab1 = rgbToLab(hexToRgb(hex1));
   const lab2 = rgbToLab(hexToRgb(hex2));
+  const deltaL = lab1.l - lab2.l;
+
+  const C1 = Math.sqrt(lab1.a * lab1.a + lab1.b * lab1.b);
+  const C2 = Math.sqrt(lab2.a * lab2.a + lab2.b * lab2.b);
+  const deltaC = C1 - C2;
+
+  const deltaA = lab1.a - lab2.a;
+  const deltaB = lab1.b - lab2.b;
+  let deltaH2 = deltaA * deltaA + deltaB * deltaB - deltaC * deltaC;
+  deltaH2 = Math.max(0, deltaH2);
+
+  const K1 = 0.045;
+  const K2 = 0.015;
+  const SL = 1;
+  const SC = 1 + K1 * C1;
+  const SH = 1 + K2 * C1;
+
   return Math.sqrt(
-    Math.pow(lab1.l - lab2.l, 2) +
-      Math.pow(lab1.a - lab2.a, 2) +
-      Math.pow(lab1.b - lab2.b, 2),
+    Math.pow(deltaL / SL, 2) +
+      Math.pow(deltaC / SC, 2) +
+      deltaH2 / Math.pow(SH, 2),
   );
 }
 
