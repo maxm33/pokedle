@@ -505,25 +505,112 @@ function classicVerifyGuess(guess, answer) {
     var exactMatches = 0;
     var partialMatches = 0;
 
-    for (var i = 0; i < guessColors.length; i++) {
-      const guessColor = guessColors[i].toLowerCase();
+    // --------------------------------------------------------
+    // Find the optimal one-to-one color matching.
+    //
+    // Each guess color can match at most one answer color.
+    // Each answer color can match at most one guess color.
+    //
+    // Priority:
+    //   1. Maximize exact matches (ΔE94 <= 7.5)
+    //   2. Maximize total matches (ΔE94 <= 10)
+    //   3. Minimize total ΔE94
+    //
+    // Therefore the order of the colors in either array
+    // has no influence on the result.
+    // --------------------------------------------------------
 
-      for (var j = 0; j < answerColors.length; j++) {
-        const answerColor = answerColors[j].toLowerCase();
+    var bestMatching = {
+      exactMatches: -1,
+      totalMatches: -1,
+      totalDistance: Infinity,
+      matches: [],
+    };
 
-        const distance = colorDistance(guessColor, answerColor);
+    function findBestColorMatching(
+      guessIndex,
+      usedAnswerColors,
+      matches,
+      exactCount,
+      totalDistance,
+    ) {
+      if (guessIndex >= guessColors.length) {
+        var totalMatches = matches.length;
 
-        if (distance <= 7.5) {
-          exactMatches++;
-          break;
-        } else if (distance <= 10) {
-          partialMatches++;
-          break;
+        var isBetter =
+          exactCount > bestMatching.exactMatches ||
+          (exactCount === bestMatching.exactMatches &&
+            totalMatches > bestMatching.totalMatches) ||
+          (exactCount === bestMatching.exactMatches &&
+            totalMatches === bestMatching.totalMatches &&
+            totalDistance < bestMatching.totalDistance);
+
+        if (isBetter) {
+          bestMatching = {
+            exactMatches: exactCount,
+            totalMatches: totalMatches,
+            totalDistance: totalDistance,
+            matches: matches.slice(),
+          };
         }
+
+        return;
+      }
+
+      findBestColorMatching(
+        guessIndex + 1,
+        usedAnswerColors,
+        matches,
+        exactCount,
+        totalDistance,
+      );
+
+      var guessColor = guessColors[guessIndex].toLowerCase();
+
+      for (
+        var answerIndex = 0;
+        answerIndex < answerColors.length;
+        answerIndex++
+      ) {
+        if (usedAnswerColors.has(answerIndex)) continue;
+
+        var answerColor = answerColors[answerIndex].toLowerCase();
+
+        var distance = colorDistance(guessColor, answerColor);
+
+        if (distance > 10) continue;
+
+        usedAnswerColors.add(answerIndex);
+
+        matches.push({
+          guessIndex: guessIndex,
+          answerIndex: answerIndex,
+          guessColor: guessColor,
+          answerColor: answerColor,
+          distance: distance,
+          exact: distance <= 7.5,
+        });
+
+        findBestColorMatching(
+          guessIndex + 1,
+          usedAnswerColors,
+          matches,
+          exactCount + (distance <= 7.5 ? 1 : 0),
+          totalDistance + distance,
+        );
+
+        matches.pop();
+        usedAnswerColors.delete(answerIndex);
       }
     }
 
-    const totalMatches = exactMatches + partialMatches;
+    findBestColorMatching(0, new Set(), [], 0, 0);
+
+    exactMatches = bestMatching.exactMatches;
+
+    partialMatches = bestMatching.totalMatches - bestMatching.exactMatches;
+
+    var totalMatches = exactMatches + partialMatches;
 
     if (
       exactMatches === answerColors.length &&
@@ -539,7 +626,9 @@ function classicVerifyGuess(guess, answer) {
     var guessTypes = guess.types;
     for (var i = 0; i < guessTypes.length; i++)
       if (answer.types.includes(guessTypes[i])) count++;
+
     var types = answer.types;
+
     if (count == 0) response.types = "wrong";
     else if (types.length != count || guessTypes.length != count)
       response.types = "partial";
