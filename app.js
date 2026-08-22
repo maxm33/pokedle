@@ -437,7 +437,7 @@ app.get("/user/:gid/pokedex", async (req, res, next) => {
     });
 });
 
-app.all("/*", (_, _, next) => {
+app.all("/*", (req, res, next) => {
   next(createError(404));
 });
 
