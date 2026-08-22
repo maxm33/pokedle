@@ -28,23 +28,23 @@ const firebaseConfig = {
 };
 
 // --- CLASSIC MODE VARIABLES ---
-var classicWinners = []; // to store uuid of players who have won the current game
-var classicGameID; // to store uuid of current game
-var classicPreviousPokemon; // to store the previous generated pokemon
-var classicCurrentPokemon; // to store the current generated pokemon
+let classicWinners = []; // to store uuid of players who have won the current game
+let classicGameID; // to store uuid of current game
+let classicPreviousPokemon; // to store the previous generated pokemon
+let classicCurrentPokemon; // to store the current generated pokemon
 
 // --- SENTRY DUTY MODE VARIABLES ---
-var sentryChallenges = {}; // store active sentry duty challenges
-var sentryDurationMs = 30 * 1000; // duration for each sentry guess
-var sentryFailureLimit = 3; // maximum session failures before game over
+let sentryChallenges = {}; // store active sentry duty challenges
+const sentryDurationMs = 30 * 1000; // duration for each sentry guess
+const sentryFailureLimit = 3; // maximum session failures before game over
 
 // Background images per device type
-var bg_desktop_option; // to store current background option for rendering desktop views
-var bg_mobile_option; // to store current background option for rendering mobile views
-var bg_desktop_number = fs.readdirSync(
+let bg_desktop_option; // to store current background option for rendering desktop views
+let bg_mobile_option; // to store current background option for rendering mobile views
+const bg_desktop_number = fs.readdirSync(
   "./public/images/backgrounds_desktop",
 ).length; // number of desktop background options
-var bg_mobile_number = fs.readdirSync(
+const bg_mobile_number = fs.readdirSync(
   "./public/images/backgrounds_mobile",
 ).length; //number of mobile background options
 
@@ -95,7 +95,7 @@ app.use((req, res, next) => {
 app.use(
   "/public/js",
   express.static(__dirname + "/public/js", {
-    setHeaders: function (res, path) {
+    setHeaders: function (res, _) {
       applyAssetCacheHeaders(res, 3600);
     },
   }),
@@ -103,7 +103,7 @@ app.use(
 app.use(
   "/public/stylesheets",
   express.static(__dirname + "/public/stylesheets", {
-    setHeaders: function (res, path) {
+    setHeaders: function (res, _) {
       applyAssetCacheHeaders(res, 3600);
     },
   }),
@@ -111,26 +111,26 @@ app.use(
 app.use(
   "/public",
   express.static(__dirname + "/public", {
-    setHeaders: function (res, path) {
+    setHeaders: function (res, _) {
       applyAssetCacheHeaders(res, 31536000);
     },
   }),
 );
 
-app.get("/app/version", (req, res) => {
+app.get("/app/version", (_, res) => {
   res.status(200);
   res.setHeader("X-App-Version", appVersion);
   res.send({ version: appVersion });
 });
 
 // send firebase configuration to client
-app.get("/env/fb", (req, res) => {
+app.get("/env/fb", (_, res) => {
   res.status(200);
   res.send(firebaseConfig);
 });
 
 // classic mode redirected as home page
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.redirect("/classic");
 });
 
@@ -151,9 +151,9 @@ app.post("/classic", async (req, res, next) => {
     .then((queryResult) => {
       if (queryResult.docs.length != 1)
         next(createError(404, "Pokémon not found"));
-      var guess = queryResult.docs[0].data();
+      let guess = queryResult.docs[0].data();
       // confront guess with answer, return the hints to help user's guesses
-      var result = classicVerifyGuess(guess, classicCurrentPokemon);
+      let result = classicVerifyGuess(guess, classicCurrentPokemon);
       // if player has won
       if (result[2]) {
         if (!classicWinners.includes(req.body.uid))
@@ -184,7 +184,7 @@ app.post("/classic", async (req, res, next) => {
 });
 
 // send game ID and remaining time before next generation
-app.get("/classic/state", (req, res) => {
+app.get("/classic/state", (_, res) => {
   res.status(200);
   res.send([
     classicGameID,
@@ -203,7 +203,7 @@ app.get("/classic/ranking", async (req, res) => {
     .limit(10)
     .get()
     .then((queryResult) => {
-      var topTen = [];
+      let topTen = [];
       queryResult.forEach((user) => {
         topTen[topTen.length] = {
           id: user.id,
@@ -225,7 +225,7 @@ app.get("/classic/ranking", async (req, res) => {
 
 // send a boolean stating if user can play the current game
 app.get("/classic/canPlay/uid=:uid&gid=:gid", (req, res) => {
-  var canPlay = !classicWinners.includes(req.params.uid);
+  let canPlay = !classicWinners.includes(req.params.uid);
   if (canPlay && req.params.gid != null)
     canPlay = !classicWinners.includes(req.params.gid);
   res.status(200);
@@ -296,7 +296,7 @@ app.post("/sentry", async (req, res, next) => {
 });
 
 // send current sentry duty challenge to the user
-app.get("/sentry/state", async (req, res, next) => {
+app.get("/sentry/state", async (_, res, next) => {
   try {
     const challenge = await generateSentryChallenge();
     res.status(200);
@@ -315,7 +315,7 @@ app.get("/sentry/ranking", async (req, res) => {
     .limit(10)
     .get()
     .then((queryResult) => {
-      var topTen = [];
+      let topTen = [];
       queryResult.forEach((user) => {
         topTen[topTen.length] = {
           id: user.id,
@@ -336,7 +336,7 @@ app.get("/sentry/ranking", async (req, res) => {
 });
 
 // generate new unique id (uuid) on request
-app.get("/user/id", (req, res) => {
+app.get("/user/id", (_, res) => {
   res.status(201);
   res.send(uuid());
 });
@@ -351,7 +351,7 @@ app.put("/user/:gid", async (req, res) => {
           .doc(decodedToken.uid)
           .get()
           .then((doc) => {
-            var user = doc.data();
+            let user = doc.data();
             if (user == undefined) {
               // first-login user, set up a fresh document
               user = {
@@ -385,13 +385,13 @@ app.get("/user/:gid/profile", async (req, res, next) => {
     .doc(req.params.gid)
     .get()
     .then((doc) => {
-      var user = doc.data();
+      let user = doc.data();
       if (user == undefined) next(createError(404, "User does not exist"));
       else {
         res.status(200);
-        var sessions = user.sentrySessionsCompleted || 0;
-        var failures = user.sentryFailures || 0;
-        var accuracy =
+        let sessions = user.sentrySessionsCompleted || 0;
+        let failures = user.sentryFailures || 0;
+        let accuracy =
           sessions > 0
             ? Math.round(((sessions - failures) / sessions) * 1000) / 10
             : 0;
@@ -420,7 +420,7 @@ app.get("/user/:gid/pokedex", async (req, res, next) => {
     .doc(req.params.gid)
     .get()
     .then((doc) => {
-      var user = doc.data();
+      let user = doc.data();
       if (user == undefined) next(createError(404, "User does not exist"));
       else {
         res.status(200);
@@ -437,12 +437,12 @@ app.get("/user/:gid/pokedex", async (req, res, next) => {
     });
 });
 
-app.all("/*", (req, res, next) => {
+app.all("/*", (_, _, next) => {
   next(createError(404));
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res, _) {
   res.locals.message = err.message;
   res.locals.error = err;
   res.status(err.status || 500);
@@ -452,13 +452,13 @@ app.use(function (err, req, res, next) {
 async function classicGeneratePokemon() {
   classicWinners = [];
   classicGameID = uuid();
-  var previous_bg = bg_desktop_option;
+  let previous_bg = bg_desktop_option;
   while (previous_bg == bg_desktop_option)
     bg_desktop_option = Math.floor(Math.random() * bg_desktop_number) + 1;
   previous_bg = bg_mobile_option;
   while (previous_bg == bg_mobile_option)
     bg_mobile_option = Math.floor(Math.random() * bg_mobile_number) + 1;
-  var pokemonID;
+  let pokemonID;
   classicPreviousPokemon = classicCurrentPokemon;
   pokemonID = classicPreviousPokemon.ID;
   while (pokemonID == classicPreviousPokemon.ID)
@@ -477,7 +477,7 @@ async function classicGeneratePokemon() {
 
 // verify the client's guess, generate related hints
 function classicVerifyGuess(guess, answer) {
-  var response = {
+  let response = {
     habitat: "correct",
     colors: "correct",
     types: "correct",
@@ -485,8 +485,8 @@ function classicVerifyGuess(guess, answer) {
     evolutionLevel: "correct",
     gen: "correct",
   };
-  var count = 0;
-  var hasWon = true;
+  let count = 0;
+  let hasWon = true;
 
   if (guess.name != answer.name) {
     hasWon = false;
@@ -500,10 +500,10 @@ function classicVerifyGuess(guess, answer) {
     if (guess.gen > answer.gen) response.gen = "wrong-lower";
     if (guess.gen < answer.gen) response.gen = "wrong-higher";
 
-    var guessColors = guess.colors || [];
-    var answerColors = answer.colors || [];
-    var exactMatches = 0;
-    var partialMatches = 0;
+    let guessColors = guess.colors || [];
+    let answerColors = answer.colors || [];
+    let exactMatches = 0;
+    let partialMatches = 0;
 
     // --------------------------------------------------------
     // Find the optimal one-to-one color matching.
@@ -520,7 +520,7 @@ function classicVerifyGuess(guess, answer) {
     // has no influence on the result.
     // --------------------------------------------------------
 
-    var bestMatching = {
+    let bestMatching = {
       exactMatches: -1,
       totalMatches: -1,
       totalDistance: Infinity,
@@ -535,9 +535,9 @@ function classicVerifyGuess(guess, answer) {
       totalDistance,
     ) {
       if (guessIndex >= guessColors.length) {
-        var totalMatches = matches.length;
+        let totalMatches = matches.length;
 
-        var isBetter =
+        let isBetter =
           exactCount > bestMatching.exactMatches ||
           (exactCount === bestMatching.exactMatches &&
             totalMatches > bestMatching.totalMatches) ||
@@ -545,14 +545,13 @@ function classicVerifyGuess(guess, answer) {
             totalMatches === bestMatching.totalMatches &&
             totalDistance < bestMatching.totalDistance);
 
-        if (isBetter) {
+        if (isBetter)
           bestMatching = {
             exactMatches: exactCount,
             totalMatches: totalMatches,
             totalDistance: totalDistance,
             matches: matches.slice(),
           };
-        }
 
         return;
       }
@@ -565,19 +564,17 @@ function classicVerifyGuess(guess, answer) {
         totalDistance,
       );
 
-      var guessColor = guessColors[guessIndex].toLowerCase();
+      let guessColor = guessColors[guessIndex].toLowerCase();
 
       for (
-        var answerIndex = 0;
+        let answerIndex = 0;
         answerIndex < answerColors.length;
         answerIndex++
       ) {
         if (usedAnswerColors.has(answerIndex)) continue;
 
-        var answerColor = answerColors[answerIndex].toLowerCase();
-
-        var distance = colorDistance(guessColor, answerColor);
-
+        let answerColor = answerColors[answerIndex].toLowerCase();
+        let distance = colorDistance(guessColor, answerColor);
         if (distance > 10) continue;
 
         usedAnswerColors.add(answerIndex);
@@ -605,30 +602,23 @@ function classicVerifyGuess(guess, answer) {
     }
 
     findBestColorMatching(0, new Set(), [], 0, 0);
-
     exactMatches = bestMatching.exactMatches;
-
     partialMatches = bestMatching.totalMatches - bestMatching.exactMatches;
-
-    var totalMatches = exactMatches + partialMatches;
+    let totalMatches = exactMatches + partialMatches;
 
     if (
       exactMatches === answerColors.length &&
       guessColors.length === answerColors.length
-    ) {
+    )
       response.colors = "correct";
-    } else if (totalMatches > 0) {
-      response.colors = "partial";
-    } else {
-      response.colors = "wrong";
-    }
+    else if (totalMatches > 0) response.colors = "partial";
+    else response.colors = "wrong";
 
-    var guessTypes = guess.types;
-    for (var i = 0; i < guessTypes.length; i++)
+    let guessTypes = guess.types;
+    for (let i = 0; i < guessTypes.length; i++)
       if (answer.types.includes(guessTypes[i])) count++;
 
-    var types = answer.types;
-
+    let types = answer.types;
     if (count == 0) response.types = "wrong";
     else if (types.length != count || guessTypes.length != count)
       response.types = "partial";
@@ -637,7 +627,7 @@ function classicVerifyGuess(guess, answer) {
 }
 
 function classicGetRemainingTime() {
-  var nextGeneration = new Date();
+  let nextGeneration = new Date();
   nextGeneration.setDate(nextGeneration.getDate() + 1);
   nextGeneration.setHours(0, 0, 0, 0);
   return nextGeneration.getTime() - Date.now();
@@ -650,14 +640,14 @@ async function updateStatsOnClassicWin(id, pokemon, tries) {
     .doc(id)
     .get()
     .then((doc) => {
-      var user = doc.data();
+      let user = doc.data();
       if (user != undefined) {
         // updating stats
         user.avgTries = (user.wins * user.avgTries + tries) / (user.wins + 1);
         user.wins++;
         // updating the pokedex
-        var found = false;
-        for (var i = 0; i < user.history.length; i++) {
+        let found = false;
+        for (let i = 0; i < user.history.length; i++) {
           if (user.history[i].pokemon == pokemon) {
             user.history[i].timesGuessed++;
             found = true;
@@ -674,37 +664,43 @@ async function updateStatsOnClassicWin(id, pokemon, tries) {
 
 async function generateSentryChallenge() {
   const challengeID = uuid();
-  var answerID;
-  var answerDoc;
-  var answer;
+  let answer, answerDoc, answerID;
+
   // pick a random pokemon that is not in the bad footprints list
-  for (var tries = 0; tries < 100; tries++) {
+  for (let tries = 0; tries < 100; tries++) {
     answerID = Math.floor(Math.random() * 649 + 1);
     answerDoc = await firestore
       .collection("pokemons")
       .doc(answerID.toString())
       .get();
     if (!answerDoc.exists) continue;
+
     const candidate = answerDoc.data();
     if (badFootprints.includes(candidate.name)) continue;
+
     answer = candidate;
     break;
   }
+
   if (!answer) throw new Error("Pokémon not found for sentry challenge");
+
   const options = [answer.name];
+
   while (options.length < 4) {
     const optionID = Math.floor(Math.random() * 649 + 1);
     if (optionID == answerID) continue;
+
     const optionDoc = await firestore
       .collection("pokemons")
       .doc(optionID.toString())
       .get();
     if (!optionDoc.exists) continue;
+
     const optionName = optionDoc.data().name;
     if (!options.includes(optionName)) options.push(optionName);
   }
 
-  for (var i = options.length - 1; i > 0; i--) {
+  for (let i = options.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [options[i], options[j]] = [options[j], options[i]];
   }
@@ -717,9 +713,11 @@ async function generateSentryChallenge() {
     startTime: startTime,
     expiration: startTime + sentryDurationMs,
   };
+
   setTimeout(() => {
     delete sentryChallenges[challengeID];
   }, sentryDurationMs * 2);
+
   return {
     challengeID: challengeID,
     options: options,
@@ -732,7 +730,7 @@ async function generateSentryChallenge() {
 // update a logged user's sentry duty stats
 async function updateStatsOnSentryRound(
   id,
-  score,
+  _,
   failed,
   sessionTotal,
   sessionRounds,
@@ -743,7 +741,7 @@ async function updateStatsOnSentryRound(
     .doc(id)
     .get()
     .then((doc) => {
-      var user = doc.data();
+      let user = doc.data();
       if (user != undefined) {
         user.bestSentryScore = user.bestSentryScore || 0;
         if (sessionTotal > user.bestSentryScore)
@@ -823,19 +821,16 @@ function colorDistance(hex1, hex2) {
   );
 }
 
-function getFootprintUrl(pokemonName) {
-  return `/public/images/footprints/${encodeURIComponent(pokemonName)}.png`;
-}
+const getFootprintUrl = (pokemonName) =>
+  `/public/images/footprints/${encodeURIComponent(pokemonName)}.png`;
 
-function applyAssetCacheHeaders(res, maxAge) {
+const bgPathSelector = (device) =>
+  device === "phone"
+    ? `/public/images/backgrounds_mobile/${bg_mobile_option}.webp`
+    : `/public/images/backgrounds_desktop/${bg_desktop_option}.webp`;
+
+const applyAssetCacheHeaders = (res, maxAge) => {
   res.setHeader("Cache-Control", `public, max-age=${maxAge}, must-revalidate`);
-}
-
-function bgPathSelector(device) {
-  if (device == "phone")
-    return "/public/images/backgrounds_mobile/" + bg_mobile_option + ".webp";
-  else
-    return "/public/images/backgrounds_desktop/" + bg_desktop_option + ".webp";
-}
+};
 
 module.exports = app;
