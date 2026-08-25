@@ -549,9 +549,7 @@ function classicVerifyGuess(guess, answer) {
         if (distance > COLOR_MATCH_THRESHOLD) continue;
 
         usedAnswerColors.add(answerIndex);
-
         findBestColorMatching(guessIndex + 1, usedAnswerColors, matchCount + 1);
-
         usedAnswerColors.delete(answerIndex);
       }
     }
