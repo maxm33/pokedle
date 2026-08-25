@@ -490,15 +490,20 @@ function classicVerifyGuess(guess, answer) {
 
   if (guess.name != answer.name) {
     hasWon = false;
+    if (guess.habitat != answer.habitat) response.habitat = "wrong";
     if (guess.fullyEvolved != answer.fullyEvolved)
       response.fullyEvolved = "wrong";
     if (guess.evolutionLevel > answer.evolutionLevel)
       response.evolutionLevel = "wrong-lower";
     if (guess.evolutionLevel < answer.evolutionLevel)
       response.evolutionLevel = "wrong-higher";
-    if (guess.habitat != answer.habitat) response.habitat = "wrong";
     if (guess.gen > answer.gen) response.gen = "wrong-lower";
     if (guess.gen < answer.gen) response.gen = "wrong-higher";
+    for (let i = 0; i < guess.types.length; i++)
+      if (answer.types.includes(guess.types[i])) count++;
+    if (count == 0) response.types = "wrong";
+    else if (answer.types.length != count || guess.types.length != count)
+      response.types = "partial";
 
     let guessColors = guess.colors || [];
     let answerColors = answer.colors || [];
@@ -560,15 +565,6 @@ function classicVerifyGuess(guess, answer) {
       response.colors = "correct";
     else if (matchedColors > 0) response.colors = "partial";
     else response.colors = "wrong";
-
-    let guessTypes = guess.types;
-    for (let i = 0; i < guessTypes.length; i++)
-      if (answer.types.includes(guessTypes[i])) count++;
-
-    let types = answer.types;
-    if (count == 0) response.types = "wrong";
-    else if (types.length != count || guessTypes.length != count)
-      response.types = "partial";
   }
   return [guess, response, hasWon];
 }
