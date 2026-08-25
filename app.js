@@ -502,70 +502,36 @@ function classicVerifyGuess(guess, answer) {
 
     let guessColors = guess.colors || [];
     let answerColors = answer.colors || [];
-    let exactMatches = 0;
-    let partialMatches = 0;
+    const COLOR_MATCH_THRESHOLD = 8;
+    let matchedColors = 0;
 
     // --------------------------------------------------------
     // Find the optimal one-to-one color matching.
     //
+    // A pair of colors is considered a match if:
+    //     ΔE94 < 8
+    //
     // Each guess color can match at most one answer color.
     // Each answer color can match at most one guess color.
     //
-    // Priority:
-    //   1. Maximize exact matches (ΔE94 <= 7.5)
-    //   2. Maximize total matches (ΔE94 <= 10)
-    //   3. Minimize total ΔE94
-    //
-    // Therefore the order of the colors in either array
-    // has no influence on the result.
+    // The order of the colors in either array has no influence
+    // on the result.
     // --------------------------------------------------------
 
-    let bestMatching = {
-      exactMatches: -1,
-      totalMatches: -1,
-      totalDistance: Infinity,
-      matches: [],
-    };
-
-    function findBestColorMatching(
-      guessIndex,
-      usedAnswerColors,
-      matches,
-      exactCount,
-      totalDistance,
-    ) {
+    function findBestColorMatching(guessIndex, usedAnswerColors, matchCount) {
+      // All guess colors have been considered.
       if (guessIndex >= guessColors.length) {
-        let totalMatches = matches.length;
-
-        let isBetter =
-          exactCount > bestMatching.exactMatches ||
-          (exactCount === bestMatching.exactMatches &&
-            totalMatches > bestMatching.totalMatches) ||
-          (exactCount === bestMatching.exactMatches &&
-            totalMatches === bestMatching.totalMatches &&
-            totalDistance < bestMatching.totalDistance);
-
-        if (isBetter)
-          bestMatching = {
-            exactMatches: exactCount,
-            totalMatches: totalMatches,
-            totalDistance: totalDistance,
-            matches: matches.slice(),
-          };
-
+        matchedColors = Math.max(matchedColors, matchCount);
         return;
       }
 
-      findBestColorMatching(
-        guessIndex + 1,
-        usedAnswerColors,
-        matches,
-        exactCount,
-        totalDistance,
-      );
+      // Option 1: do not match this guess color.
+      findBestColorMatching(guessIndex + 1, usedAnswerColors, matchCount);
 
-      let guessColor = guessColors[guessIndex].toLowerCase();
+      const guessColor = guessColors[guessIndex].toLowerCase();
 
+      // Try matching this guess color with every unused
+      // answer color whose ΔE94 is below the threshold.
       for (
         let answerIndex = 0;
         answerIndex < answerColors.length;
@@ -573,45 +539,26 @@ function classicVerifyGuess(guess, answer) {
       ) {
         if (usedAnswerColors.has(answerIndex)) continue;
 
-        let answerColor = answerColors[answerIndex].toLowerCase();
-        let distance = colorDistance(guessColor, answerColor);
-        if (distance > 10) continue;
+        const answerColor = answerColors[answerIndex].toLowerCase();
+        const distance = colorDistance(guessColor, answerColor);
+        if (distance > COLOR_MATCH_THRESHOLD) continue;
 
         usedAnswerColors.add(answerIndex);
 
-        matches.push({
-          guessIndex: guessIndex,
-          answerIndex: answerIndex,
-          guessColor: guessColor,
-          answerColor: answerColor,
-          distance: distance,
-          exact: distance <= 7.5,
-        });
+        findBestColorMatching(guessIndex + 1, usedAnswerColors, matchCount + 1);
 
-        findBestColorMatching(
-          guessIndex + 1,
-          usedAnswerColors,
-          matches,
-          exactCount + (distance <= 7.5 ? 1 : 0),
-          totalDistance + distance,
-        );
-
-        matches.pop();
         usedAnswerColors.delete(answerIndex);
       }
     }
 
-    findBestColorMatching(0, new Set(), [], 0, 0);
-    exactMatches = bestMatching.exactMatches;
-    partialMatches = bestMatching.totalMatches - bestMatching.exactMatches;
-    let totalMatches = exactMatches + partialMatches;
+    findBestColorMatching(0, new Set(), 0);
 
     if (
-      exactMatches === answerColors.length &&
-      guessColors.length === answerColors.length
+      guessColors.length === answerColors.length &&
+      matchedColors === answerColors.length
     )
       response.colors = "correct";
-    else if (totalMatches > 0) response.colors = "partial";
+    else if (matchedColors > 0) response.colors = "partial";
     else response.colors = "wrong";
 
     let guessTypes = guess.types;
