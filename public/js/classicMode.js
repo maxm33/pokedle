@@ -189,13 +189,6 @@ function onVictory(tries, pokemon) {
     subtitle.insertAdjacentElement("afterend", ad);
     ad.innerHTML = `<div id="victory-text1"><b>GG!</b></div><div id="victory-text2"><b>It was ${pokemonDisplayName} indeed!</b></div><div><img alt="${pokemonDisplayName}" style="animation: fadeIn 500ms" src='/public/images/sprites/${pokemon.name}.webp' width='180px' height='180px'></div><div id="victory-text3"><b>You guessed it in ${tries} tries...</b></div><div id="victory-text4"><b>Think you can do better? Let's see!</b></div><a aria-label="Go to Home" href='/'><button id='continue-button'>Continue</button></a>`;
   }, 1000);
-
-  function getPokemonDisplayName(pokemonName) {
-    return pokemonName
-      .replace("Farfetchd", "Farfetch'd")
-      .replace("NidoranF", "Nidoran♀")
-      .replace("NidoranM", "Nidoran♂");
-  }
 }
 
 function initializeAutocomplete(element, array) {
@@ -214,10 +207,7 @@ function initializeAutocomplete(element, array) {
     );
     for (let i = 0; i < availableOptions.length; i++) {
       let originalName = availableOptions[i];
-      let displayName = originalName
-        .replace("Farfetchd", "Farfetch'd")
-        .replace("NidoranF", "Nidoran♀")
-        .replace("NidoranM", "Nidoran♂");
+      let displayName = getPokemonDisplayName(originalName);
       let displayMatch = displayName.substr(0, val.length);
       let displayRest = displayName.substr(val.length);
       let option = document.createElement("DIV");
@@ -247,6 +237,13 @@ function initializeAutocomplete(element, array) {
   document.addEventListener("click", (e) => {
     closeList(e.target);
   });
+}
+
+function getPokemonDisplayName(pokemonName) {
+  return pokemonName
+    .replace("Farfetchd", "Farfetch'd")
+    .replace("NidoranF", "Nidoran♀")
+    .replace("NidoranM", "Nidoran♂");
 }
 
 function isAndroidDevice() {
