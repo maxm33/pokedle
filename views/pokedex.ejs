@@ -79,59 +79,69 @@
       </label>
     </div>
     <script type="module">
-      import { pokemons } from "../../public/js/pokemons.js";
-
-      var url = window.location.href;
-      var ref = url.substring(0, url.length - 8); // removing "/pokedex"
-      document.getElementById("dex-profile-link").href = ref + "/profile";
-
-      var container = document.getElementById("container");
-      var div = document.createElement("DIV");
-      div.setAttribute("id", "dex-container");
-
-      // generating all the pokedex rows as unknown
-      for (var i = 0; i < pokemons.length; i++) {
-        var subdiv = document.createElement("DIV");
-        subdiv.setAttribute("class", "dex-rows");
-        subdiv.setAttribute("id", pokemons[i]);
-        var pokemonSlug = pokemons[i]
+      function getPokemonSlug(pokemonName) {
+        return pokemonName
           .toLowerCase()
           .replace("mr. mime", "mr-mime")
           .replace("nidoranf", "nidoran-female")
           .replace("nidoranm", "nidoran-male")
+          .replace("mime jr.", "mime-jr")
           .replaceAll(" ", "-");
+      }
+
+      function getPokemonDisplayName(pokemonName) {
+        return pokemonName
+          .replace("Farfetchd", "Farfetch'd")
+          .replace("NidoranF", "Nidoran♀")
+          .replace("NidoranM", "Nidoran♂");
+      }
+
+      let url = window.location.href;
+      let ref = url.substring(0, url.length - 8); // removing "/pokedex"
+      document.getElementById("dex-profile-link").href = ref + "/profile";
+
+      let container = document.getElementById("container");
+      let div = document.createElement("DIV");
+      div.setAttribute("id", "dex-container");
+
+      // generating all the pokedex rows as unknown
+      for (let i = 0; i < pokemons.length; i++) {
+        let pokemonName = pokemons[i];
+        let pokemonSlug = getPokemonSlug(pokemonName);
+        let pokemonDisplayName = getPokemonDisplayName(pokemonName);
+
+        let subdiv = document.createElement("DIV");
+        subdiv.setAttribute("class", "dex-rows");
+        subdiv.setAttribute("id", pokemonName);
         subdiv.innerHTML = `<p class="dex-rows-numbers">${i + 1}.</p>
-        <img alt="" src="/public/images/sprites/unknown.webp" width="90px" height="90px"/>
-        <p class="dex-rows-names dex-rows-unknown-name">${pokemonSlug}</p>`;
+    <img alt="" src="/public/images/sprites/unknown.webp" width="90px" height="90px"/>
+    <p class="dex-rows-names dex-rows-unknown-name">${pokemonDisplayName}</p>`;
         div.appendChild(subdiv);
       }
       container.appendChild(div);
 
       // replacing unknown rows with known ones (according to the user's history)
-      var history = `<%- JSON.stringify(history) %>`;
+      let history = `<%- JSON.stringify(history) %>`;
       history = JSON.parse(history);
-      var discoveredPokemon = new Set(history.map((entry) => entry.pokemon));
+      let discoveredPokemon = new Set(history.map((entry) => entry.pokemon));
       document.getElementById("dex-discovered").textContent =
         `${history.length}/${pokemons.length} Pokémons discovered`;
-      for (var i = 0; i < history.length; i++) {
-        var subdiv = document.getElementById(history[i].pokemon);
-        var pokemonName = history[i].pokemon;
-        var pokemonSlug = pokemonName
-          .toLowerCase()
-          .replace("mr. mime", "mr-mime")
-          .replace("nidoranf", "nidoran-female")
-          .replace("nidoranm", "nidoran-male")
-          .replaceAll(" ", "-");
+      for (let i = 0; i < history.length; i++) {
+        let subdiv = document.getElementById(history[i].pokemon);
+        let pokemonName = history[i].pokemon;
+        let pokemonSlug = getPokemonSlug(pokemonName);
+        let pokemonDisplayName = getPokemonDisplayName(pokemonName);
+
         subdiv.innerHTML = `<p class="dex-rows-numbers">${subdiv.firstChild.innerHTML}</p>
-          <img alt="" src="/public/images/sprites/${pokemonName}.webp" width="100px" height="100px"/>
-          <a class="dex-rows-names" href="https://www.pokemon.com/it/pokedex/${pokemonSlug}">${pokemonName}</a>
-          <p class="dex-rows-guesses">Guessed: ${history[i].timesGuessed}</p>`;
+    <img alt="" src="/public/images/sprites/${pokemonName}.webp" width="100px" height="100px"/>
+    <a class="dex-rows-names" href="https://www.pokemon.com/it/pokedex/${pokemonSlug}">${pokemonDisplayName}</a>
+    <p class="dex-rows-guesses">Guessed: ${history[i].timesGuessed}</p>`;
       }
 
-      var hideUndiscovered = document.getElementById("hide-undiscovered");
-      var rows = document.querySelectorAll(".dex-rows");
+      let hideUndiscovered = document.getElementById("hide-undiscovered");
+      let rows = document.querySelectorAll(".dex-rows");
       function updateUndiscoveredVisibility() {
-        for (var i = 0; i < rows.length; i++) {
+        for (let i = 0; i < rows.length; i++) {
           rows[i].hidden =
             hideUndiscovered.checked && !discoveredPokemon.has(rows[i].id);
         }

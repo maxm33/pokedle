@@ -70,6 +70,7 @@ function renderChallenge() {
   if (failuresEl) failuresEl.textContent = `Failures: ${sessionFailed}/3`;
   optionsContainer.innerHTML = "";
   currentChallenge.options.forEach((option) => {
+    let pokemonDisplayName = getPokemonDisplayName(option);
     const button = document.createElement("button");
     button.className = "sentry-option";
     button.dataset.option = option;
@@ -78,13 +79,20 @@ function renderChallenge() {
     const imgSrc = `/public/images/sprites/${option}.webp`;
     button.innerHTML = `
       <div class="sentry-option-left">
-        <div class="sentry-name">${option}</div>
+        <div class="sentry-name">${pokemonDisplayName}</div>
       </div>
-      <img class="sentry-mini" src="${imgSrc}" alt="${option}" />
+      <img class="sentry-mini" src="${imgSrc}" alt="${pokemonDisplayName}" />
     `;
     button.addEventListener("click", () => submitGuess(option));
     optionsContainer.appendChild(button);
   });
+
+  function getPokemonDisplayName(pokemonName) {
+    return pokemonName
+      .replace("Farfetchd", "Farfetch'd")
+      .replace("NidoranF", "Nidoran♀")
+      .replace("NidoranM", "Nidoran♂");
+  }
 }
 
 function startCountdown(duration) {

@@ -83,7 +83,7 @@ guessButton.addEventListener("click", async () => {
 });
 
 async function submitGuess(guess, inputElement = textbar) {
-  var normalizedGuess = guess?.trim();
+  let normalizedGuess = guess?.trim();
   // in case of type errors, textbar will shake
   if (normalizedGuess == "" || !pokemons.includes(normalizedGuess)) {
     inputElement.value = "";
@@ -100,7 +100,7 @@ async function submitGuess(guess, inputElement = textbar) {
     inputElement.blur();
     window.setTimeout(() => inputElement.blur(), 0);
   }
-  var token = null;
+  let token = null;
   if (auth.currentUser != null) token = await auth.currentUser.getIdToken();
   axios
     .post("/classic", {
@@ -110,8 +110,8 @@ async function submitGuess(guess, inputElement = textbar) {
       tries: classicState.getTries() + 1,
     })
     .then((res) => {
-      var pokemon = res.data[0];
-      var hasWon = res.data[2];
+      let pokemon = res.data[0];
+      let hasWon = res.data[2];
       if (classicState.notRendered()) animateFadeIn(containertitles, "1.5s"); // hint categories will be shown
       classicState.addGuess(res.data); // rendering hints related to current guess
       if (hasWon) {
@@ -126,7 +126,7 @@ async function submitGuess(guess, inputElement = textbar) {
 // where timer and initial guess rendering are managed
 function manageGameState(id, remainingTime) {
   // remove any old game states
-  var gameID = classicState.getGameID();
+  let gameID = classicState.getGameID();
   if (gameID == null || gameID != id) {
     classicState.setGameID(id);
     classicState.removeState();
@@ -151,11 +151,11 @@ function manageGameState(id, remainingTime) {
     window.location.reload();
   }, remainingTime);
 
-  var totalSeconds = Math.floor(remainingTime / 1000);
-  var remainingSecondsAfterHours = totalSeconds % 3600;
-  var hours = Math.floor(totalSeconds / 3600);
-  var minutes = Math.floor(remainingSecondsAfterHours / 60);
-  var seconds = remainingSecondsAfterHours % 60;
+  let totalSeconds = Math.floor(remainingTime / 1000);
+  let remainingSecondsAfterHours = totalSeconds % 3600;
+  let hours = Math.floor(totalSeconds / 3600);
+  let minutes = Math.floor(remainingSecondsAfterHours / 60);
+  let seconds = remainingSecondsAfterHours % 60;
 
   // update the timer every second
   setInterval(() => {
@@ -179,33 +179,41 @@ function manageGameState(id, remainingTime) {
 }
 
 function onVictory(tries, pokemon) {
-  var audio = new Audio("public/audio/classic_victory_ost.mp3");
+  let pokemonDisplayName = getPokemonDisplayName(pokemon.name);
+  let audio = new Audio("public/audio/classic_victory_ost.mp3");
   audio.volume = 0.1;
   audio.play();
   setTimeout(() => {
-    var ad = document.createElement("DIV");
+    let ad = document.createElement("DIV");
     ad.setAttribute("id", "victory-ad-container");
     subtitle.insertAdjacentElement("afterend", ad);
-    ad.innerHTML = `<div id="victory-text1"><b>GG!</b></div><div id="victory-text2"><b>It was ${pokemon.name} indeed!</b></div><div><img alt="" style="animation: fadeIn 500ms" src='/public/images/sprites/${pokemon.name}.webp' width='180px' height='180px'></div><div id="victory-text3"><b>You guessed it in ${tries} tries...</b></div><div id="victory-text4"><b>Think you can do better? Let's see!</b></div><a aria-label="Go to Home" href='/'><button id='continue-button'>Continue</button></a>`;
+    ad.innerHTML = `<div id="victory-text1"><b>GG!</b></div><div id="victory-text2"><b>It was ${pokemonDisplayName} indeed!</b></div><div><img alt="${pokemonDisplayName}" style="animation: fadeIn 500ms" src='/public/images/sprites/${pokemon.name}.webp' width='180px' height='180px'></div><div id="victory-text3"><b>You guessed it in ${tries} tries...</b></div><div id="victory-text4"><b>Think you can do better? Let's see!</b></div><a aria-label="Go to Home" href='/'><button id='continue-button'>Continue</button></a>`;
   }, 1000);
+
+  function getPokemonDisplayName(pokemonName) {
+    return pokemonName
+      .replace("Farfetchd", "Farfetch'd")
+      .replace("NidoranF", "Nidoran♀")
+      .replace("NidoranM", "Nidoran♂");
+  }
 }
 
 function initializeAutocomplete(element, array) {
   element.addEventListener("input", function () {
-    var val = this.value;
+    let val = this.value;
     closeList();
     if (!val) return false;
-    var list = document.createElement("DIV");
+    let list = document.createElement("DIV");
     list.setAttribute("id", "autocomplete-list");
     list.setAttribute("class", "autocomplete-items");
     this.parentNode.appendChild(list);
-    var availableOptions = array.filter(
+    let availableOptions = array.filter(
       (name) =>
         !classicState.isPokemonGuessed(name) &&
         name.substr(0, val.length).toUpperCase() == val.toUpperCase(),
     );
-    for (var i = 0; i < availableOptions.length; i++) {
-      var option = document.createElement("DIV");
+    for (let i = 0; i < availableOptions.length; i++) {
+      let option = document.createElement("DIV");
       option.className = "list-options";
       option.innerHTML = `<img alt="" src='/public/images/sprites/${
         availableOptions[i]
@@ -224,8 +232,8 @@ function initializeAutocomplete(element, array) {
   });
 
   function closeList(e) {
-    var items = document.getElementsByClassName("autocomplete-items");
-    for (var i = 0; i < items.length; i++)
+    let items = document.getElementsByClassName("autocomplete-items");
+    for (let i = 0; i < items.length; i++)
       if (e != items[i] && e != element)
         items[i].parentNode.removeChild(items[i]);
   }

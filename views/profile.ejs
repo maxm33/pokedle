@@ -96,8 +96,8 @@
       document
         .getElementById("onprofile-dex-button")
         .addEventListener("click", () => {
-          var url = window.location.href;
-          var url_cut = url.substring(0, url.length - 8); // removing "/profile"
+          let url = window.location.href;
+          let url_cut = url.substring(0, url.length - 8); // removing "/profile"
           window.location.href = url_cut + "/pokedex";
         });
     </script>
