@@ -213,19 +213,25 @@ function initializeAutocomplete(element, array) {
         name.substr(0, val.length).toUpperCase() == val.toUpperCase(),
     );
     for (let i = 0; i < availableOptions.length; i++) {
+      let originalName = availableOptions[i];
+      let displayName = originalName
+        .replace("Farfetchd", "Farfetch'd")
+        .replace("NidoranF", "Nidoran♀")
+        .replace("NidoranM", "Nidoran♂");
+      let displayMatch = displayName.substr(0, val.length);
+      let displayRest = displayName.substr(val.length);
       let option = document.createElement("DIV");
       option.className = "list-options";
-      option.innerHTML = `<img alt="" src='/public/images/sprites/${
-        availableOptions[i]
-      }.webp' width='70px' height='70px'><strong style="color: #8cff66;">${availableOptions[
-        i
-      ].substr(0, val.length)}</strong>${availableOptions[i].substr(
-        val.length,
-      )}<input type='hidden' value='${availableOptions[i]}'>`;
+      option.innerHTML = `
+        <img alt="" src="/public/images/sprites/${originalName}.webp"
+             width="70px" height="70px">
+        <strong style="color: #8cff66;">${displayMatch}</strong>${displayRest}
+        <input type="hidden" value="${originalName}">
+      `;
       option.addEventListener("click", async function () {
-        element.value = this.getElementsByTagName("input")[0].value;
+        element.value = originalName;
         closeList();
-        await submitGuess(element.value, element);
+        await submitGuess(originalName, element);
       });
       list.appendChild(option);
     }

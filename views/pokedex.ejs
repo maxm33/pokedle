@@ -117,7 +117,7 @@
         subdiv.setAttribute("id", pokemonName);
         subdiv.innerHTML = `<p class="dex-rows-numbers">${i + 1}.</p>
     <img alt="${pokemonDisplayName}" src="/public/images/sprites/unknown.webp" width="90px" height="90px"/>
-    <p class="dex-rows-names dex-rows-unknown-name">${pokemonDisplayName}</p>`;
+    <p class="dex-rows-names dex-rows-unknown-name">${pokemonDisplayName.toLowerCase()}</p>`;
         div.appendChild(subdiv);
       }
       container.appendChild(div);
