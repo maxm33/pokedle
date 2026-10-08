@@ -610,8 +610,14 @@ function classicVerifyGuess(guess, answer) {
     else if (answer.types.length != count || guess.types.length != count)
       response.types = "partial";
 
-    let guessColors = guess.colors || [];
-    let answerColors = answer.colors || [];
+    const getColorHex = (color) =>
+      Array.isArray(color)
+        ? color[1]
+        : color && typeof color === "object"
+          ? color.hex
+          : color;
+    let guessColors = (guess.colors || []).map(getColorHex);
+    let answerColors = (answer.colors || []).map(getColorHex);
     const COLOR_MATCH_THRESHOLD = 8;
     let matchedColors = 0;
 

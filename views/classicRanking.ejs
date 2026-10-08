@@ -73,7 +73,13 @@
         <% for (let i = 0; i < rankingData.length; i++) { %>
         <div class="ranking-rows">
           <b
-            ><%= i+1 %>.
+            ><% if (i < 3) { %><img
+              class="ranking-medal"
+              alt="<%= i + 1 %> place"
+              src="/public/images/icons/<%= i === 0 ? '1st' : i === 1 ? '2nd' : '3rd' %>.png"
+            />
+            <% } else { %><%= i + 1 %>.
+            <% } %>
             <a
               aria-label="<%= rankingData[i].id %>'s profile"
               href="/user/<%= rankingData[i].id %>/profile"

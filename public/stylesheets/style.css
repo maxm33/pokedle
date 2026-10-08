@@ -1283,6 +1283,11 @@ input[type="hidden"] {
   font-size: 0.9em;
   margin: 0.4em;
 }
+.ranking-medal {
+  height: 14px;
+  vertical-align: middle;
+  width: 14px;
+}
 #credits {
   float: left;
   padding: 1em;
@@ -1494,6 +1499,10 @@ input[type="hidden"] {
   .ranking-rows {
     font-size: 0.65em;
   }
+  .ranking-medal {
+    height: 10px;
+    width: 10px;
+  }
   #author {
     font-size: 0.7em;
   }
@@ -1610,6 +1619,10 @@ input[type="hidden"] {
   }
   .dex-rows .dex-shiny-toggle[aria-pressed="true"] img {
     left: 26px;
+  }
+  .ranking-medal {
+    height: 8px;
+    width: 8px;
   }
   #dex-trainer {
     font-size: 0.75em;
