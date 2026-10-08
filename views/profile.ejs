@@ -11,8 +11,19 @@
     <meta name="viewport" content="initial-scale=1, width=device-width" />
     <title>Profile</title>
   </head>
-  <body style="background-image: url('<%= bg %>')">
-    <div id="topnav">
+  <body style="--page-background-image: url(&quot;<%= bg %>&quot;)">
+    <div id="topnav" role="banner">
+      <div id="credits">
+        <p id="author">
+          Created by <a href="https://github.com/maxm33">maxm33</a>
+        </p>
+        <img
+          alt=""
+          src="/public/images/icons/github-mark.webp"
+          width="20px"
+          height="20px"
+        />
+      </div>
       <div id="buttons-container">
         <button id="login-button" class="topnav-buttons">
           <img
@@ -49,41 +60,82 @@
         </button>
       </div>
     </div>
-    <div id="container">
-      <div id="logo">
+    <div id="container" role="main">
+      <div id="logo" class="fadeIn">
         <a aria-label="Go to Home" href="/"
-          ><img alt="" src="/public/images/icons/pokedle-logo.webp"
+          ><img
+            fetchpriority="high"
+            alt=""
+            src="/public/images/icons/pokedle-logo.webp"
         /></a>
       </div>
-      <h1 style="margin-top: 1.5em" class="fadeIn"><%= name %></h1>
+      <div id="profile-name-container">
+        <h1
+          id="profile-name"
+          data-profile-uid="<%= profileId %>"
+          style="margin-top: 1.5em; font-size: 1.2em"
+          class="fadeIn"
+        >
+          <%= username %>
+        </h1>
+        <button
+          id="edit-profile-name-button"
+          type="button"
+          aria-label="Edit profile name"
+          title="Edit profile name"
+          hidden
+        >
+          &#9998;
+        </button>
+      </div>
+      <form id="profile-name-form" hidden>
+        <p id="profile-name-error" role="alert" aria-live="polite"></p>
+        <input
+          id="profile-name-input"
+          type="text"
+          maxlength="16"
+          aria-label="Profile name"
+        />
+        <div id="profile-name-actions">
+          <button id="save-profile-name-button" type="submit">
+            <span
+              id="save-profile-name-loader"
+              class="profile-loader"
+              role="status"
+              aria-label="Saving"
+              hidden
+            ></span>
+            <span>Save</span>
+          </button>
+          <button id="cancel-profile-name-button" type="button">Cancel</button>
+        </div>
+      </form>
       <div>
         <div id="mode-title">Classic</div>
         <div id="mode-data">
-          Wins: <%= wins %><br />
-          Average Tries: <%= avgTries %><br /><br />
+          Wins: <%= classicWins %><br />
+          Average Tries: <%= classicAvgTries %><br /><br />
           <button id="onprofile-dex-button">View Pokédex</button>
         </div>
       </div>
+      <div>
+        <div style="margin-top: 0.75em" id="mode-title">Sentry Duty</div>
+        <div id="mode-data">
+          Best Score: <%= sentryBestScore %><br />
+          Longest Session: <%= sentryBestSession %> rounds<br />
+          Footprints Seen: <%= sentrySessionsCompleted %><br />
+          Accuracy: <%= sentryAccuracy %>%<br />
+        </div>
+      </div>
     </div>
-    <footer>
-      <p id="author">
-        Created by <a href="https://github.com/maxm33">maxm33</a>
-      </p>
-      <img
-        alt=""
-        src="/public/images/icons/github-mark.webp"
-        width="20px"
-        height="20px"
-      />
-    </footer>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="/public/js/auth.js"></script>
     <script>
       document
         .getElementById("onprofile-dex-button")
         .addEventListener("click", () => {
-          var url = window.location.href;
-          var url_cut = url.substring(0, url.length - 8); // removing "/profile"
+          let url = window.location.href;
+          let url_cut = url.substring(0, url.length - 8); // removing "/profile"
           window.location.href = url_cut + "/pokedex";
         });
     </script>
