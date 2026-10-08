@@ -15,10 +15,22 @@
       href="/public/app.webmanifest"
     />
     <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <meta name="description" content="Pokédle is a game heavily inspired by Wordle and LoLdle, in which you have to guess the daily secret pokémon.">
     <title>Pokédle - Classic</title>
   </head>
-  <body style="background-image: url('<%= bg %>')">
-    <div id="topnav">
+  <body style="--page-background-image: url(&quot;<%= bg %>&quot;)">
+    <div id="topnav" role="banner">
+      <div id="credits">
+        <p id="author">
+          Created by <a href="https://github.com/maxm33">maxm33</a>
+        </p>
+        <img
+          alt=""
+          src="/public/images/icons/github-mark.webp"
+          width="20px"
+          height="20px"
+        />
+      </div>
       <div id="buttons-container">
         <button id="login-button" class="topnav-buttons">
           <img
@@ -55,19 +67,22 @@
         </button>
       </div>
     </div>
-    <div id="container">
+    <div id="container" role="main">
       <div id="logo-container">
         <div id="logo">
           <a aria-label="Go to Home" href="/"
-            ><img alt="" src="/public/images/icons/pokedle-logo.webp"
+            ><img fetchpriority="high" alt="" src="/public/images/icons/pokedle-logo.webp"
           /></a>
         </div>
-        <div id="mode"><p>Classic</p></div>
+        <div id="mode">Classic</div>
+      </div>
+      <div id="mode-switch" class="fadeIn">
+        <a class="mode-link" href="/sentry">Play Sentry Duty</a>
       </div>
       <div id="prev-next">
         <div id="prev">
           Last was<br />
-          <%= prev.name %> #<%= prev.ID %>
+          <%= prev.name %> #<%= String(prev.ID).padStart(3, "0") %>
         </div>
         <div id="timer">
           Reset in<br />
@@ -75,7 +90,7 @@
         </div>
       </div>
       <div id="subtitle" style="margin: 0; display: none">
-        <p>Don't move! Next will be legen... Wait for it...</p>
+        <p>Don't move!</br>Next will be legen... Wait for it...</p>
       </div>
       <div id="textbar-container" style="display: none">
         <div id="autocomplete">
@@ -86,27 +101,46 @@
             placeholder="Type the Pokémon here..."
           />
         </div>
-        <button id="guess-button" type="submit">Guess</button>
+        <button id="guess-button" type="submit" aria-label="Submit guess">
+          <span class="guess-pokeball-scene" aria-hidden="true">
+            <span class="guess-pokeball-bouncer">
+              <span class="guess-pokeball-shaker">
+                <span class="guess-pokeball-squasher">
+                  <span class="guess-pokeball">
+                    <span class="guess-pokeball-light"></span>
+                    <span class="guess-pokeball-top">
+                      <span class="guess-pokeball-half-face"></span>
+                      <span class="guess-pokeball-button"></span>
+                    </span>
+                    <span class="guess-pokeball-bottom">
+                      <span class="guess-pokeball-half-face"></span>
+                    </span>
+                  </span>
+                </span>
+              </span>
+            </span>
+          </span>
+        </button>
       </div>
       <div id="state-container" style="display: none">
         <div id="titles-container">
           <div class="titles">
-            <p>Pokémon</p>
+            <p></p>
           </div>
           <div class="titles">
-            <p>Habitat</p>
+            <p>Place</p>
           </div>
           <div class="titles">
-            <p>Color(s)</p>
+            <p>Color</p>
           </div>
           <div class="titles">
-            <p>Type(s)</p>
+            <p>Type</p>
           </div>
           <div class="titles">
-            <p>Fully Evolved</p>
+            <p>Fully Evo</p>
           </div>
           <div class="titles">
-            <p>Evolution Level</p>
+            <p>Evo Lvl</p>
           </div>
           <div class="titles">
             <p>Gen</p>
@@ -115,17 +149,6 @@
         <div id="answers-container"></div>
       </div>
     </div>
-    <footer>
-      <p id="author">
-        Created by <a href="https://github.com/maxm33">maxm33</a>
-      </p>
-      <img
-        alt=""
-        src="/public/images/icons/github-mark.webp"
-        width="20px"
-        height="20px"
-      />
-    </footer>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="/public/js/classicMode.js"></script>
   </body>

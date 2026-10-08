@@ -11,8 +11,19 @@
     <meta name="viewport" content="initial-scale=1, width=device-width" />
     <title>Pokédex</title>
   </head>
-  <body style="background-image: url('<%= bg %>')">
-    <div id="topnav">
+  <body style="--page-background-image: url(&quot;<%= bg %>&quot;)">
+    <div id="topnav" role="banner">
+      <div id="credits">
+        <p id="author">
+          Created by <a href="https://github.com/maxm33">maxm33</a>
+        </p>
+        <img
+          alt=""
+          src="/public/images/icons/github-mark.webp"
+          width="20px"
+          height="20px"
+        />
+      </div>
       <div id="buttons-container">
         <button id="login-button" class="topnav-buttons">
           <img
@@ -49,64 +60,192 @@
         </button>
       </div>
     </div>
-    <div id="container">
-      <div id="logo">
+    <div id="container" role="main">
+      <div id="logo" class="fadeIn">
         <a aria-label="Go to Home" href="/"
-          ><img alt="" src="/public/images/icons/pokedle-logo.webp"
+          ><img
+            fetchpriority="high"
+            alt=""
+            src="/public/images/icons/pokedle-logo.webp"
         /></a>
       </div>
       <h1 id="dex-trainer">
-        Trainer: <a id="dex-profile-link"><%= name %></a>
+        Trainer: <a id="dex-profile-link"><%= username %></a>
       </h1>
       <h2 id="dex-discovered"></h2>
+      <label id="dex-filter-label" for="hide-undiscovered">
+        <input id="hide-undiscovered" type="checkbox" checked />
+        Hide undiscovered
+      </label>
+      <label id="dex-sort-label" for="sort-latest">
+        <input id="sort-latest" type="checkbox" />
+        Order by discovery date
+      </label>
+      <label id="dex-shiny-label" for="shiny-only">
+        <input id="shiny-only" type="checkbox" />
+        Shinies only
+      </label>
     </div>
-    <footer>
-      <p id="author">
-        Created by <a href="https://github.com/maxm33">maxm33</a>
-      </p>
-      <img
-        alt=""
-        src="/public/images/icons/github-mark.webp"
-        width="20px"
-        height="20px"
-      />
-    </footer>
     <script type="module">
       import { pokemons } from "../../public/js/pokemons.js";
 
-      var url = window.location.href;
-      var ref = url.substring(0, url.length - 8); // removing "/pokedex"
+      function getPokemonSlug(pokemonName) {
+        return pokemonName
+          .toLowerCase()
+          .replace("mr. mime", "mr-mime")
+          .replace("nidoranf", "nidoran-female")
+          .replace("nidoranm", "nidoran-male")
+          .replace("mime jr.", "mime-jr")
+          .replaceAll(" ", "-");
+      }
+
+      function getPokemonDisplayName(pokemonName) {
+        return pokemonName
+          .replace("Farfetchd", "Farfetch'd")
+          .replace("NidoranF", "Nidoran♀")
+          .replace("NidoranM", "Nidoran♂");
+      }
+
+      function parseHistoryDate(dateString) {
+        let match = /^(\d{2})-(\d{2})-(\d{4})$/.exec(dateString || "");
+        if (!match) return null;
+
+        let [day, month, year] = match.slice(1).map(Number);
+        let timestamp = Date.UTC(year, month - 1, day);
+        let parsedDate = new Date(timestamp);
+        if (
+          parsedDate.getUTCDate() !== day ||
+          parsedDate.getUTCMonth() + 1 !== month ||
+          parsedDate.getUTCFullYear() !== year
+        )
+          return null;
+
+        return timestamp;
+      }
+
+      let url = window.location.href;
+      let ref = url.substring(0, url.length - 8); // removing "/pokedex"
       document.getElementById("dex-profile-link").href = ref + "/profile";
 
-      var container = document.getElementById("container");
-      var div = document.createElement("DIV");
+      let container = document.getElementById("container");
+      let div = document.createElement("DIV");
       div.setAttribute("id", "dex-container");
 
       // generating all the pokedex rows as unknown
-      for (var i = 0; i < pokemons.length; i++) {
-        var subdiv = document.createElement("DIV");
+      for (let i = 0; i < pokemons.length; i++) {
+        let pokemonName = pokemons[i];
+        let pokemonSlug = getPokemonSlug(pokemonName);
+        let pokemonDisplayName = getPokemonDisplayName(pokemonName);
+
+        let subdiv = document.createElement("DIV");
         subdiv.setAttribute("class", "dex-rows");
-        subdiv.setAttribute("id", pokemons[i]);
+        subdiv.setAttribute("id", pokemonName);
         subdiv.innerHTML = `<p class="dex-rows-numbers">${i + 1}.</p>
-        <img alt="" src="/public/images/sprites/unknown.webp" width="90px" height="90px"/>
-        <p class="dex-rows-names">???</p>`;
+    <img alt="${pokemonDisplayName}" src="/public/images/sprites/unknown.webp" width="90px" height="90px"/>
+    <p class="dex-rows-names dex-rows-unknown-name">${pokemonDisplayName.toLowerCase()}</p>`;
         div.appendChild(subdiv);
       }
       container.appendChild(div);
 
       // replacing unknown rows with known ones (according to the user's history)
-      var history = `<%- JSON.stringify(history) %>`;
+      let history = `<%- JSON.stringify(history || []) %>`;
       history = JSON.parse(history);
-      document.getElementById(
-        "dex-discovered"
-      ).textContent = `${history.length}/${pokemons.length} Pokémons discovered`;
-      for (var i = 0; i < history.length; i++) {
-        var subdiv = document.getElementById(history[i].pokemon);
-        subdiv.innerHTML = `<p class="dex-rows-numbers">${subdiv.firstChild.innerHTML}</p>
-          <img alt="" src="/public/images/sprites/${history[i].pokemon}.webp" width="100px" height="100px"/>
-          <p class="dex-rows-names">${history[i].pokemon}</p>
-          <p class="dex-rows-guesses">Guessed: ${history[i].timesGuessed}</p>`;
+      let discoveredPokemon = new Set(history.map((entry) => entry.pokemon));
+      let historyDateByPokemon = new Map(
+        history.map((entry) => [entry.pokemon, parseHistoryDate(entry.date)]),
+      );
+      let latestDate = null;
+      for (let entry of history) {
+        let date = parseHistoryDate(entry.date);
+        if (date !== null && (latestDate === null || date > latestDate))
+          latestDate = date;
       }
+      document.getElementById("dex-discovered").textContent =
+        `${history.length}/${pokemons.length} Pokémons discovered`;
+      for (let i = 0; i < history.length; i++) {
+        let subdiv = document.getElementById(history[i].pokemon);
+        let pokemonName = history[i].pokemon;
+        let pokemonSlug = getPokemonSlug(pokemonName);
+        let pokemonDisplayName = getPokemonDisplayName(pokemonName);
+        let shiny = history[i].shiny === true;
+
+        subdiv.innerHTML = `<p class="dex-rows-numbers">${subdiv.firstChild.innerHTML}</p>
+  ${history[i].timesGuessed === 1 && latestDate !== null && parseHistoryDate(history[i].date) === latestDate ? '<span class="dex-rows-new">NEW</span>' : ""}
+    <img class="dex-pokemon-sprite" alt="${pokemonDisplayName}${shiny ? " (Shiny)" : ""}" src="/public/images/sprites/${pokemonName}${shiny ? "_shiny" : ""}.webp" width="100px" height="100px"/>
+    <div class="dex-rows-info">
+      <a class="dex-rows-names" href="https://www.pokemon.com/it/pokedex/${pokemonSlug}">${pokemonDisplayName}</a>
+      <button type="button" class="dex-shiny-toggle" aria-label="${shiny ? "Show base sprite" : "Show shiny sprite"}" aria-pressed="${shiny}"${shiny ? "" : " hidden"}><img alt="" src="https://archives.bulbagarden.net/media/upload/8/86/ShinyStad2Star.png" width="14" height="15"/></button>
+    </div>
+    <div class="dex-rows-stats">
+      <p class="dex-rows-guesses">Guessed: ${history[i].timesGuessed}</p>
+      <p class="dex-rows-date">${history[i].date}</p>
+    </div>`;
+
+        if (shiny) {
+          const sprite = subdiv.querySelector(".dex-pokemon-sprite");
+          const toggle = subdiv.querySelector(".dex-shiny-toggle");
+          toggle.addEventListener("click", () => {
+            const showShiny = toggle.getAttribute("aria-pressed") !== "true";
+            sprite.src = `/public/images/sprites/${pokemonName}${showShiny ? "_shiny" : ""}.webp`;
+            sprite.alt = `${pokemonDisplayName}${showShiny ? " (Shiny)" : ""}`;
+            toggle.setAttribute("aria-pressed", String(showShiny));
+            toggle.setAttribute(
+              "aria-label",
+              showShiny ? "Show base sprite" : "Show shiny sprite",
+            );
+          });
+        }
+      }
+
+      let hideUndiscovered = document.getElementById("hide-undiscovered");
+      let sortLatest = document.getElementById("sort-latest");
+      let shinyOnly = document.getElementById("shiny-only");
+      let rows = Array.from(document.querySelectorAll(".dex-rows"));
+      let originalOrder = new Map(rows.map((row, index) => [row.id, index]));
+      let shinyPokemon = new Set(
+        history.filter((entry) => entry.shiny === true).map((entry) => entry.pokemon),
+      );
+
+      function updateRowOrder() {
+        let sortedRows = [...rows];
+        if (sortLatest.checked) {
+          sortedRows.sort((left, right) => {
+            let leftDiscovered = discoveredPokemon.has(left.id);
+            let rightDiscovered = discoveredPokemon.has(right.id);
+            if (leftDiscovered !== rightDiscovered)
+              return leftDiscovered ? -1 : 1;
+
+            let leftDate = historyDateByPokemon.get(left.id);
+            let rightDate = historyDateByPokemon.get(right.id);
+            if (leftDate !== rightDate) {
+              if (leftDate === null) return 1;
+              if (rightDate === null) return -1;
+              return rightDate - leftDate;
+            }
+
+            return originalOrder.get(left.id) - originalOrder.get(right.id);
+          });
+        } else {
+          sortedRows.sort(
+            (left, right) =>
+              originalOrder.get(left.id) - originalOrder.get(right.id),
+          );
+        }
+
+        for (let row of sortedRows) div.appendChild(row);
+      }
+
+      function updateUndiscoveredVisibility() {
+        for (let i = 0; i < rows.length; i++) {
+          rows[i].hidden =
+            (hideUndiscovered.checked && !discoveredPokemon.has(rows[i].id)) ||
+            (shinyOnly.checked && !shinyPokemon.has(rows[i].id));
+        }
+      }
+      hideUndiscovered.addEventListener("change", updateUndiscoveredVisibility);
+      shinyOnly.addEventListener("change", updateUndiscoveredVisibility);
+      sortLatest.addEventListener("change", updateRowOrder);
+      updateUndiscoveredVisibility();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="/public/js/auth.js"></script>

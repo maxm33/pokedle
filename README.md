@@ -1,19 +1,20 @@
 # Pokédle
 
-This is a web application for Web Application Development course.
+In the project's early stages, this was a web application for Web Application Development course. Sometimes, I do extend it as ideas come to the mind and free time is available.
 
 <br>
 
 ## Index
 
-- Versions
+- Version Changelog
   - [V1.0.0](#v100)
   - [V1.1.0](#v110)
   - [V1.5.6](#v156)
   - [V1.6.0](#v160)
+  - [V1.7.1](#v171)
+  - [V1.8.0](#v180)
 - [Usage](#usage)
 - [Troubleshooting](#troubleshooting)
-- [Future Plans](#future-plans)
 
 <br>
 
@@ -22,13 +23,13 @@ This is a web application for Web Application Development course.
 Pokédle is a game inspired by Wordle and LoLdle.<br>
 The goal of this game is to guess a secret pokémon, which changes daily.<br>
 
-All pokémons are represented by features such as habitat where they live, their colors, types and evolutions.<br>
-After each guess made, you will be given hints on each of these categories relative to the secret pokémon.<br>
-Hints will help you figure out what is the secret pokémon by looking at their colors:<br>
+All pokémons are represented by features such as `habitat` where they live, their `colors`, `types`, `evolution stages` and `generations`.<br>
+Based on each guess made, you will be given `colored hints` on each of these categories in relation to the secret pokémon ones.<br>
+Such hints will help you figure out what is the secret pokémon by looking at their colors:<br>
 
-- `green` is an exact match on that same category of the secret pokémon;<br>
-- `yellow` is a partial match (meaning there are multiple values and one of them is correct);<br>
-- `red` means there's no match at all.<br>
+- `green` is an `exact match` on that same category of the secret pokémon;<br>
+- `yellow` is a `partial match` (meaning there are multiple values and one of them is correct);<br>
+- `red` means there's `no match` at all.<br>
 
 <br>
 
@@ -38,11 +39,6 @@ Hints will help you figure out what is the secret pokémon by looking at their c
 <br>
 
 Visit Pokédle [here](https://pokedle.onrender.com/) and have fun guessing 'em all!
-
-<br>
-
-> [!NOTE]
-> This version is not available in commit history due to the presence of sensible hard-coded data.
 
 <br>
 
@@ -89,6 +85,36 @@ A new minor update has been implemented:<br>
 
 <br>
 
+## V1.7.1
+
+A new minor update has been implemented:<br>
+
+- added new mode `Sentry Duty`, based on the PMD2 mini-game;
+
+- added new logo image and new gameboy-like pokémon font.
+
+<br>
+
+## V1.8.0
+
+A new minor update has been implemented:<br>
+
+- added `shiny pokémons`;
+
+- added details to the `pokédex` view of players;
+
+- reworked visuals of the old `guess button`, from now it is referred to as the `ball button`;
+
+- added a few new game-like animations to the `ball button`;
+
+- added `daily-consecutive win-streaks` for logged-in players with incremental upgrades to the `ball tier` of the `ball button` (pokeball -> great ball -> ultra ball -> master ball -> reset);
+
+- each `ball tier` has an increasing chance of capturing a shiny version of the daily pokémon;
+
+- added customizable `usernames` for logged-in players.
+
+<br>
+
 ## Usage
 
 - Install all the dependencies
@@ -108,17 +134,13 @@ npm start
 > [!NOTE]
 > Locally, Pokédle is available at `localhost:3000`.
 
+> [!NOTE]
+> Firebase/Firestore API interactions are not available on localhost, unless you build your own storage and choose to abilitate it to do so.
+
 <br>
 
 ## Troubleshooting
 
-If you are having trouble with the site (e.g. it looks broken), clearing the browser cache relative to this site is most likely the solution,
-due to a unit conversion mistake that I recently made. Check [how to clear cache on Chrome](https://support.google.com/accounts/answer/32050?sjid=9309983268576311148-EU).
-
-<br>
-
-## Future Plans
-
-New game modes and more stuff will be implemented in the near future, so stay tuned!
+If you are having trouble with the site (e.g. it looks broken), clearing the browser cache relative to this site is most likely the solution. Check [how to clear cache on Chrome](https://support.google.com/accounts/answer/32050?sjid=9309983268576311148-EU).
 
 <br>

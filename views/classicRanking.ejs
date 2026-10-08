@@ -11,8 +11,19 @@
     <meta name="viewport" content="initial-scale=1, width=device-width" />
     <title>Ranking - Classic</title>
   </head>
-  <body style="background-image: url('<%= bg %>')">
-    <div id="topnav">
+  <body style="--page-background-image: url(&quot;<%= bg %>&quot;)">
+    <div id="topnav" role="banner">
+      <div id="credits">
+        <p id="author">
+          Created by <a href="https://github.com/maxm33">maxm33</a>
+        </p>
+        <img
+          alt=""
+          src="/public/images/icons/github-mark.webp"
+          width="20px"
+          height="20px"
+        />
+      </div>
       <div id="buttons-container">
         <button id="login-button" class="topnav-buttons">
           <img
@@ -49,41 +60,31 @@
         </button>
       </div>
     </div>
-    <div id="container">
-      <div id="logo">
+    <div id="container" role="main">
+      <div id="logo" class="fadeIn">
         <a aria-label="Go to Home" href="/"
-          ><img alt="" src="/public/images/icons/pokedle-logo.webp"
+          ><img fetchpriority="high" alt="" src="/public/images/icons/pokedle-logo.webp"
         /></a>
       </div>
       <div id="subtitle" class="fadeIn">
         <h1 style="margin-bottom: 0">Champions</h1>
         <h3 style="margin-top: 0">Classic</h3>
-        <% for (var i = 0; i < rankingData.length; i++) { %>
+        <p><a class="ranking-switch" href="/sentry/ranking">View Sentry Duty rankings</a></p>
+        <% for (let i = 0; i < rankingData.length; i++) { %>
         <div class="ranking-rows">
           <b
             ><%= i+1 %>.
             <a
               aria-label="<%= rankingData[i].id %>'s profile"
               href="/user/<%= rankingData[i].id %>/profile"
-              ><%= rankingData[i].name %></a
+              ><%= rankingData[i].username %></a
             ></b
           >
-          - <%= rankingData[i].wins %> wins<br />
+          - <%= rankingData[i].classicWins %> pts<br />
         </div>
         <% } %>
       </div>
     </div>
-    <footer>
-      <p id="author">
-        Created by <a href="https://github.com/maxm33">maxm33</a>
-      </p>
-      <img
-        alt=""
-        src="/public/images/icons/github-mark.webp"
-        width="20px"
-        height="20px"
-      />
-    </footer>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="/public/js/auth.js"></script>
   </body>
