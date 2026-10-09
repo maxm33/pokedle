@@ -1424,6 +1424,9 @@ input[type="hidden"] {
   }
 }
 @media (max-width: 670px) {
+  .event-notification {
+    font-size: 0.5em;
+  }
   #topnav {
     padding: 0.3em 0.5em 0em 0.5em;
   }
@@ -1593,6 +1596,9 @@ input[type="hidden"] {
   }
 }
 @media (max-width: 409px) {
+  .event-notification {
+    font-size: 0.4em;
+  }
   .topnav-buttons {
     padding: 0.35em 0.8em 0.35em 0.8em;
   }
