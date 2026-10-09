@@ -396,7 +396,7 @@ input[type="hidden"] {
 .mode-link {
   margin-top: 0.5em;
 }
-@media (max-width: 640px) {
+@media (max-width: 670px) {
   #sentry-footprint-container,
   .sentry-options {
     max-width: 100%;
@@ -1351,7 +1351,7 @@ input[type="hidden"] {
     transform: translateX(0);
   }
 }
-@media (max-width: 480px) {
+@media (max-width: 670px) {
   #topnav {
     padding: 0.3em 0.5em 0em 0.5em;
   }
