@@ -379,8 +379,13 @@
         const pokemonLink = document.getElementById("dex-pokemon-link");
         pokemonLink.classList.toggle("dex-unknown-text", !entry);
         elements.description.classList.toggle("dex-unknown-text", !entry);
-        const heading = `#${String(record.id).padStart(3, "0")}<br />${record.displayName}`;
-        pokemonLink.textContent = entry ? heading : heading.toLowerCase();
+        const number = document.createElement("span");
+        number.textContent = `#${String(record.id).padStart(3, "0")}`;
+        const name = document.createElement("span");
+        name.textContent = entry
+          ? record.displayName
+          : record.displayName.toLowerCase();
+        pokemonLink.replaceChildren(number, document.createElement("br"), name);
         if (entry) {
           pokemonLink.href = `https://www.pokemon.com/it/pokedex/${getPokemonSlug(record.name)}`;
         } else {
