@@ -544,7 +544,7 @@ async function classicGeneratePokemon() {
   const eligibleEventPokemon = eventPokemonPool.filter(
     (pokemonName) => pokemonName !== previousPokemon.name,
   );
-  const useEventPool = eligibleEventPokemon.length > 0 && Math.random() < 1.1;
+  const useEventPool = eligibleEventPokemon.length > 0 && Math.random() < 0.1;
   let pokemonSnapshot;
   if (useEventPool) {
     const pokemonName =
