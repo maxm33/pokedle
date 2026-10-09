@@ -166,13 +166,13 @@
         for (const timer of lightTimers.values()) window.clearTimeout(timer);
         lightTimers.clear();
         for (const light of dexLights)
-          light.classList.remove("dex-light-dimmed");
+          light.classList.remove("dex-light-glowing");
       }
 
       function scheduleLightBlink(light, delay) {
         const timer = window.setTimeout(() => {
-          light.classList.toggle("dex-light-dimmed");
-          scheduleLightBlink(light, 350 + Math.random() * 1450);
+          light.classList.toggle("dex-light-glowing");
+          scheduleLightBlink(light, 1100 + Math.random() * 1600);
         }, delay);
         lightTimers.set(light, timer);
       }
@@ -379,16 +379,18 @@
         const pokemonLink = document.getElementById("dex-pokemon-link");
         pokemonLink.classList.toggle("dex-unknown-text", !entry);
         elements.description.classList.toggle("dex-unknown-text", !entry);
-        pokemonLink.textContent = `#${String(record.id).padStart(3, "0")} ${record.displayName}`;
+        const heading = `#${String(record.id).padStart(3, "0")} ${record.displayName}`;
+        pokemonLink.textContent = entry ? heading : heading.toLowerCase();
         if (entry) {
           pokemonLink.href = `https://www.pokemon.com/it/pokedex/${getPokemonSlug(record.name)}`;
         } else {
           pokemonLink.removeAttribute("href");
         }
         elements.generation.textContent = getGeneration(record.id);
-        elements.description.textContent = descriptions.get(
-          normalizeName(record.name),
-        );
+        const description = descriptions.get(normalizeName(record.name));
+        elements.description.textContent = entry
+          ? description
+          : description.toLowerCase();
         elements.status.textContent = entry ? "Discovered" : "Not discovered";
         elements.guesses.textContent = entry
           ? String(entry.timesGuessed)
