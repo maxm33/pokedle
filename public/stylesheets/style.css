@@ -147,14 +147,18 @@ body::before {
   border: 1px solid #f1d463;
   border-radius: 0.75em;
   display: flex;
+  font-size: 0.7em;
   gap: 0.6em;
   margin: 0 0 1em;
   padding: 0.65em 1em;
+  text-align: left;
+  width: 60%;
 }
 .event-notification[hidden] {
   display: none;
 }
 .event-icon {
+  flex: 0 0 auto;
   font-size: 1.25em;
 }
 #subtitle {
