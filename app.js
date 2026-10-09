@@ -610,65 +610,44 @@ function classicVerifyGuess(guess, answer) {
     else if (answer.types.length != count || guess.types.length != count)
       response.types = "partial";
 
-    const getColorHex = (color) =>
-      Array.isArray(color)
-        ? color[1]
-        : color && typeof color === "object"
-          ? color.hex
-          : color;
-    let guessColors = (guess.colors || []).map(getColorHex);
-    let answerColors = (answer.colors || []).map(getColorHex);
-    const COLOR_MATCH_THRESHOLD = 8;
+    const getColorName = (color) => {
+      let name;
+      if (Array.isArray(color)) name = color[0];
+      else if (color && typeof color === "object") name = color.name;
+      else if (
+        typeof color === "string" &&
+        !/^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color)
+      )
+        name = color;
+
+      return typeof name === "string" && name.trim()
+        ? name.trim().toLowerCase()
+        : null;
+    };
+    const guessColors = (guess.colors || []).map(getColorName);
+    const answerColors = (answer.colors || []).map(getColorName);
+    const remainingAnswerColors = new Map();
+    for (const colorName of answerColors)
+      if (colorName)
+        remainingAnswerColors.set(
+          colorName,
+          (remainingAnswerColors.get(colorName) || 0) + 1,
+        );
     let matchedColors = 0;
-
-    // --------------------------------------------------------
-    // Find the optimal one-to-one color matching.
-    //
-    // A pair of colors is considered a match if:
-    //     ΔE94 < 8
-    //
-    // Each guess color can match at most one answer color.
-    // Each answer color can match at most one guess color.
-    //
-    // The order of the colors in either array has no influence
-    // on the result.
-    // --------------------------------------------------------
-
-    function findBestColorMatching(guessIndex, usedAnswerColors, matchCount) {
-      // All guess colors have been considered.
-      if (guessIndex >= guessColors.length) {
-        matchedColors = Math.max(matchedColors, matchCount);
-        return;
-      }
-
-      // Option 1: do not match this guess color.
-      findBestColorMatching(guessIndex + 1, usedAnswerColors, matchCount);
-
-      const guessColor = guessColors[guessIndex].toLowerCase();
-
-      // Try matching this guess color with every unused
-      // answer color whose ΔE94 is below the threshold.
-      for (
-        let answerIndex = 0;
-        answerIndex < answerColors.length;
-        answerIndex++
-      ) {
-        if (usedAnswerColors.has(answerIndex)) continue;
-
-        const answerColor = answerColors[answerIndex].toLowerCase();
-        const distance = colorDistance(guessColor, answerColor);
-        if (distance > COLOR_MATCH_THRESHOLD) continue;
-
-        usedAnswerColors.add(answerIndex);
-        findBestColorMatching(guessIndex + 1, usedAnswerColors, matchCount + 1);
-        usedAnswerColors.delete(answerIndex);
+    for (const colorName of guessColors) {
+      const remaining = colorName
+        ? remainingAnswerColors.get(colorName) || 0
+        : 0;
+      if (remaining > 0) {
+        matchedColors++;
+        remainingAnswerColors.set(colorName, remaining - 1);
       }
     }
 
-    findBestColorMatching(0, new Set(), 0);
-
     if (
       guessColors.length === answerColors.length &&
+      guessColors.every(Boolean) &&
+      answerColors.every(Boolean) &&
       matchedColors === answerColors.length
     )
       response.colors = "correct";
@@ -973,69 +952,6 @@ async function updateStatsOnSentryRound(
       }
     })
     .catch((err) => console.error(err));
-}
-
-function hexToRgb(hex) {
-  hex = hex.replace("#", "");
-  return {
-    r: parseInt(hex.substring(0, 2), 16),
-    g: parseInt(hex.substring(2, 4), 16),
-    b: parseInt(hex.substring(4, 6), 16),
-  };
-}
-
-function rgbToLab({ r, g, b }) {
-  r /= 255;
-  g /= 255;
-  b /= 255;
-
-  r = r > 0.04045 ? Math.pow((r + 0.055) / 1.055, 2.4) : r / 12.92;
-  g = g > 0.04045 ? Math.pow((g + 0.055) / 1.055, 2.4) : g / 12.92;
-  b = b > 0.04045 ? Math.pow((b + 0.055) / 1.055, 2.4) : b / 12.92;
-
-  const x = (r * 0.4124 + g * 0.3576 + b * 0.1805) / 0.95047;
-  const y = (r * 0.2126 + g * 0.7152 + b * 0.0722) / 1.0;
-  const z = (r * 0.0193 + g * 0.1192 + b * 0.9505) / 1.08883;
-
-  const transform = (value) =>
-    value > 0.008856 ? Math.pow(value, 1 / 3) : 7.787 * value + 16 / 116;
-
-  const fx = transform(x);
-  const fy = transform(y);
-  const fz = transform(z);
-
-  return {
-    l: 116 * fy - 16,
-    a: 500 * (fx - fy),
-    b: 200 * (fy - fz),
-  };
-}
-
-function colorDistance(hex1, hex2) {
-  const lab1 = rgbToLab(hexToRgb(hex1));
-  const lab2 = rgbToLab(hexToRgb(hex2));
-  const deltaL = lab1.l - lab2.l;
-
-  const C1 = Math.sqrt(lab1.a * lab1.a + lab1.b * lab1.b);
-  const C2 = Math.sqrt(lab2.a * lab2.a + lab2.b * lab2.b);
-  const deltaC = C1 - C2;
-
-  const deltaA = lab1.a - lab2.a;
-  const deltaB = lab1.b - lab2.b;
-  let deltaH2 = deltaA * deltaA + deltaB * deltaB - deltaC * deltaC;
-  deltaH2 = Math.max(0, deltaH2);
-
-  const K1 = 0.045;
-  const K2 = 0.015;
-  const SL = 1;
-  const SC = 1 + K1 * C1;
-  const SH = 1 + K2 * C1;
-
-  return Math.sqrt(
-    Math.pow(deltaL / SL, 2) +
-      Math.pow(deltaC / SC, 2) +
-      deltaH2 / Math.pow(SH, 2),
-  );
 }
 
 const getFootprintUrl = (pokemonName) =>
