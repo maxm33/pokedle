@@ -1410,6 +1410,7 @@ input[type="hidden"] {
 }
 .dex-description {
   min-height: 5.4em;
+  text-transform: none; !important
 }
 .dex-unknown-text {
   font-family:
