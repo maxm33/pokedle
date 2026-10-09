@@ -23,7 +23,7 @@ In the project's early stages, this was a web application for Web Application De
 Pokédle is a game inspired by Wordle and LoLdle.<br>
 The goal of this game is to guess a secret pokémon, which changes daily.<br>
 
-All pokémons are represented by features such as `habitat` where they live, their `colors`, `types`, `evolution stages` and `generations`.<br>
+All pokémons are represented by features such as `habitat` where they live, their `colors`, `types`, `evolution stage` and `generation`.<br>
 Based on each guess made, you will be given `colored hints` on each of these categories in relation to the secret pokémon ones.<br>
 Such hints will help you figure out what is the secret pokémon by looking at their colors:<br>
 
