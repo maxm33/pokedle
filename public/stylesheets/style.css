@@ -526,6 +526,15 @@ input[type="hidden"] {
     inset -8px -6px 14px rgba(0, 0, 0, 0.2),
     inset 6px 6px 12px rgba(255, 255, 255, 0.3);
 }
+.guess-pokeball-bottom .guess-pokeball-half-face {
+  clip-path: inset(50% 0 0);
+  -webkit-mask: radial-gradient(
+    circle at 50% 50%,
+    transparent 0.675em,
+    black 0.675em
+  );
+  mask: radial-gradient(circle at 50% 50%, transparent 0.675em, black 0.675em);
+}
 .guess-pokeball-scene.great-ball .guess-pokeball,
 .guess-pokeball-scene.great-ball .guess-pokeball-half-face {
   background:
