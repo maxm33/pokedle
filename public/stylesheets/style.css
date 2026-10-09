@@ -141,6 +141,22 @@ body::before {
 #prev {
   background-color: #ff6666;
 }
+.event-notification {
+  align-items: center;
+  background-color: rgba(20, 20, 20, 0.85);
+  border: 1px solid #f1d463;
+  border-radius: 0.75em;
+  display: flex;
+  gap: 0.6em;
+  margin: 0 0 1em;
+  padding: 0.65em 1em;
+}
+.event-notification[hidden] {
+  display: none;
+}
+.event-icon {
+  font-size: 1.25em;
+}
 #subtitle {
   font-size: 1.3em;
 }

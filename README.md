@@ -111,7 +111,11 @@ A new minor update has been implemented:<br>
 
 - each `ball tier` has an increasing chance of capturing a shiny version of the daily pokémon;
 
-- added customizable `usernames` for logged-in players.
+- added customizable `usernames` for logged-in players;
+
+- added medals to third, second and first places in `rankings` pages;
+
+- added randomic trigger of `events`, as of right now there is just a `legendary-only event`.
 
 <br>
 

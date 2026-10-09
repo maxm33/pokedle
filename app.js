@@ -9,6 +9,7 @@ const logger = require("morgan");
 const createError = require("http-errors");
 const packageJson = require("./package.json");
 const badFootprints = require("./data/badFootprints.json");
+const eventPokemonPool = require("./data/legendaryPokemon.json");
 const serviceAccount = require("/etc/secrets/service_account_admin_sdk");
 
 // initialize Firebase with admin privileges
@@ -32,6 +33,7 @@ let classicWinners = []; // to store uuid of players who have won the current ga
 let classicGameID; // to store uuid of current game
 let classicPreviousPokemon; // to store the previous generated pokemon
 let classicCurrentPokemon; // to store the current generated pokemon
+let classicEventActive = false;
 
 // --- SENTRY DUTY MODE VARIABLES ---
 let sentryChallenges = {}; // store active sentry duty challenges
@@ -203,6 +205,7 @@ app.get("/classic/state", (_, res) => {
     classicPreviousPokemon == null
       ? null
       : { ID: classicPreviousPokemon.ID, name: classicPreviousPokemon.name },
+    classicEventActive,
   ]);
 });
 
@@ -538,22 +541,41 @@ async function classicGeneratePokemon() {
     throw new Error("Cannot generate a game before the initial Pokémon loads");
 
   const previousPokemon = classicCurrentPokemon;
-  let pokemonID = previousPokemon.ID;
-  while (pokemonID == previousPokemon.ID)
-    pokemonID = Math.floor(Math.random() * 649 + 1);
+  const eligibleEventPokemon = eventPokemonPool.filter(
+    (pokemonName) => pokemonName !== previousPokemon.name,
+  );
+  const useEventPool = eligibleEventPokemon.length > 0 && Math.random() < 1.1;
+  let pokemonSnapshot;
+  if (useEventPool) {
+    const pokemonName =
+      eligibleEventPokemon[
+        Math.floor(Math.random() * eligibleEventPokemon.length)
+      ];
+    const queryResult = await firestore
+      .collection("pokemons")
+      .where("name", "==", pokemonName)
+      .limit(1)
+      .get();
+    if (queryResult.docs.length !== 1)
+      throw new Error(`Event Pokémon "${pokemonName}" was not found`);
+    pokemonSnapshot = queryResult.docs[0];
+  } else {
+    let pokemonID = previousPokemon.ID;
+    while (pokemonID == previousPokemon.ID)
+      pokemonID = Math.floor(Math.random() * 649 + 1);
 
-  const pokemonSnapshot = await firestore
-    .collection("pokemons")
-    .doc(pokemonID.toString())
-    .get();
+    pokemonSnapshot = await firestore
+      .collection("pokemons")
+      .doc(pokemonID.toString())
+      .get();
+  }
   const nextPokemon = pokemonSnapshot.data();
   if (!pokemonSnapshot.exists || !nextPokemon)
-    throw new Error(`Pokémon ${pokemonID} was not found`);
+    throw new Error("Generated Pokémon was not found");
 
   let nextDesktopBackground = bg_desktop_option;
   while (nextDesktopBackground == bg_desktop_option)
-    nextDesktopBackground =
-      Math.floor(Math.random() * bg_desktop_number) + 1;
+    nextDesktopBackground = Math.floor(Math.random() * bg_desktop_number) + 1;
   let nextMobileBackground = bg_mobile_option;
   while (nextMobileBackground == bg_mobile_option)
     nextMobileBackground = Math.floor(Math.random() * bg_mobile_number) + 1;
@@ -562,6 +584,7 @@ async function classicGeneratePokemon() {
   classicCurrentPokemon = nextPokemon;
   classicGameID = randomUUID();
   classicWinners = [];
+  classicEventActive = useEventPool;
   bg_desktop_option = nextDesktopBackground;
   bg_mobile_option = nextMobileBackground;
   console.log("#DEV Solution: " + classicCurrentPokemon.name);
