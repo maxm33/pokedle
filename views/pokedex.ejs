@@ -155,6 +155,38 @@
         </section>
       </div>
     </div>
+    <script>
+      const dexLights = [...document.querySelectorAll(".dex-light")];
+      const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      );
+      const lightTimers = new Map();
+
+      function stopLightBlinking() {
+        for (const timer of lightTimers.values()) window.clearTimeout(timer);
+        lightTimers.clear();
+        for (const light of dexLights)
+          light.classList.remove("dex-light-dimmed");
+      }
+
+      function scheduleLightBlink(light, delay) {
+        const timer = window.setTimeout(() => {
+          light.classList.toggle("dex-light-dimmed");
+          scheduleLightBlink(light, 350 + Math.random() * 1450);
+        }, delay);
+        lightTimers.set(light, timer);
+      }
+
+      function updateLightBlinking() {
+        stopLightBlinking();
+        if (reducedMotion.matches) return;
+        for (const light of dexLights)
+          scheduleLightBlink(light, Math.random() * 1400);
+      }
+
+      reducedMotion.addEventListener("change", updateLightBlinking);
+      updateLightBlinking();
+    </script>
     <script type="module">
       import { pokemons } from "../../public/js/pokemons.js";
 
@@ -324,9 +356,11 @@
         if (!hasRecord) {
           const pokemonLink = document.getElementById("dex-pokemon-link");
           pokemonLink.removeAttribute("href");
+          pokemonLink.classList.remove("dex-unknown-text");
           pokemonLink.textContent = "No Pokémon match these filters";
           elements.generation.textContent = "";
           elements.description.textContent = "";
+          elements.description.classList.remove("dex-unknown-text");
           elements.status.textContent = "No matching entries";
           elements.guesses.textContent = "—";
           elements.date.textContent = "—";
@@ -343,6 +377,8 @@
         const date = entry ? parseHistoryDate(entry.date) : null;
         showShiny = false;
         const pokemonLink = document.getElementById("dex-pokemon-link");
+        pokemonLink.classList.toggle("dex-unknown-text", !entry);
+        elements.description.classList.toggle("dex-unknown-text", !entry);
         pokemonLink.textContent = `#${String(record.id).padStart(3, "0")} ${record.displayName}`;
         if (entry) {
           pokemonLink.href = `https://www.pokemon.com/it/pokedex/${getPokemonSlug(record.name)}`;

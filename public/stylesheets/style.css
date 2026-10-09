@@ -1232,10 +1232,16 @@ input[type="hidden"] {
   border-radius: 50%;
   box-shadow: 1px 1px 3px rgb(0 0 0 / 50%);
   height: 16px;
+  transition:
+    opacity 120ms ease,
+    filter 120ms ease;
   width: 16px;
 }
+.dex-light-dimmed {
+  filter: saturate(0.45);
+  opacity: 0.25;
+}
 .dex-light-red {
-  animation: dex-light-blink 2s infinite;
   background: radial-gradient(circle at 30% 30%, #ff8888, #c00);
 }
 .dex-light-yellow {
@@ -1388,6 +1394,11 @@ input[type="hidden"] {
 .dex-description {
   min-height: 5.4em;
 }
+.dex-unknown-text {
+  font-family:
+    "PokemonUnownGB", "PokemonGB", "Lucida Sans", sans-serif !important;
+  font-weight: 400;
+}
 .dex-record {
   border-top: 1px solid rgb(13 43 19 / 45%);
   font-size: 0.72em;
@@ -1462,11 +1473,6 @@ input[type="hidden"] {
     transform: translateY(-8px);
   }
 }
-@keyframes dex-light-blink {
-  50% {
-    opacity: 0.4;
-  }
-}
 @media (max-width: 768px) {
   #dex-device {
     flex-direction: column;
@@ -1511,9 +1517,11 @@ input[type="hidden"] {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .dex-pokemon-sprite,
-  .dex-light-red {
+  .dex-pokemon-sprite {
     animation: none;
+  }
+  .dex-light {
+    transition: none;
   }
 }
 .ranking-rows {
