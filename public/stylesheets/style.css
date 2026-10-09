@@ -1091,6 +1091,21 @@ input[type="hidden"] {
 .profile-loader[hidden] {
   display: none;
 }
+.state-loading {
+  align-items: center;
+  display: flex;
+  gap: 0.65em;
+  justify-content: center;
+  margin: 1em;
+}
+.state-loading .profile-loader {
+  border-color: rgba(255, 255, 255, 0.35);
+  border-top-color: white;
+  flex: 0 0 auto;
+}
+.state-loading[hidden] {
+  display: none;
+}
 @keyframes profile-loader-spin {
   to {
     transform: rotate(360deg);
@@ -1309,6 +1324,29 @@ input[type="hidden"] {
 #credits img {
   animation: fadeIn 1.5s;
 }
+.auth-loading {
+  align-items: center;
+  display: flex;
+  font-family:
+    "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-size: 1em;
+  gap: 0.5em;
+  padding: 0.6em 1.3em;
+  position: absolute;
+  right: 0.75em;
+  top: 0.5em;
+}
+.auth-loading .profile-loader {
+  border-color: rgba(255, 255, 255, 0.35);
+  border-top-color: white;
+  flex: 0 0 auto;
+  height: 20px;
+  width: 20px;
+}
+.auth-loading[hidden] {
+  display: none;
+}
 .shake {
   animation: horizontal-shaking 0.35s;
 }
@@ -1507,6 +1545,15 @@ input[type="hidden"] {
     font-size: 0.7em;
   }
   #credits img {
+    height: 15px;
+    width: 15px;
+  }
+  .auth-loading {
+    font-size: 0.7em;
+    right: 0.5em;
+    top: 0.3em;
+  }
+  .auth-loading .profile-loader {
     height: 15px;
     width: 15px;
   }

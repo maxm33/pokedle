@@ -18,6 +18,8 @@ let textbar = document.getElementById("textbar");
 let guessButton = document.getElementById("guess-button");
 let containerstate = document.getElementById("state-container");
 let containertitles = document.getElementById("titles-container");
+let stateLoading = document.getElementById("state-loading");
+let stateLoadingMessage = document.getElementById("state-loading-message");
 let guessBallScene = document.querySelector(".guess-pokeball-scene");
 const guessBallVariants = ["great-ball", "ultra-ball", "master-ball"];
 
@@ -40,6 +42,11 @@ const userID = classicState.getUserID();
 // get game status to update timer and render guesses
 axios.get("/classic/state").then((res) => {
   manageGameState(res.data[0], res.data[1], res.data[2]);
+  stateLoading.hidden = true;
+}).catch((err) => {
+  console.error("Failed to retrieve game state:", err);
+  stateLoading.querySelector(".profile-loader").hidden = true;
+  stateLoadingMessage.textContent = "Unable to retrieve game state.";
 });
 
 initializeAutocomplete(textbar, pokemons); // initialize autocomplete textbar

@@ -31,6 +31,10 @@
           height="20px"
         />
       </div>
+      <div id="auth-loading" class="auth-loading" role="status" aria-live="polite">
+        <span class="profile-loader" aria-hidden="true"></span>
+        <span>Checking authentication...</span>
+      </div>
       <div id="buttons-container">
         <button id="login-button" class="topnav-buttons">
           <img
@@ -91,6 +95,10 @@
       </div>
       <div id="subtitle" style="margin: 0; display: none">
         <p>Don't move!</br>Next will be legen... Wait for it...</p>
+      </div>
+      <div id="state-loading" class="state-loading" role="status" aria-live="polite">
+        <span class="profile-loader" aria-hidden="true"></span>
+        <span id="state-loading-message">Retrieving game state...</span>
       </div>
       <div id="textbar-container" style="display: none">
         <div id="autocomplete">

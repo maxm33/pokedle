@@ -19,6 +19,7 @@ let profileNameForm = document.getElementById("profile-name-form");
 let profileNameInput = document.getElementById("profile-name-input");
 let profileNameSaveButton = document.getElementById("save-profile-name-button");
 let profileNameSaveLoader = document.getElementById("save-profile-name-loader");
+let authLoading = document.getElementById("auth-loading");
 let profileNameCancelButton = document.getElementById(
   "cancel-profile-name-button",
 );
@@ -28,7 +29,14 @@ let provider = new GoogleAuthProvider();
 
 await syncAppVersion();
 
-let config = await axios.get("/env/fb");
+let config;
+try {
+  config = await axios.get("/env/fb");
+} catch (err) {
+  console.error("Failed to initialize authentication:", err);
+  if (authLoading) authLoading.textContent = "Unable to check authentication.";
+  throw err;
+}
 export const auth = getAuth(initializeApp(config.data));
 
 const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -61,6 +69,11 @@ const unsubscribe = onAuthStateChanged(auth, (user) => {
       profileName.hidden = false;
     }
   }
+
+  if (authLoading) authLoading.hidden = true;
+}, (error) => {
+  console.error("Authentication check failed:", error);
+  if (authLoading) authLoading.textContent = "Unable to check authentication.";
 });
 
 loginButton.addEventListener("click", () => {
