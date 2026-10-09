@@ -15,7 +15,10 @@
       href="/public/app.webmanifest"
     />
     <meta name="viewport" content="initial-scale=1, width=device-width" />
-    <meta name="description" content="Pokédle is a game heavily inspired by Wordle and LoLdle, in which you have to guess the daily secret pokémon.">
+    <meta
+      name="description"
+      content="Pokédle is a game heavily inspired by Wordle and LoLdle, in which you have to guess the daily secret pokémon."
+    />
     <title>Pokédle - Classic</title>
   </head>
   <body style="--page-background-image: url(&quot;<%= bg %>&quot;)">
@@ -31,7 +34,12 @@
           height="20px"
         />
       </div>
-      <div id="auth-loading" class="auth-loading" role="status" aria-live="polite">
+      <div
+        id="auth-loading"
+        class="auth-loading"
+        role="status"
+        aria-live="polite"
+      >
         <span class="profile-loader" aria-hidden="true"></span>
         <span>Checking authentication...</span>
       </div>
@@ -75,7 +83,10 @@
       <div id="logo-container">
         <div id="logo">
           <a aria-label="Go to Home" href="/"
-            ><img fetchpriority="high" alt="" src="/public/images/icons/pokedle-logo.webp"
+            ><img
+              fetchpriority="high"
+              alt=""
+              src="/public/images/icons/pokedle-logo.webp"
           /></a>
         </div>
         <div id="mode">Classic</div>
@@ -102,15 +113,24 @@
       >
         <span class="event-icon" aria-hidden="true">🔔</span>
         <span>
-          Exclusive event today!<br><br>
-          Generated pokémon is guaranteed to be a legendary one!<br><br>
+          Exclusive event today!<br /><br />
+          Generated pokémon is guaranteed to be a legendary one!<br /><br />
           Go catch it before it flees!
         </span>
       </div>
       <div id="subtitle" style="margin: 0; display: none">
-        <p>Don't move!</br>Next will be legen... Wait for it...</p>
+        <p>
+          Don't move!<br />
+          Next will be legen...<br />
+          Wait for it...
+        </p>
       </div>
-      <div id="state-loading" class="state-loading" role="status" aria-live="polite">
+      <div
+        id="state-loading"
+        class="state-loading"
+        role="status"
+        aria-live="polite"
+      >
         <span class="profile-loader" aria-hidden="true"></span>
         <span id="state-loading-message">Retrieving game state...</span>
       </div>
