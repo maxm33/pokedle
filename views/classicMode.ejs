@@ -96,8 +96,20 @@
       </div>
       <div id="prev-next">
         <div id="prev">
+          <% const previousPokemonDisplayName = prev.name
+            .replace("Farfetchd", "Farfetch'd")
+            .replace("NidoranF", "Nidoran♀")
+            .replace("NidoranM", "Nidoran♂");
+          const previousPokemonSlug = prev.name
+            .toLowerCase()
+            .replace("mr. mime", "mr-mime")
+            .replace("nidoranf", "nidoran-female")
+            .replace("nidoranm", "nidoran-male")
+            .replace("mime jr.", "mime-jr")
+            .replaceAll(" ", "-"); %>
           Last was<br />
-          <%= prev.name %> #<%= String(prev.ID).padStart(3, "0") %>
+          <a href="https://www.pokemon.com/it/pokedex/<%= previousPokemonSlug %>"><%= previousPokemonDisplayName %></a>
+          #<%= String(prev.ID).padStart(3, "0") %>
         </div>
         <div id="timer">
           Reset in<br />
@@ -120,8 +132,8 @@
       </div>
       <div id="subtitle" style="margin: 0; display: none">
         <p>
-          We're done for today...<br />
-          Check other game modes!
+          We're done for today...<br /><br />
+          Check other game modes too!
         </p>
       </div>
       <div

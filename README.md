@@ -101,7 +101,7 @@ A new minor update has been implemented:<br>
 
 - added `shiny pokémons`;
 
-- added details to the `pokédex` view of players;
+- restyled the `pokédex` view;
 
 - reworked visuals of the old `guess button`, from now it is referred to as the `ball button`;
 
