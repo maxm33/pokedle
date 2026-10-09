@@ -1284,9 +1284,9 @@ input[type="hidden"] {
   margin: 0.4em;
 }
 .ranking-medal {
-  height: 14px;
+  height: 56px;
   vertical-align: middle;
-  width: 14px;
+  width: 56px;
 }
 #credits {
   float: left;
@@ -1500,8 +1500,8 @@ input[type="hidden"] {
     font-size: 0.65em;
   }
   .ranking-medal {
-    height: 10px;
-    width: 10px;
+    height: 40px;
+    width: 40px;
   }
   #author {
     font-size: 0.7em;
@@ -1621,8 +1621,8 @@ input[type="hidden"] {
     left: 26px;
   }
   .ranking-medal {
-    height: 8px;
-    width: 8px;
+    height: 32px;
+    width: 32px;
   }
   #dex-trainer {
     font-size: 0.75em;
