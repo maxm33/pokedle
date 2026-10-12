@@ -37,12 +37,30 @@
           height="20px"
         />
       </div>
+      <div id="auth-loading" class="auth-loading" role="status" aria-live="polite">
+        <span class="profile-loader" aria-hidden="true"></span>
+        <span>Checking authentication...</span>
+      </div>
       <div id="buttons-container">
         <button id="login-button" class="topnav-buttons">
           <img
             id="login-img"
             alt=""
             src="/public/images/misc/login.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button
+          id="shop-button"
+          class="topnav-buttons"
+          type="button"
+          aria-label="Shop"
+          title="Shop"
+        >
+          <img
+            alt=""
+            src="/public/images/misc/shop.webp"
             width="35px"
             height="35px"
           />
@@ -117,6 +135,9 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script type="module" src="/public/js/sentryMode.js"></script>
+    <script
+      type="module"
+      src="/public/js/sentryMode.js?v=<%= encodeURIComponent(appVersion) %>"
+    ></script>
   </body>
 </html>

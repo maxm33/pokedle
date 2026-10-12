@@ -20,12 +20,30 @@
           height="20px"
         />
       </div>
+      <div id="auth-loading" class="auth-loading" role="status" aria-live="polite">
+        <span class="profile-loader" aria-hidden="true"></span>
+        <span>Checking authentication...</span>
+      </div>
       <div id="buttons-container">
         <button id="login-button" class="topnav-buttons">
           <img
             id="login-img"
             alt=""
             src="/public/images/misc/login.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button
+          id="shop-button"
+          class="topnav-buttons"
+          type="button"
+          aria-label="Shop"
+          title="Shop"
+        >
+          <img
+            alt=""
+            src="/public/images/misc/shop.webp"
             width="35px"
             height="35px"
           />
@@ -69,7 +87,13 @@
         <% for (let i = 0; i < rankingData.length; i++) { %>
         <div class="ranking-rows">
           <b
-            ><%= i+1 %>.
+            ><% if (i < 3) { %><img
+              class="ranking-medal"
+              alt="<%= i + 1 %> place"
+              src="/public/images/icons/<%= i === 0 ? '1st' : i === 1 ? '2nd' : '3rd' %>.png"
+            />
+            <% } else { %><%= i + 1 %>.
+            <% } %>
             <a
               aria-label="<%= rankingData[i].id %>'s profile"
               href="/user/<%= rankingData[i].id %>/profile"

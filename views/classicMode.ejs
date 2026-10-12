@@ -15,7 +15,10 @@
       href="/public/app.webmanifest"
     />
     <meta name="viewport" content="initial-scale=1, width=device-width" />
-    <meta name="description" content="Pokédle is a game heavily inspired by Wordle and LoLdle, in which you have to guess the daily secret pokémon.">
+    <meta
+      name="description"
+      content="Pokédle is a game heavily inspired by Wordle and LoLdle, in which you have to guess the daily secret pokémon."
+    />
     <title>Pokédle - Classic</title>
   </head>
   <body style="--page-background-image: url(&quot;<%= bg %>&quot;)">
@@ -31,12 +34,35 @@
           height="20px"
         />
       </div>
+      <div
+        id="auth-loading"
+        class="auth-loading"
+        role="status"
+        aria-live="polite"
+      >
+        <span class="profile-loader" aria-hidden="true"></span>
+        <span>Checking authentication...</span>
+      </div>
       <div id="buttons-container">
         <button id="login-button" class="topnav-buttons">
           <img
             id="login-img"
             alt=""
             src="/public/images/misc/login.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button
+          id="shop-button"
+          class="topnav-buttons"
+          type="button"
+          aria-label="Shop"
+          title="Shop"
+        >
+          <img
+            alt=""
+            src="/public/images/misc/shop.webp"
             width="35px"
             height="35px"
           />
@@ -71,7 +97,10 @@
       <div id="logo-container">
         <div id="logo">
           <a aria-label="Go to Home" href="/"
-            ><img fetchpriority="high" alt="" src="/public/images/icons/pokedle-logo.webp"
+            ><img
+              fetchpriority="high"
+              alt=""
+              src="/public/images/icons/pokedle-logo.webp"
           /></a>
         </div>
         <div id="mode">Classic</div>
@@ -81,16 +110,52 @@
       </div>
       <div id="prev-next">
         <div id="prev">
-          Last was<br />
-          <%= prev.name %> #<%= String(prev.ID).padStart(3, "0") %>
+          <% const previousPokemonDisplayName = prev.name .replace("Farfetchd",
+          "Farfetch'd") .replace("NidoranF", "Nidoran♀") .replace("NidoranM",
+          "Nidoran♂"); const previousPokemonSlug = prev.name .toLowerCase()
+          .replace("mr. mime", "mr-mime") .replace("nidoranf", "nidoran-female")
+          .replace("nidoranm", "nidoran-male") .replace("mime jr.", "mime-jr")
+          .replaceAll(" ", "-"); %> Last was<br />
+          <a
+            id="previous-pokemon-link"
+            href="https://www.pokemon.com/it/pokedex/<%= previousPokemonSlug %>"
+            ><%= previousPokemonDisplayName %></a
+          >
+          #<%= String(prev.ID).padStart(3, "0") %>
         </div>
         <div id="timer">
           Reset in<br />
           ..........
         </div>
       </div>
+      <div
+        id="event-notification"
+        class="event-notification"
+        role="status"
+        aria-live="polite"
+        hidden
+      >
+        <span class="event-icon" aria-hidden="true">🔔</span>
+        <span>
+          Exclusive event today!<br /><br />
+          Generated Pokémon is guaranteed to be a legendary one!<br /><br />
+          Go catch it before it flees!
+        </span>
+      </div>
       <div id="subtitle" style="margin: 0; display: none">
-        <p>Don't move!</br>Next will be legen... Wait for it...</p>
+        <p>
+          We're done for today...<br /><br />
+          Check other game modes too!
+        </p>
+      </div>
+      <div
+        id="state-loading"
+        class="state-loading"
+        role="status"
+        aria-live="polite"
+      >
+        <span class="profile-loader" aria-hidden="true"></span>
+        <span id="state-loading-message">Retrieving game state...</span>
       </div>
       <div id="textbar-container" style="display: none">
         <div id="autocomplete">
@@ -150,6 +215,9 @@
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script type="module" src="/public/js/classicMode.js"></script>
+    <script
+      type="module"
+      src="/public/js/classicMode.js?v=<%= encodeURIComponent(appVersion) %>"
+    ></script>
   </body>
 </html>

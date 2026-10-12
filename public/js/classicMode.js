@@ -18,6 +18,9 @@ let textbar = document.getElementById("textbar");
 let guessButton = document.getElementById("guess-button");
 let containerstate = document.getElementById("state-container");
 let containertitles = document.getElementById("titles-container");
+let stateLoading = document.getElementById("state-loading");
+let stateLoadingMessage = document.getElementById("state-loading-message");
+let eventNotification = document.getElementById("event-notification");
 let guessBallScene = document.querySelector(".guess-pokeball-scene");
 const guessBallVariants = ["great-ball", "ultra-ball", "master-ball"];
 
@@ -38,13 +41,22 @@ if (classicState.getUserID() == null) {
 const userID = classicState.getUserID();
 
 // get game status to update timer and render guesses
-axios.get("/classic/state").then((res) => {
-  manageGameState(res.data[0], res.data[1], res.data[2]);
-});
+axios
+  .get("/classic/state")
+  .then((res) => {
+    manageGameState(res.data[0], res.data[1], res.data[2]);
+    eventNotification.hidden = !res.data[3];
+    stateLoading.hidden = true;
+  })
+  .catch((err) => {
+    console.error("Failed to retrieve game state:", err);
+    stateLoading.querySelector(".profile-loader").hidden = true;
+    stateLoadingMessage.textContent = "Unable to retrieve game state.";
+  });
 
 initializeAutocomplete(textbar, pokemons); // initialize autocomplete textbar
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   setGuessBallVariant(null);
   if (user) {
     user
@@ -61,12 +73,21 @@ onAuthStateChanged(auth, (user) => {
       });
   }
 
+  let token = null;
+  if (user) {
+    try {
+      token = await user.getIdToken();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   axios
     .get(
-      "/classic/canPlay/uid=" +
-        userID +
-        "&gid=" +
-        (auth.currentUser ? auth.currentUser.uid : null),
+      "/classic/canPlay/uid=" + userID + "&gid=" + (user ? user.uid : null),
+      {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      },
     )
     .then((res) => {
       // manage the elements according whether the user can play or not
@@ -133,17 +154,22 @@ async function submitGuess(guess, inputElement = textbar) {
       token: token,
       uid: userID,
       guess: normalizedGuess,
-      tries: classicState.getTries() + 1,
     });
     let pokemon = res.data[0];
     let hasWon = res.data[2];
     inputElement.disabled = true;
     await playGuessSequence(hasWon, res.data[1]);
     if (classicState.notRendered()) animateFadeIn(containertitles, "1.5s"); // hint categories will be shown
-    classicState.addGuess(res.data); // rendering hints related to this guess
+    if (!classicState.isPokemonGuessed(pokemon.name))
+      classicState.addGuess(res.data); // rendering hints related to this guess
     keepInputDisabled = hasWon;
     if (hasWon) {
-      onVictory(classicState.getTries(), pokemon, res.data[3]?.shiny === true);
+      onVictory(
+        res.data[4].tries,
+        pokemon,
+        res.data[3]?.shiny === true,
+        res.data[3]?.pokedollarsEarned ?? 0,
+      );
       classicState.removeState(); // reset the state
     }
   } catch (err) {
@@ -273,12 +299,18 @@ function manageGameState(id, remainingTime) {
   }, 1000);
 }
 
-function onVictory(tries, pokemon, shiny) {
+function onVictory(tries, pokemon, shiny, pokedollarsEarned) {
   let pokemonDisplayName = getPokemonDisplayName(pokemon.name);
   let spriteName = shiny ? `${pokemon.name}_shiny` : pokemon.name;
   let victoryText = shiny
     ? `It was a shiny ${pokemonDisplayName} indeed!`
     : `It was ${pokemonDisplayName} indeed!`;
+  const pokedollarsText =
+    pokedollarsEarned > 0
+      ? `You earned ${pokedollarsEarned} Pokédollars!`
+      : auth.currentUser
+        ? ""
+        : "Log in to earn Pokédollars!";
   let audio = new Audio("public/audio/classic_victory_ost.mp3");
   audio.volume = 0.1;
   audio.play();
@@ -286,7 +318,7 @@ function onVictory(tries, pokemon, shiny) {
     let ad = document.createElement("DIV");
     ad.setAttribute("id", "victory-ad-container");
     subtitle.insertAdjacentElement("afterend", ad);
-    ad.innerHTML = `<div id="victory-text1"><b>GG!</b></div><div id="victory-text2"><b>${victoryText}</b></div><div><img alt="${pokemonDisplayName}${shiny ? " (Shiny)" : ""}" style="animation: fadeIn 500ms" src='/public/images/sprites/${spriteName}.webp' width='180px' height='180px'></div><div id="victory-text3"><b>You guessed it in ${tries} tries...</b></div><div id="victory-text4"><b>Think you can do better? Let's see!</b></div><a aria-label="Go to Home" href='/'><button id='continue-button'>Continue</button></a>`;
+    ad.innerHTML = `<div id="victory-text1"><b>GG!</b></div><div id="victory-text2"><b>${victoryText}</b></div><div><img alt="${pokemonDisplayName}${shiny ? " (Shiny)" : ""}" style="animation: fadeIn 500ms" src='/public/images/sprites/${spriteName}.webp' width='180px' height='180px'></div><div id="victory-text3"><b>You guessed it in ${tries} tries...</b></div><div id="victory-text5"><b>${pokedollarsText}</b></div><div id="victory-text4"><b>Think you can do better? Let's see!</b></div><a aria-label="Go to Home" href='/'><button id='continue-button'>Continue</button></a>`;
   }, 1000);
 }
 

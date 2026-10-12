@@ -9,7 +9,7 @@ let muteButton = document.getElementById("sentry-mute");
 
 let totalScore = 0;
 let sessionFailed = 0;
-let sessionRounds = 0;
+let sentrySessionID = null;
 let currentChallenge = null;
 let countdownInterval = null;
 
@@ -41,12 +41,21 @@ if (muteButton && audio) {
 
 async function loadChallenge(resetSession = false) {
   try {
-    const res = await axios.get("/sentry/state");
+    if (resetSession) sentrySessionID = null;
+    const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
+    const url = sentrySessionID
+      ? `/sentry/state?sessionID=${encodeURIComponent(sentrySessionID)}`
+      : "/sentry/state";
+    const res = await axios.get(url, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
     currentChallenge = res.data;
+    sentrySessionID = currentChallenge.sessionID;
+    totalScore = currentChallenge.totalScore;
+    sessionFailed = currentChallenge.failures;
     if (resetSession) {
       totalScore = 0;
       sessionFailed = 0;
-      sessionRounds = 0;
     }
     renderChallenge();
     startCountdown(currentChallenge.durationMs);
@@ -104,7 +113,7 @@ function startCountdown(duration) {
     if (remaining <= 0) {
       clearInterval(countdownInterval);
       timer.textContent = "Time left: 0s";
-      handleFailure();
+      submitGuess(null);
     } else {
       timer.textContent = `Time left: ${Math.ceil(remaining / 1000)}s`;
     }
@@ -115,18 +124,16 @@ async function submitGuess(option) {
   if (!currentChallenge || currentChallenge.submitted) return;
   currentChallenge.submitted = true;
   clearInterval(countdownInterval);
-  const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
   try {
-    sessionRounds++;
+    const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
     const res = await axios.post("/sentry", {
       token: token,
       challengeID: currentChallenge.challengeID,
       selected: option,
-      sessionTotalScore: totalScore,
-      sessionRounds: sessionRounds,
-      gameOver: sessionFailed + 1 >= 3 && !currentChallenge.timeout,
     });
     const result = res.data;
+    totalScore = result.totalScore;
+    sessionFailed = result.failures;
 
     const buttons = optionsContainer.querySelectorAll(".sentry-option");
     let selectedBtn = null;
@@ -137,7 +144,6 @@ async function submitGuess(option) {
     });
     if (result.correct) {
       if (selectedBtn) selectedBtn.classList.add("sentry-correct");
-      totalScore += result.score;
       playFeedbackSound("correct");
       feedback.innerHTML = `Correct! +${result.score} points. Total: ${totalScore}`;
       disableOptions();
@@ -146,15 +152,15 @@ async function submitGuess(option) {
       if (selectedBtn) selectedBtn.classList.add("sentry-wrong");
       if (correctBtn) correctBtn.classList.add("sentry-correct");
       playFeedbackSound("wrong");
-      handleFailure();
+      handleFailure(result.failures);
     }
   } catch (err) {
     console.error(err);
   }
 }
 
-function handleFailure() {
-  sessionFailed++;
+function handleFailure(failures = sessionFailed + 1) {
+  sessionFailed = failures;
   const failuresEl = document.getElementById("sentry-failures");
   if (failuresEl) failuresEl.textContent = `Failures: ${sessionFailed}/3`;
   disableOptions();

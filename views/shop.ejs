@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" href="/public/images/icons/favicon.ico" />
+    <link rel="stylesheet" href="/public/stylesheets/style.css" />
+    <link
+      rel="manifest"
+      type="application/manifest+json"
+      href="/public/app.webmanifest"
+    />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <title>PokéShop</title>
+  </head>
+  <body
+    style="--page-background-image: url(&quot;<%= bg %>&quot;)"
+    data-rate-limit-toast="<%= typeof rateLimitToast === 'string' ? rateLimitToast : '' %>"
+  >
+    <div id="topnav" role="banner">
+      <div id="credits">
+        <p id="author">
+          Created by <a href="https://github.com/maxm33">maxm33</a>
+        </p>
+        <img
+          alt=""
+          src="/public/images/icons/github-mark.webp"
+          width="20px"
+          height="20px"
+        />
+      </div>
+      <div
+        id="auth-loading"
+        class="auth-loading"
+        role="status"
+        aria-live="polite"
+      >
+        <span class="profile-loader" aria-hidden="true"></span>
+        <span>Checking authentication...</span>
+      </div>
+      <div id="buttons-container">
+        <button id="login-button" class="topnav-buttons">
+          <img
+            id="login-img"
+            alt=""
+            src="/public/images/misc/login.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button
+          id="shop-button"
+          class="topnav-buttons"
+          type="button"
+          aria-label="Shop"
+          title="Shop"
+        >
+          <img
+            alt=""
+            src="/public/images/misc/shop.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="ranking-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/ranking.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="pokedex-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/pokedex.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="profile-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/profile.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+      </div>
+    </div>
+    <header class="shop-header">
+      <div class="shop-brand">
+        <a
+          class="shop-back"
+          href="/classic"
+          aria-label="Return to Classic"
+          title="Return to Classic"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path
+              d="M15.5 4.5 8 12l7.5 7.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2.5"
+            />
+          </svg>
+        </a>
+        <span class="shop-brand-ball" aria-hidden="true"></span>
+        <span>PokéShop</span>
+      </div>
+      <div class="shop-wallet is-loading">
+        <span
+          id="shop-wallet-loader"
+          class="profile-loader"
+          role="status"
+          aria-label="Loading balance"
+        ></span>
+        <span class="shop-currency" aria-hidden="true">₽</span>
+        <span id="shop-wallet" aria-live="polite" hidden></span>
+      </div>
+    </header>
+    <main class="shop-page">
+      <p class="shop-rewards">
+        Get your custom Profile Background!
+      </p>
+      <nav class="shop-tabs" aria-label="Shop sections">
+        <button
+          id="shop-marketplace-tab"
+          class="shop-tab is-active"
+          type="button"
+          aria-pressed="true"
+        >
+          Marketplace
+        </button>
+        <button
+          id="shop-inventory-tab"
+          class="shop-tab"
+          type="button"
+          aria-pressed="false"
+        >
+          My Inventory (<span id="shop-inventory-count">0</span>)
+        </button>
+      </nav>
+      <p
+        id="shop-status"
+        class="shop-status"
+        role="status"
+        aria-live="polite"
+      ></p>
+      <div id="shop-items" class="shop-grid">
+        <% shopItems.forEach((background) => { %>
+        <article
+          class="shop-item"
+          data-background-id="<%= background.id %>"
+          data-purchasable="<%= background.purchasable !== false %>"
+          hidden
+        >
+          <picture class="shop-image-frame">
+            <source
+              media="(max-width: 670px)"
+              srcset="<%= background.mobileUrl %>"
+            />
+            <img
+              class="shop-preview"
+              src="<%= background.desktopUrl %>"
+              alt="<%= background.name %> card art"
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
+          <div class="shop-item-content">
+            <h2><%= background.name %></h2>
+            <p class="shop-price">
+              <span class="shop-currency" aria-hidden="true">₽</span>
+              <span><%= background.price.toLocaleString("en-US") %></span>
+            </p>
+            <button
+              class="shop-item-action"
+              type="button"
+              data-action="purchase"
+              data-background-id="<%= background.id %>"
+              data-price="<%= background.price %>"
+              disabled
+            >
+              Buy
+            </button>
+          </div>
+        </article>
+        <% }); %>
+      </div>
+      <p id="shop-empty-state" class="shop-empty-state" hidden></p>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="/public/js/auth.js"></script>
+    <script type="module" src="/public/js/shop.js"></script>
+  </body>
+</html>

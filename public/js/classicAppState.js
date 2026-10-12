@@ -52,6 +52,12 @@ export class classicAppState {
     let menuoption = document.createElement("DIV");
     menuoption.setAttribute("class", "answers");
     menuoption.innerHTML = `<img alt="" aria-label="${pokemon.name}" src='/public/images/sprites/${pokemon.name}.webp' width="100px" height="100px">`;
+    const getColorHex = (color) =>
+      Array.isArray(color)
+        ? color[1]
+        : color && typeof color === "object"
+          ? color.hex
+          : color;
     for (let property in response) {
       let card = document.createElement("DIV");
       card.setAttribute("class", response[property]);
@@ -63,8 +69,14 @@ export class classicAppState {
           let colors = pokemon[property];
           card.innerHTML =
             colors[1] == null
-              ? `<div class="color-square" style="background-color: ${colors[0]}"></div>`
-              : `<div class="color-square" style="background-color: ${colors[0]}"></div><div class="color-square" style="background-color: ${colors[1]}"></div>`;
+              ? `<div class="color-square" style="background-color: ${getColorHex(
+                  colors[0],
+                )}"></div>`
+              : `<div class="color-square" style="background-color: ${getColorHex(
+                  colors[0],
+                )}"></div><div class="color-square" style="background-color: ${getColorHex(
+                  colors[1],
+                )}"></div>`;
           break;
         case "types":
           let types = pokemon[property];

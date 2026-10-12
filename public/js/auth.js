@@ -11,6 +11,7 @@ import {
 let logimg = document.getElementById("login-img");
 let loginButton = document.getElementById("login-button");
 let rankingButton = document.getElementById("ranking-button");
+let shopButton = document.getElementById("shop-button");
 let pokedexButton = document.getElementById("pokedex-button");
 let profileButton = document.getElementById("profile-button");
 let profileName = document.getElementById("profile-name");
@@ -19,16 +20,78 @@ let profileNameForm = document.getElementById("profile-name-form");
 let profileNameInput = document.getElementById("profile-name-input");
 let profileNameSaveButton = document.getElementById("save-profile-name-button");
 let profileNameSaveLoader = document.getElementById("save-profile-name-loader");
+let authLoading = document.getElementById("auth-loading");
 let profileNameCancelButton = document.getElementById(
   "cancel-profile-name-button",
 );
 let profileNameError = document.getElementById("profile-name-error");
 
+let rateLimitToast;
+let rateLimitToastTimeout;
+let rateLimitToastRemovalTimeout;
+
+function showRateLimitToast(message) {
+  if (!rateLimitToast) {
+    rateLimitToast = document.createElement("div");
+    rateLimitToast.className = "rate-limit-toast";
+    rateLimitToast.setAttribute("role", "alert");
+    rateLimitToast.setAttribute("aria-live", "assertive");
+    document.body.appendChild(rateLimitToast);
+  }
+
+  clearTimeout(rateLimitToastTimeout);
+  clearTimeout(rateLimitToastRemovalTimeout);
+  rateLimitToast.textContent = message;
+  rateLimitToast.hidden = false;
+  requestAnimationFrame(() => rateLimitToast.classList.add("is-visible"));
+
+  rateLimitToastTimeout = window.setTimeout(() => {
+    rateLimitToast.classList.remove("is-visible");
+    rateLimitToastRemovalTimeout = window.setTimeout(() => {
+      rateLimitToast.hidden = true;
+    }, 250);
+  }, 3000);
+}
+
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 429) {
+      showRateLimitToast(
+        error.response.data?.error ||
+          "Too many requests. Please try again later.",
+      );
+    }
+    return Promise.reject(error);
+  },
+);
+
+const pageUrl = new URL(window.location.href);
+const rateLimitMessage = pageUrl.searchParams.get("rateLimitToast");
+if (rateLimitMessage) {
+  showRateLimitToast(rateLimitMessage);
+  pageUrl.searchParams.delete("rateLimitToast");
+  window.history.replaceState(
+    null,
+    "",
+    `${pageUrl.pathname}${pageUrl.search}${pageUrl.hash}`,
+  );
+}
+const renderedRateLimitMessage = document.body.dataset.rateLimitToast;
+if (renderedRateLimitMessage) showRateLimitToast(renderedRateLimitMessage);
+
 let provider = new GoogleAuthProvider();
 
 await syncAppVersion();
 
-let config = await axios.get("/env/fb");
+let config;
+try {
+  config = await axios.get("/env/fb");
+} catch (err) {
+  console.error("Failed to initialize authentication:", err);
+  if (authLoading) authLoading.textContent = "Unable to check authentication.";
+  throw err;
+}
 export const auth = getAuth(initializeApp(config.data));
 
 const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -39,6 +102,7 @@ const unsubscribe = onAuthStateChanged(auth, (user) => {
     rankingButton.style.borderRadius = "0";
     animateFadeIn(loginButton, "1s");
     animateFadeIn(rankingButton, "1s");
+    animateFadeIn(shopButton, "1s");
     animateFadeIn(pokedexButton, "1s");
     animateFadeIn(profileButton, "1s");
   } else {
@@ -48,6 +112,7 @@ const unsubscribe = onAuthStateChanged(auth, (user) => {
     rankingButton.style.borderRadius = "1.5em 0 0 1.5em";
     animateFadeIn(loginButton, "1s");
     animateFadeIn(rankingButton, "1s");
+    animateFadeIn(shopButton, "1s");
     animateFadeOut(pokedexButton, "1s");
     animateFadeOut(profileButton, "1s");
   }
@@ -61,6 +126,11 @@ const unsubscribe = onAuthStateChanged(auth, (user) => {
       profileName.hidden = false;
     }
   }
+
+  if (authLoading) authLoading.hidden = true;
+}, (error) => {
+  console.error("Authentication check failed:", error);
+  if (authLoading) authLoading.textContent = "Unable to check authentication.";
 });
 
 loginButton.addEventListener("click", () => {
@@ -168,6 +238,10 @@ rankingButton.addEventListener("click", () => {
   window.location.href = window.location.pathname.startsWith("/sentry")
     ? "/sentry/ranking"
     : "/classic/ranking";
+});
+
+shopButton.addEventListener("click", () => {
+  window.location.href = "/shop";
 });
 
 export function animateFadeIn(element, duration) {
