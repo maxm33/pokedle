@@ -23,7 +23,6 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  renderShop();
   await loadShopState(user);
 });
 

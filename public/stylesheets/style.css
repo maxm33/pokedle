@@ -193,13 +193,14 @@ body::before {
 #mode-title,
 #mode-data {
   animation: fadeIn 1.5s;
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.75);
   border: none;
   color: black;
   height: inherit;
   width: inherit;
   position: relative;
   z-index: 10;
+  backdrop-filter: blur(4px);
 }
 #mode-title {
   order: 0;
@@ -255,9 +256,9 @@ body::before {
   animation: fadeIn 1.5s;
 }
 .profile-companion {
-  height: 5.25em;
+  height: 9em;
   object-fit: contain;
-  width: 5.25em;
+  width: 9em;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
 }
 #profile-background-toggle {
@@ -1436,6 +1437,12 @@ input[type="hidden"] {
   cursor: not-allowed;
   opacity: 0.55;
 }
+.shop-item-action[data-action="equip"] {
+  background-color: #22c55e;
+}
+.shop-item-action[data-action="equip"]:hover:not(:disabled) {
+  background-color: #16a34a;
+}
 .shop-empty-state {
   color: #d1d5db;
   font-size: 0.9em;
@@ -2102,6 +2109,10 @@ input[type="hidden"] {
   }
   .profile-stat-card + .profile-stat-card::after {
     inset: -2.1em;
+  }
+  .profile-companion {
+    height: 7em;
+    width: 7em;
   }
   .event-notification {
     font-size: 0.5em;
