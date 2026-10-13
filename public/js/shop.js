@@ -3,16 +3,14 @@ import { auth } from "./auth.js";
 
 const wallet = document.getElementById("shop-wallet");
 const walletLoader = document.getElementById("shop-wallet-loader");
-const status = document.getElementById("shop-status");
 const items = document.getElementById("shop-items");
 const emptyState = document.getElementById("shop-empty-state");
 const inventoryCount = document.getElementById("shop-inventory-count");
-const marketplaceTab = document.getElementById("shop-marketplace-tab");
-const inventoryTab = document.getElementById("shop-inventory-tab");
+const sectionTabs = document.querySelectorAll("[data-shop-section]");
 let currentUser = null;
 let shopState = null;
 let requestPending = false;
-let activeTab = "marketplace";
+let activeSection = "background";
 
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
@@ -21,7 +19,6 @@ onAuthStateChanged(auth, async (user) => {
   if (!user) {
     setWalletLoading(false);
     wallet.textContent = "0";
-    status.textContent = "";
     renderShop();
     return;
   }
@@ -30,14 +27,11 @@ onAuthStateChanged(auth, async (user) => {
   await loadShopState(user);
 });
 
-marketplaceTab.addEventListener("click", () => {
-  activeTab = "marketplace";
-  renderShop();
-});
-
-inventoryTab.addEventListener("click", () => {
-  activeTab = "inventory";
-  renderShop();
+sectionTabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    activeSection = tab.dataset.shopSection;
+    renderShop();
+  });
 });
 
 items.addEventListener("click", async (event) => {
@@ -45,41 +39,50 @@ items.addEventListener("click", async (event) => {
   const user = currentUser;
   if (!button || !user || !shopState || requestPending) return;
 
-  const backgroundId = button.dataset.backgroundId;
+  const itemId = button.dataset.itemId;
+  const type = button.dataset.itemType;
   const action = button.dataset.action;
-  if (
-    action === "purchase" &&
-    getPokedollars() < Number(button.dataset.price)
-  )
+  if (action === "purchase" && getPokedollars() < Number(button.dataset.price))
     return;
   requestPending = true;
   renderShop();
-  status.textContent = "";
 
   try {
     const token = await user.getIdToken();
     const headers = { Authorization: `Bearer ${token}` };
-    if (action === "purchase") {
-      await axios.post("/shop/purchase", { backgroundId }, { headers });
-      status.textContent = "Background added to your inventory.";
-    } else {
-      const nextBackground = action === "unequip" ? null : backgroundId;
-      await axios.patch(
-        "/shop/equipped-background",
-        { backgroundId: nextBackground },
+    if (type === "background") {
+      if (action === "purchase") {
+        await axios.post(
+          "/shop/purchase",
+          { backgroundId: itemId },
+          { headers },
+        );
+      } else {
+        const nextBackground = action === "unequip" ? null : itemId;
+        await axios.patch(
+          "/shop/equipped-background",
+          { backgroundId: nextBackground },
+          { headers },
+        );
+      }
+    } else if (action === "purchase") {
+      await axios.post(
+        "/shop/collectibles/purchase",
+        { type, itemId },
         { headers },
       );
-      status.textContent = nextBackground
-        ? "Profile background updated."
-        : "Profile background reset.";
+    } else {
+      const nextItem = action === "unequip" ? null : itemId;
+      await axios.patch(
+        "/shop/collectibles/equipped",
+        { type, itemId: nextItem },
+        { headers },
+      );
     }
     await loadShopState(user);
   } catch (error) {
     console.error(error);
     if (currentUser?.uid !== user.uid) return;
-    status.textContent =
-      error.response?.data?.error ||
-      "Unable to update the shop. Please try again.";
   } finally {
     requestPending = false;
     renderShop();
@@ -101,10 +104,7 @@ async function loadShopState(user) {
     if (currentUser?.uid !== user.uid) return;
     shopState = null;
     setWalletLoading(false);
-    wallet.textContent = "Unavailable";
-    status.textContent =
-      error.response?.data?.error ||
-      "Unable to load the shop. Please try again.";
+    wallet.textContent = "???";
   } finally {
     renderShop();
   }
@@ -123,48 +123,74 @@ function setWalletLoading(loading) {
   wallet.parentElement.classList.toggle("is-loading", loading);
 }
 
-function renderShop() {
-  const ownedBackgrounds = shopState?.ownedBackgrounds ?? [];
-  inventoryCount.textContent = String(ownedBackgrounds.length);
-  marketplaceTab.classList.toggle("is-active", activeTab === "marketplace");
-  inventoryTab.classList.toggle("is-active", activeTab === "inventory");
-  marketplaceTab.setAttribute(
-    "aria-pressed",
-    String(activeTab === "marketplace"),
+function getOwnedItems(type) {
+  if (!shopState) return [];
+  return (
+    shopState[
+      type === "background"
+        ? "ownedBackgrounds"
+        : type === "overlay"
+          ? "ownedOverlays"
+          : "ownedCompanions"
+    ] ?? []
   );
-  inventoryTab.setAttribute("aria-pressed", String(activeTab === "inventory"));
+}
+
+function getEquippedItem(type) {
+  return shopState?.[
+    type === "background"
+      ? "equippedBackground"
+      : type === "overlay"
+        ? "equippedOverlay"
+        : "equippedCompanion"
+  ];
+}
+
+function renderShop() {
+  const totalOwned =
+    getOwnedItems("background").length +
+    getOwnedItems("overlay").length +
+    getOwnedItems("companion").length;
+  inventoryCount.textContent = String(totalOwned);
+  sectionTabs.forEach((tab) => {
+    const selected = tab.dataset.shopSection === activeSection;
+    tab.classList.toggle("is-active", selected);
+    tab.setAttribute("aria-pressed", String(selected));
+  });
 
   let visibleCount = 0;
   items.querySelectorAll(".shop-item").forEach((item) => {
-    const backgroundId = item.dataset.backgroundId;
+    const itemId = item.dataset.itemId;
+    const type = item.dataset.itemType;
     const button = item.querySelector(".shop-item-action");
-    const owned = ownedBackgrounds.includes(backgroundId);
-    const equipped = shopState?.equippedBackground === backgroundId;
+    const owned = getOwnedItems(type).includes(itemId);
+    const equipped = getEquippedItem(type) === itemId;
     const purchasable = item.dataset.purchasable === "true";
-    const visible = activeTab === "marketplace" ? purchasable && !owned : owned;
+    const visible =
+      activeSection === "inventory"
+        ? owned
+        : type === activeSection && purchasable && !owned;
     item.hidden = !visible;
     if (!visible) return;
     visibleCount++;
 
-    if (owned) {
-      button.dataset.action = equipped ? "unequip" : "equip";
-      button.textContent = equipped
-        ? "Using on profile (Reset)"
-        : "Set as profile background";
-    } else {
-      button.dataset.action = "purchase";
-      button.textContent = `Buy`;
-    }
+    button.dataset.action = owned
+      ? equipped
+        ? "unequip"
+        : "equip"
+      : "purchase";
+    button.textContent = owned ? (equipped ? "Remove" : "Use") : "Buy";
     const price = Number(button.dataset.price);
     const cannotAfford =
       button.dataset.action === "purchase" && getPokedollars() < price;
-    button.disabled = !currentUser || !shopState || requestPending || cannotAfford;
+    button.disabled =
+      !currentUser || !shopState || requestPending || cannotAfford;
   });
 
   emptyState.hidden = visibleCount > 0;
   if (visibleCount === 0)
     emptyState.textContent =
-      activeTab === "marketplace"
-        ? "The marketplace is completely sold out!"
-        : "Your inventory is empty. Go buy some backgrounds!";
+      activeSection === "inventory"
+        ? "Your inventory is empty."
+        : `No ${activeSection} items are available.`;
 }

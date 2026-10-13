@@ -1,0 +1,44 @@
+[
+  {
+    "id": "overlay-1",
+    "name": "Bibarel Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/bibarel.webp"
+  },
+  {
+    "id": "overlay-3",
+    "name": "Komala Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/komala.webp"
+  },
+  {
+    "id": "overlay-6",
+    "name": "Nosepass Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/nosepass.webp"
+  },
+  {
+    "id": "overlay-7",
+    "name": "Oricorio Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/oricorio.webp"
+  },
+  {
+    "id": "overlay-8",
+    "name": "Pheromosa Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/pheromosa.webp"
+  },
+  {
+    "id": "overlay-9",
+    "name": "Sentret Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/sentret.webp"
+  },
+  {
+    "id": "overlay-10",
+    "name": "Vaporeon Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/vaporeon.webp"
+  }
+]

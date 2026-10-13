@@ -193,24 +193,125 @@ body::before {
 #mode-title,
 #mode-data {
   animation: fadeIn 1.5s;
-  background-color: white;
-  border: 0.15em solid black;
+  background-color: transparent;
+  border: none;
   color: black;
   height: inherit;
   width: inherit;
+  position: relative;
+  z-index: 10;
 }
 #mode-title {
-  border-bottom: 0em solid transparent;
+  order: 0;
   border-top-left-radius: 1em;
   border-top-right-radius: 1em;
   font-size: 1.3em;
   padding: 0.5em;
 }
 #mode-data {
+  order: 2;
   border-bottom-left-radius: 1em;
   border-bottom-right-radius: 1em;
   font-size: 1.3em;
   padding: 1em;
+}
+.profile-stat-card {
+  position: relative;
+  margin: 3em;
+  background-color: white;
+  border: 0.15em solid black;
+  border-radius: 1em;
+  animation: fadeIn 1.5s;
+  display: flex;
+  flex-direction: column;
+}
+.profile-stat-card::before {
+  content: "";
+  order: 1;
+  border-top: 0.15em solid black;
+  width: 100%;
+}
+.profile-stat-card::after {
+  content: "";
+  position: absolute;
+  inset: -3.6em;
+  background-image: var(--profile-overlay-image);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+.profile-stat-card + .profile-stat-card::after {
+  inset: -3.5em;
+}
+.profile-companion-container {
+  position: absolute;
+  bottom: -2em;
+  right: -2em;
+  margin: 0;
+  z-index: 10;
+  pointer-events: none;
+  animation: fadeIn 1.5s;
+}
+.profile-companion {
+  height: 5.25em;
+  object-fit: contain;
+  width: 5.25em;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+}
+#profile-background-toggle {
+  align-items: center;
+  aspect-ratio: 1;
+  background-color: rgb(17 24 39 / 82%);
+  border: 2px solid rgb(255 255 255 / 75%);
+  border-radius: 50%;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  box-shadow: 0 2px 10px rgb(0 0 0 / 35%);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  padding: clamp(0.65rem, 2.5vw, 0.9rem);
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  width: clamp(2.75rem, 10vw, 3.5rem);
+  z-index: 10001;
+}
+#profile-background-toggle:hover {
+  background-color: rgb(17 24 39 / 96%);
+}
+#profile-background-toggle:focus-visible {
+  outline: 3px solid #facc15;
+  outline-offset: 3px;
+}
+#profile-background-toggle svg {
+  fill: none;
+  height: 100%;
+  stroke: white;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  width: 100%;
+}
+#profile-background-toggle .profile-eye-open {
+  fill: none;
+}
+#profile-background-toggle .profile-eye-slash {
+  display: none;
+}
+body.profile-background-focus #profile-background-toggle .profile-eye-open {
+  display: none;
+}
+body.profile-background-focus #profile-background-toggle .profile-eye-slash {
+  display: block;
+}
+body.profile-background-focus #topnav,
+body.profile-background-focus #logo,
+body.profile-background-focus #profile-name-container,
+body.profile-background-focus #profile-name-form,
+body.profile-background-focus .profile-companion-container,
+body.profile-background-focus .profile-stat-card {
+  display: none;
 }
 #mode-switch {
   margin-top: 0.75em;
@@ -1211,6 +1312,7 @@ input[type="hidden"] {
 }
 .shop-tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.75em;
   justify-content: center;
   margin-bottom: 1.25em;
@@ -1239,12 +1341,6 @@ input[type="hidden"] {
 }
 #shop-inventory-count {
   color: black;
-}
-.shop-status {
-  color: white;
-  font-size: 0.75em;
-  min-height: 1.5em;
-  text-align: center;
 }
 .shop-grid {
   display: grid;
@@ -1389,11 +1485,17 @@ input[type="hidden"] {
 #profile-name-container {
   align-items: center;
   display: flex;
-  gap: 0.5em;
+  gap: 0.75em;
   justify-content: center;
+  background-color: #333;
+  border-radius: 2em;
+  padding: 0.5em 1.5em;
+  margin-top: 1.5em;
+  animation: fadeIn 1.5s;
 }
 #profile-name-container h1 {
   overflow-wrap: anywhere;
+  margin: 0 !important;
 }
 #edit-profile-name-button {
   background-color: white;
@@ -1404,8 +1506,9 @@ input[type="hidden"] {
   font-size: 1.3em;
   height: 1.5em;
   line-height: 1;
-  margin-top: 1em;
   width: 1.5em;
+  margin-top: 0;
+  animation: fadeIn 1.5s;
 }
 #profile-name-form {
   margin-bottom: 1em;
@@ -1987,6 +2090,15 @@ input[type="hidden"] {
   }
 }
 @media (max-width: 670px) {
+  .profile-stat-card {
+    margin: 2em;
+  }
+  .profile-stat-card::after {
+    inset: -2.5em;
+  }
+  .profile-stat-card + .profile-stat-card::after {
+    inset: -2.1em;
+  }
   .event-notification {
     font-size: 0.5em;
   }

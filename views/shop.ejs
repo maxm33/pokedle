@@ -121,65 +121,79 @@
     </header>
     <main class="shop-page">
       <p class="shop-rewards">
-        Get your custom Profile Background!
+        Customize your profile with backgrounds, overlays and Pokémon companions!
       </p>
       <nav class="shop-tabs" aria-label="Shop sections">
         <button
-          id="shop-marketplace-tab"
           class="shop-tab is-active"
+          data-shop-section="background"
           type="button"
           aria-pressed="true"
         >
-          Marketplace
+          Background
         </button>
         <button
-          id="shop-inventory-tab"
           class="shop-tab"
+          data-shop-section="overlay"
           type="button"
           aria-pressed="false"
         >
-          My Inventory (<span id="shop-inventory-count">0</span>)
+          Overlay
+        </button>
+        <button
+          class="shop-tab"
+          data-shop-section="companion"
+          type="button"
+          aria-pressed="false"
+        >
+          Companion
+        </button>
+        <button
+          class="shop-tab"
+          data-shop-section="inventory"
+          type="button"
+          aria-pressed="false"
+        >
+          Inventory (<span id="shop-inventory-count">0</span>)
         </button>
       </nav>
-      <p
-        id="shop-status"
-        class="shop-status"
-        role="status"
-        aria-live="polite"
-      ></p>
       <div id="shop-items" class="shop-grid">
-        <% shopItems.forEach((background) => { %>
+        <% shopItems.forEach((item) => { %>
         <article
           class="shop-item"
-          data-background-id="<%= background.id %>"
-          data-purchasable="<%= background.purchasable !== false %>"
+          data-item-id="<%= item.id %>"
+          data-item-type="<%= item.type %>"
+          data-purchasable="<%= item.purchasable !== false %>"
           hidden
         >
           <picture class="shop-image-frame">
+            <% if (item.type === "background") { %>
             <source
               media="(max-width: 670px)"
-              srcset="<%= background.mobileUrl %>"
+              srcset="<%= item.mobileUrl %>"
             />
+            <% } %>
             <img
               class="shop-preview"
-              src="<%= background.desktopUrl %>"
-              alt="<%= background.name %> card art"
+              src="<%= item.type === "background" ? item.desktopUrl : item.imageUrl %>"
+              alt="<%= item.name %>"
               loading="lazy"
               decoding="async"
             />
           </picture>
           <div class="shop-item-content">
-            <h2><%= background.name %></h2>
+            <h2><%= item.name %></h2>
             <p class="shop-price">
               <span class="shop-currency" aria-hidden="true">₽</span>
-              <span><%= background.price.toLocaleString("en-US") %></span>
+              <span><%= item.price.toLocaleString("en-US") %></span>
             </p>
             <button
               class="shop-item-action"
               type="button"
               data-action="purchase"
-              data-background-id="<%= background.id %>"
-              data-price="<%= background.price %>"
+              data-item-id="<%= item.id %>"
+              data-item-type="<%= item.type %>"
+              data-price="<%= item.price %>"
               disabled
             >
               Buy

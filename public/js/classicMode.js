@@ -301,7 +301,10 @@ function manageGameState(id, remainingTime) {
 
 function onVictory(tries, pokemon, shiny, pokedollarsEarned) {
   let pokemonDisplayName = getPokemonDisplayName(pokemon.name);
-  let spriteName = shiny ? `${pokemon.name}_shiny` : pokemon.name;
+  let gifName = encodeURIComponent(pokemon.name.toLowerCase());
+  let victoryImageUrl = shiny
+    ? `/public/images/sprites/${encodeURIComponent(`${pokemon.name}_shiny`)}.webp`
+    : `/public/images/gifs/${gifName}.gif`;
   let victoryText = shiny
     ? `It was a shiny ${pokemonDisplayName} indeed!`
     : `It was ${pokemonDisplayName} indeed!`;
@@ -318,7 +321,7 @@ function onVictory(tries, pokemon, shiny, pokedollarsEarned) {
     let ad = document.createElement("DIV");
     ad.setAttribute("id", "victory-ad-container");
     subtitle.insertAdjacentElement("afterend", ad);
-    ad.innerHTML = `<div id="victory-text1"><b>GG!</b></div><div id="victory-text2"><b>${victoryText}</b></div><div><img alt="${pokemonDisplayName}${shiny ? " (Shiny)" : ""}" style="animation: fadeIn 500ms" src='/public/images/sprites/${spriteName}.webp' width='180px' height='180px'></div><div id="victory-text3"><b>You guessed it in ${tries} tries...</b></div><div id="victory-text5"><b>${pokedollarsText}</b></div><div id="victory-text4"><b>Think you can do better? Let's see!</b></div><a aria-label="Go to Home" href='/'><button id='continue-button'>Continue</button></a>`;
+    ad.innerHTML = `<div id="victory-text1"><b>GG!</b></div><div id="victory-text2"><b>${victoryText}</b></div><div><img alt="${pokemonDisplayName}${shiny ? " (Shiny)" : ""}" style="animation: fadeIn 500ms" src='${victoryImageUrl}' width='180px' height='180px'></div><div id="victory-text3"><b>You guessed it in ${tries} tries...</b></div><div id="victory-text5"><b>${pokedollarsText}</b></div><div id="victory-text4"><b>Think you can do better? Let's see!</b></div><a aria-label="Go to Home" href='/'><button id='continue-button'>Continue</button></a>`;
   }, 1000);
 }
 

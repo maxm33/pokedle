@@ -12,7 +12,8 @@
     <title>Profile</title>
   </head>
   <body
-    style="--page-background-image: url(&quot;<%= bg %>&quot;)"
+    class="profile-page"
+    style="--page-background-image: url(&quot;<%= bg %>&quot;); --profile-overlay-image: <%= overlay ? 'url(' + overlay + ')' : 'none' %>"
     data-rate-limit-toast="<%= typeof rateLimitToast === 'string' ? rateLimitToast : '' %>"
   >
     <div id="topnav" role="banner">
@@ -86,6 +87,24 @@
         </button>
       </div>
     </div>
+    <button
+      id="profile-background-toggle"
+      type="button"
+      aria-label="Show only the profile background"
+      aria-pressed="false"
+      title="Show only the profile background"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path
+          class="profile-eye-open"
+          d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Zm10 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
+        />
+        <path
+          class="profile-eye-slash"
+          d="m3 3 18 18M10.6 5.2A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a15.7 15.7 0 0 1-3.1 3.8M6.2 6.2C3.5 8.1 2 12 2 12s3.6 7 10 7a10.8 10.8 0 0 0 4.1-.8"
+        />
+      </svg>
+    </button>
     <div id="container" role="main">
       <div id="logo" class="fadeIn">
         <a aria-label="Go to Home" href="/"
@@ -136,7 +155,16 @@
           <button id="cancel-profile-name-button" type="button">Cancel</button>
         </div>
       </form>
-      <div>
+      <div class="profile-stat-card">
+        <% if (companion) { %>
+        <div class="profile-companion-container">
+          <img
+            class="profile-companion"
+            src="<%= companion %>"
+            alt="<%= username %>'s Pokémon companion"
+          />
+        </div>
+        <% } %>
         <div id="mode-title">Classic</div>
         <div id="mode-data">
           Wins: <%= classicWins %><br />
@@ -144,12 +172,12 @@
           <button id="onprofile-dex-button">View Pokédex</button>
         </div>
       </div>
-      <div>
+      <div class="profile-stat-card">
         <div style="margin-top: 0.75em" id="mode-title">Sentry Duty</div>
         <div id="mode-data">
           Best Score: <%= sentryBestScore %><br />
-          Longest Session: <%= sentryBestSession %> rounds<br />
-          Footprints Seen: <%= sentrySessionsCompleted %><br />
+          Best Session: <%= sentryBestSession %> rounds<br />
+          Recognized: <%= sentrySessionsCompleted %><br />
           Accuracy: <%= sentryAccuracy %>%<br />
         </div>
       </div>
@@ -164,6 +192,23 @@
           let url_cut = url.substring(0, url.length - 8); // removing "/profile"
           window.location.href = url_cut + "/pokedex";
         });
+
+      const backgroundToggle = document.getElementById(
+        "profile-background-toggle",
+      );
+      const eyeOpen = backgroundToggle.querySelector(".profile-eye-open");
+      const eyeSlash = backgroundToggle.querySelector(".profile-eye-slash");
+      backgroundToggle.addEventListener("click", () => {
+        const isActive = document.body.classList.toggle(
+          "profile-background-focus",
+        );
+        const label = isActive
+          ? "Show the full profile"
+          : "Show only the profile background";
+        backgroundToggle.setAttribute("aria-pressed", String(isActive));
+        backgroundToggle.setAttribute("aria-label", label);
+        backgroundToggle.title = label;
+      });
     </script>
   </body>
 </html>

@@ -3,203 +3,203 @@
     "id": "tcg-a1-0001-bulbasaur",
     "name": "A1 0001 Bulbasaur",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/01-a1-0001-bulbasaur.png",
-    "mobileUrl": "/public/images/shop/01-a1-0001-bulbasaur.png"
+    "desktopUrl": "/public/images/shop/backgrounds/01-a1-0001-bulbasaur.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/01-a1-0001-bulbasaur.webp"
   },
   {
     "id": "tcg-a1-0052-meowth",
     "name": "A1 0052 Meowth",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/02-a1-0052-meowth.png",
-    "mobileUrl": "/public/images/shop/02-a1-0052-meowth.png"
+    "desktopUrl": "/public/images/shop/backgrounds/02-a1-0052-meowth.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/02-a1-0052-meowth.webp"
   },
   {
     "id": "tcg-a1-0130-gyarados",
     "name": "A1 0130 Gyarados",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/03-a1-0130-gyarados.png",
-    "mobileUrl": "/public/images/shop/03-a1-0130-gyarados.png"
+    "desktopUrl": "/public/images/shop/backgrounds/03-a1-0130-gyarados.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/03-a1-0130-gyarados.webp"
   },
   {
     "id": "tcg-a1-0094-gengar-ex",
     "name": "A1 0094 Gengar ex",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/04-a1-0094-gengar-ex.png",
-    "mobileUrl": "/public/images/shop/04-a1-0094-gengar-ex.png"
+    "desktopUrl": "/public/images/shop/backgrounds/04-a1-0094-gengar-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/04-a1-0094-gengar-ex.webp"
   },
   {
     "id": "tcg-a1a-0103-exeggutor",
     "name": "A1a 0103 Exeggutor",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/05-a1a-0103-exeggutor.jpeg",
-    "mobileUrl": "/public/images/shop/05-a1a-0103-exeggutor.jpeg"
+    "desktopUrl": "/public/images/shop/backgrounds/05-a1a-0103-exeggutor.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/05-a1a-0103-exeggutor.webp"
   },
   {
     "id": "tcg-a2-0398-staraptor",
     "name": "A2 0398 Staraptor",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/06-a2-0398-staraptor.jpeg",
-    "mobileUrl": "/public/images/shop/06-a2-0398-staraptor.jpeg"
+    "desktopUrl": "/public/images/shop/backgrounds/06-a2-0398-staraptor.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/06-a2-0398-staraptor.webp"
   },
   {
     "id": "tcg-a2-0448-lucario",
     "name": "A2 0448 Lucario",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/07-a2-0448-lucario.png",
-    "mobileUrl": "/public/images/shop/07-a2-0448-lucario.png"
+    "desktopUrl": "/public/images/shop/backgrounds/07-a2-0448-lucario.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/07-a2-0448-lucario.webp"
   },
   {
     "id": "tcg-a2-0481-mesprit",
     "name": "A2 0481 Mesprit",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/08-a2-0481-mesprit.png",
-    "mobileUrl": "/public/images/shop/08-a2-0481-mesprit.png"
+    "desktopUrl": "/public/images/shop/backgrounds/08-a2-0481-mesprit.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/08-a2-0481-mesprit.webp"
   },
   {
     "id": "tcg-a2-0429-mismagius-ex",
     "name": "A2 0429 Mismagius ex",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/09-a2-0429-mismagius-ex.jpeg",
-    "mobileUrl": "/public/images/shop/09-a2-0429-mismagius-ex.jpeg"
+    "desktopUrl": "/public/images/shop/backgrounds/09-a2-0429-mismagius-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/09-a2-0429-mismagius-ex.webp"
   },
   {
     "id": "tcg-a2a-0183-marill",
     "name": "A2a 0183 Marill",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/10-a2a-0183-marill.png",
-    "mobileUrl": "/public/images/shop/10-a2a-0183-marill.png"
+    "desktopUrl": "/public/images/shop/backgrounds/10-a2a-0183-marill.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/10-a2a-0183-marill.webp"
   },
   {
     "id": "tcg-a2a-0476-probopass-ex",
     "name": "A2a 0476 Probopass ex",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/11-a2a-0476-probopass-ex.png",
-    "mobileUrl": "/public/images/shop/11-a2a-0476-probopass-ex.png"
+    "desktopUrl": "/public/images/shop/backgrounds/11-a2a-0476-probopass-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/11-a2a-0476-probopass-ex.webp"
   },
   {
     "id": "tcg-a2b-0400-bibarel-ex",
     "name": "A2b 0400 Bibarel ex",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/12-a2b-0400-bibarel-ex.webp",
-    "mobileUrl": "/public/images/shop/12-a2b-0400-bibarel-ex.webp"
+    "desktopUrl": "/public/images/shop/backgrounds/12-a2b-0400-bibarel-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/12-a2b-0400-bibarel-ex.webp"
   },
   {
     "id": "tcg-a3-0741-oricorio",
     "name": "A3 0741 Oricorio",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/13-a3-0741-oricorio.webp",
-    "mobileUrl": "/public/images/shop/13-a3-0741-oricorio.webp"
+    "desktopUrl": "/public/images/shop/backgrounds/13-a3-0741-oricorio.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/13-a3-0741-oricorio.webp"
   },
   {
     "id": "tcg-a3-0775-komala",
     "name": "A3 0775 Komala",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/14-a3-0775-komala.webp",
-    "mobileUrl": "/public/images/shop/14-a3-0775-komala.webp"
+    "desktopUrl": "/public/images/shop/backgrounds/14-a3-0775-komala.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/14-a3-0775-komala.webp"
   },
   {
     "id": "tcg-a3-0787-tapu-bulu",
     "name": "A3 0787 Tapu Bulu",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/15-a3-0787-tapu-bulu.webp",
-    "mobileUrl": "/public/images/shop/15-a3-0787-tapu-bulu.webp"
+    "desktopUrl": "/public/images/shop/backgrounds/15-a3-0787-tapu-bulu.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/15-a3-0787-tapu-bulu.webp"
   },
   {
     "id": "tcg-a3-0766-passimian-ex",
     "name": "A3 0766 Passimian ex",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/16-a3-0766-passimian-ex.webp",
-    "mobileUrl": "/public/images/shop/16-a3-0766-passimian-ex.webp"
+    "desktopUrl": "/public/images/shop/backgrounds/16-a3-0766-passimian-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/16-a3-0766-passimian-ex.webp"
   },
   {
     "id": "tcg-a3a-0795-pheromosa",
     "name": "A3a 0795 Pheromosa",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/17-a3a-0795-pheromosa.webp",
-    "mobileUrl": "/public/images/shop/17-a3a-0795-pheromosa.webp"
+    "desktopUrl": "/public/images/shop/backgrounds/17-a3a-0795-pheromosa.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/17-a3a-0795-pheromosa.webp"
   },
   {
     "id": "tcg-a3b-0134-vaporeon",
     "name": "A3b 0134 Vaporeon",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/18-a3b-0134-vaporeon.webp",
-    "mobileUrl": "/public/images/shop/18-a3b-0134-vaporeon.webp"
+    "desktopUrl": "/public/images/shop/backgrounds/18-a3b-0134-vaporeon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/18-a3b-0134-vaporeon.webp"
   },
   {
     "id": "tcg-a3b-0136-flareon-ex",
     "name": "A3b 0136 Flareon ex",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/19-a3b-0136-flareon-ex.webp",
-    "mobileUrl": "/public/images/shop/19-a3b-0136-flareon-ex.webp"
+    "desktopUrl": "/public/images/shop/backgrounds/19-a3b-0136-flareon-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/19-a3b-0136-flareon-ex.webp"
   },
   {
     "id": "tcg-a4-0161-sentret",
     "name": "A4 0161 Sentret",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/20-a4-0161-sentret.webp",
-    "mobileUrl": "/public/images/shop/20-a4-0161-sentret.webp"
+    "desktopUrl": "/public/images/shop/backgrounds/20-a4-0161-sentret.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/20-a4-0161-sentret.webp"
   },
   {
     "id": "tcg-a4-0198-murkrow",
     "name": "A4 0198 Murkrow",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/21-a4-0198-murkrow.webp",
-    "mobileUrl": "/public/images/shop/21-a4-0198-murkrow.webp"
+    "desktopUrl": "/public/images/shop/backgrounds/21-a4-0198-murkrow.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/21-a4-0198-murkrow.webp"
   },
   {
     "id": "tcg-a4-0235-smeargle",
     "name": "A4 0235 Smeargle",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/22-a4-0235-smeargle.webp",
-    "mobileUrl": "/public/images/shop/22-a4-0235-smeargle.webp"
+    "desktopUrl": "/public/images/shop/backgrounds/22-a4-0235-smeargle.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/22-a4-0235-smeargle.webp"
   },
   {
     "id": "tcg-a4-0227-skarmory-ex",
     "name": "A4 0227 Skarmory ex",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/23-a4-0227-skarmory-ex.webp",
-    "mobileUrl": "/public/images/shop/23-a4-0227-skarmory-ex.webp"
+    "desktopUrl": "/public/images/shop/backgrounds/23-a4-0227-skarmory-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/23-a4-0227-skarmory-ex.webp"
   },
   {
     "id": "tcg-a4a-0381-latios",
     "name": "A4a 0381 Latios",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/24-a4a-0381-latios.webp",
-    "mobileUrl": "/public/images/shop/24-a4a-0381-latios.webp"
+    "desktopUrl": "/public/images/shop/backgrounds/24-a4a-0381-latios.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/24-a4a-0381-latios.webp"
   },
   {
     "id": "tcg-a4b-0282-gardevoir",
     "name": "A4b 0282 Gardevoir",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/25-a4b-0282-gardevoir.webp",
-    "mobileUrl": "/public/images/shop/25-a4b-0282-gardevoir.webp"
+    "desktopUrl": "/public/images/shop/backgrounds/25-a4b-0282-gardevoir.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/25-a4b-0282-gardevoir.webp"
   },
   {
     "id": "tcg-promo-a-0025-pikachu-2",
     "name": "Promo-A 0025 Pikachu 2",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/26-promo-a-0025-pikachu-2.png",
-    "mobileUrl": "/public/images/shop/26-promo-a-0025-pikachu-2.png"
+    "desktopUrl": "/public/images/shop/backgrounds/26-promo-a-0025-pikachu-2.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/26-promo-a-0025-pikachu-2.webp"
   },
   {
     "id": "tcg-promo-a-0571-zoroark",
     "name": "Promo-A 0571 Zoroark",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/27-promo-a-0571-zoroark.webp",
-    "mobileUrl": "/public/images/shop/27-promo-a-0571-zoroark.webp"
+    "desktopUrl": "/public/images/shop/backgrounds/27-promo-a-0571-zoroark.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/27-promo-a-0571-zoroark.webp"
   },
   {
     "id": "tcg-a1-pikachu-ex",
     "name": "A1 Pikachu ex",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/28-a1-pikachu-ex.webp",
-    "mobileUrl": "/public/images/shop/28-a1-pikachu-ex.webp"
+    "desktopUrl": "/public/images/shop/backgrounds/28-a1-pikachu-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/28-a1-pikachu-ex.webp"
   },
   {
     "id": "tcg-a3a-buzzwole-ex",
     "name": "A3a Buzzwole ex",
     "price": 1200,
-    "desktopUrl": "/public/images/shop/29-a3a-buzzwole-ex.webp",
-    "mobileUrl": "/public/images/shop/29-a3a-buzzwole-ex.webp"
+    "desktopUrl": "/public/images/shop/backgrounds/29-a3a-buzzwole-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/29-a3a-buzzwole-ex.webp"
   }
 ]

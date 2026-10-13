@@ -52,40 +52,30 @@ const rankingCacheTtlMs = 1 * 60 * 60 * 1000;
 const classicRankingCache = { data: null, expiresAt: 0, pending: null };
 const sentryRankingCache = { data: null, expiresAt: 0, pending: null };
 const shopBackgrounds = require("./data/shopBackgrounds.json");
-const legacyShopBackgrounds = [
-  {
-    id: "background-1",
-    name: "Hoenn Legends",
-    price: 1200,
-    purchasable: false,
-    desktopUrl: "/public/images/backgrounds_desktop/1.webp",
-    mobileUrl: "/public/images/backgrounds_mobile/1.webp",
-  },
-  {
-    id: "background-2",
-    name: "Mega Evolution",
-    price: 2200,
-    purchasable: false,
-    desktopUrl: "/public/images/backgrounds_desktop/2.webp",
-    mobileUrl: "/public/images/backgrounds_mobile/2.webp",
-  },
-  {
-    id: "background-3",
-    name: "Psychic Showdown",
-    price: 3500,
-    purchasable: false,
-    desktopUrl: "/public/images/backgrounds_desktop/3.webp",
-    mobileUrl: "/public/images/backgrounds_mobile/3.webp",
-  },
-  {
-    id: "background-4",
-    name: "Sinnoh Legends",
-    price: 5000,
-    purchasable: false,
-    desktopUrl: "/public/images/backgrounds_desktop/4.webp",
-    mobileUrl: "/public/images/backgrounds_mobile/4.webp",
-  },
-];
+const shopOverlays = require("./data/shopOverlays.json");
+const companionDirectory = "./public/images/gifs";
+const overlayItems = shopOverlays.map((overlay) => ({
+  ...overlay,
+  type: "overlay",
+}));
+const companionItems = fs
+  .readdirSync(companionDirectory)
+  .filter((file) => file.toLowerCase().endsWith(".gif"))
+  .sort((a, b) => a.localeCompare(b))
+  .map((file) => ({
+    id: `companion-${file.slice(0, -4).toLowerCase()}`,
+    name: file
+      .slice(0, -4)
+      .replace(/[-_]/g, " ")
+      .replace(/\b\w/g, (letter) => letter.toUpperCase()),
+    imageUrl: `/public/images/gifs/${encodeURIComponent(file)}`,
+    type: "companion",
+    price: 2400,
+  }));
+const collectibleCatalog = {
+  overlay: overlayItems,
+  companion: companionItems,
+};
 
 // Background images per device type
 let bg_desktop_option; // to store current background option for rendering desktop views
@@ -261,7 +251,7 @@ const firestoreReadLimiter = rateLimit({
   }),
 });
 const shopLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
+  windowMs: 60 * 1000,
   limit: 20,
   message: { error: "Too many shop requests. Please try again later." },
   handler: handleRateLimit,
@@ -347,6 +337,20 @@ app.use(
     },
   }),
 );
+
+app.get("/data/shopBackgrounds.json", (_, res, next) => {
+  applyAssetCacheHeaders(res, 24 * 3600);
+  res.sendFile(require.resolve("./data/shopBackgrounds.json"), (err) => {
+    if (err) next(err);
+  });
+});
+
+app.get("/data/shopOverlays.json", (_, res, next) => {
+  applyAssetCacheHeaders(res, 24 * 3600);
+  res.sendFile(require.resolve("./data/shopOverlays.json"), (err) => {
+    if (err) next(err);
+  });
+});
 
 app.get("/app/version", (_, res) => {
   res.status(200);
@@ -844,6 +848,10 @@ app.put("/user/:gid", authLimiter, async (req, res, next) => {
         pokedollars: 0,
         ownedBackgrounds: [],
         equippedBackground: null,
+        ownedOverlays: [],
+        equippedOverlay: null,
+        ownedCompanions: [],
+        equippedCompanion: null,
         sentryBestScore: 0,
         sentrySessionsCompleted: 0,
         sentryFailures: 0,
@@ -920,6 +928,11 @@ app.get("/user/:gid/profile", firestoreReadLimiter, async (req, res, next) => {
           sentryAccuracy: accuracy,
           sentryBestSession: user.sentryBestSession || 0,
           bg: profileBgPathSelector(user.equippedBackground, req.device.type),
+          overlay:
+            getCollectible("overlay", user.equippedOverlay)?.imageUrl || null,
+          companion:
+            getCollectible("companion", user.equippedCompanion)?.imageUrl ||
+            null,
         });
       }
     })
@@ -932,7 +945,11 @@ app.get("/user/:gid/profile", firestoreReadLimiter, async (req, res, next) => {
 app.get("/shop", (req, res) => {
   res.render("shop", {
     bg: bgPathSelector(req.device.type),
-    shopItems: [...shopBackgrounds, ...legacyShopBackgrounds],
+    shopItems: [
+      ...shopBackgrounds.map((item) => ({ ...item, type: "background" })),
+      ...overlayItems,
+      ...companionItems,
+    ],
   });
 });
 
@@ -953,6 +970,12 @@ app.get("/shop/state", firestoreReadLimiter, async (req, res, next) => {
       ownedBackgrounds: getOwnedShopBackgrounds(user),
       equippedBackground:
         getShopBackground(user.equippedBackground)?.id || null,
+      ownedOverlays: getOwnedCollectibles(user, "overlay"),
+      equippedOverlay:
+        getCollectible("overlay", user.equippedOverlay)?.id || null,
+      ownedCompanions: getOwnedCollectibles(user, "companion"),
+      equippedCompanion:
+        getCollectible("companion", user.equippedCompanion)?.id || null,
     });
   } catch (err) {
     console.error(err);
@@ -1039,6 +1062,93 @@ app.patch("/shop/equipped-background", shopLimiter, async (req, res, next) => {
     next(createError(500));
   }
 });
+
+app.post("/shop/collectibles/purchase", shopLimiter, async (req, res, next) => {
+  const decodedToken = await verifyShopUserToken(req, res);
+  if (!decodedToken) return;
+
+  const { type, itemId } = req.body || {};
+  const item = getCollectible(type, itemId);
+  if (!item) return res.status(400).send({ error: "Unknown shop item" });
+
+  try {
+    const userRef = firestore.collection("users").doc(decodedToken.uid);
+    const result = await firestore.runTransaction(async (transaction) => {
+      const doc = await transaction.get(userRef);
+      const user = doc.data();
+      if (!user) return { error: "User not found", status: 404 };
+
+      const ownedItems = getOwnedCollectibles(user, type);
+      if (ownedItems.includes(item.id))
+        return { error: "You already own this item", status: 409 };
+
+      const pokedollars =
+        Number.isSafeInteger(user.pokedollars) && user.pokedollars >= 0
+          ? user.pokedollars
+          : 0;
+      if (pokedollars < item.price)
+        return { error: "Not enough Pokédollars", status: 400 };
+
+      ownedItems.push(item.id);
+      transaction.update(userRef, {
+        pokedollars: pokedollars - item.price,
+        [getOwnedCollectiblesField(type)]: ownedItems,
+      });
+      return { pokedollars: pokedollars - item.price, ownedItems };
+    });
+
+    if (result.error)
+      return res.status(result.status).send({ error: result.error });
+    res.status(200).send(result);
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
+});
+
+app.patch(
+  "/shop/collectibles/equipped",
+  shopLimiter,
+  async (req, res, next) => {
+    const decodedToken = await verifyShopUserToken(req, res);
+    if (!decodedToken) return;
+
+    const { type, itemId } = req.body || {};
+    if (
+      !Object.prototype.hasOwnProperty.call(collectibleCatalog, type) ||
+      (itemId !== null &&
+        (typeof itemId !== "string" || !getCollectible(type, itemId)))
+    )
+      return res.status(400).send({ error: "Unknown shop item" });
+
+    try {
+      const userRef = firestore.collection("users").doc(decodedToken.uid);
+      const result = await firestore.runTransaction(async (transaction) => {
+        const doc = await transaction.get(userRef);
+        const user = doc.data();
+        if (!user) return { error: "User not found", status: 404 };
+
+        if (
+          itemId !== null &&
+          !getOwnedCollectibles(user, type).includes(itemId)
+        )
+          return { error: "You do not own this item", status: 403 };
+
+        transaction.update(userRef, {
+          [getEquippedCollectibleField(type)]: itemId,
+        });
+        return { itemId };
+      });
+
+      if (result.error)
+        return res.status(result.status).send({ error: result.error });
+      res.status(200).send(result);
+    } catch (err) {
+      console.error(err);
+      next(createError(500));
+    }
+  },
+);
 
 // render requested user's pokedex page
 app.get("/user/:gid/pokedex", firestoreReadLimiter, async (req, res, next) => {
@@ -1525,10 +1635,33 @@ const bgPathSelector = (device) =>
     : `/public/images/backgrounds_desktop/${bg_desktop_option}.webp`;
 
 function getShopBackground(backgroundId) {
-  return (
-    shopBackgrounds.find((background) => background.id === backgroundId) ||
-    legacyShopBackgrounds.find((background) => background.id === backgroundId)
-  );
+  return shopBackgrounds.find((background) => background.id === backgroundId);
+}
+
+function getCollectible(type, itemId) {
+  if (
+    typeof type !== "string" ||
+    !Object.prototype.hasOwnProperty.call(collectibleCatalog, type) ||
+    typeof itemId !== "string"
+  )
+    return null;
+  return collectibleCatalog[type]?.find((item) => item.id === itemId) || null;
+}
+
+function getOwnedCollectiblesField(type) {
+  return type === "overlay" ? "ownedOverlays" : "ownedCompanions";
+}
+
+function getEquippedCollectibleField(type) {
+  return type === "overlay" ? "equippedOverlay" : "equippedCompanion";
+}
+
+function getOwnedCollectibles(user, type) {
+  const field = getOwnedCollectiblesField(type);
+  if (!Array.isArray(user[field])) return [];
+  return [
+    ...new Set(user[field].filter((itemId) => getCollectible(type, itemId))),
+  ];
 }
 
 function getOwnedShopBackgrounds(user) {
