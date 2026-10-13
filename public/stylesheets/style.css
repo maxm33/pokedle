@@ -1493,6 +1493,10 @@ input[type="hidden"] {
   margin-top: 1.5em;
   animation: fadeIn 1.5s;
 }
+#profile-name-container:has(+ #profile-name-form:not([hidden])),
+#profile-name-container[hidden] {
+  display: none !important;
+}
 #profile-name-container h1 {
   overflow-wrap: anywhere;
   margin: 0 !important;
