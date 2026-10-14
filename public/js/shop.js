@@ -8,6 +8,7 @@ const emptyState = document.getElementById("shop-empty-state");
 const inventoryCount = document.getElementById("shop-inventory-count");
 const sectionTabs = document.querySelectorAll("[data-shop-section]");
 const searchInput = document.getElementById("shop-search");
+const inventoryButton = document.getElementById("inventory-button");
 let currentUser = null;
 let shopState = null;
 let requestPending = false;
@@ -33,6 +34,13 @@ sectionTabs.forEach((tab) => {
     renderShop();
   });
 });
+
+if (inventoryButton) {
+  inventoryButton.addEventListener("click", () => {
+    activeSection = "inventory";
+    renderShop();
+  });
+}
 
 if (searchInput) {
   searchInput.addEventListener("input", () => {
@@ -71,6 +79,8 @@ items.addEventListener("click", async (event) => {
           { headers },
         );
       }
+    } else if (type === "boost") {
+      await axios.post("/shop/boost/purchase", { itemId }, { headers });
     } else if (action === "purchase") {
       await axios.post(
         "/shop/collectibles/purchase",

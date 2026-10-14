@@ -108,6 +108,23 @@
         <span class="shop-brand-ball" aria-hidden="true"></span>
         <span>PokéShop</span>
       </div>
+      <div class="shop-inventory-container">
+        <button
+          id="inventory-button"
+          class="shop-inventory-btn"
+          type="button"
+          aria-label="Inventory"
+          title="Inventory"
+        >
+          <img
+            src="/public/images/misc/backpack.webp"
+            alt="Inventory"
+            width="28"
+            height="28"
+          />
+        </button>
+        <span class="shop-inventory-label">(<span id="shop-inventory-count">0</span>)</span>
+      </div>
       <div class="shop-wallet is-loading">
         <span
           id="shop-wallet-loader"
@@ -150,11 +167,11 @@
         </button>
         <button
           class="shop-tab"
-          data-shop-section="inventory"
+          data-shop-section="boost"
           type="button"
           aria-pressed="false"
         >
-          Inventory (<span id="shop-inventory-count">0</span>)
+          Boost
         </button>
       </nav>
       <div class="shop-search-container">
@@ -186,7 +203,7 @@
           </picture>
           <div class="shop-item-content">
             <h2><%= item.name.replace("Farfetchd", "Farfetch'd").replace("Nidoranf", "Nidoran♀").replace("Nidoranm", "Nidoran♂").replace("Ho Oh", "Ho-Oh") %></h2>
-<div class="shop-price" style="flex-direction: column; gap: 0.3em;">
+            <div class="shop-price" style="flex-direction: column; gap: 0.3em;">
               <% if (item.discountPercent) { %>
                 <div style="display: flex; align-items: center; gap: 0.5em;">
                   <span style="color: #ef4444; text-decoration: line-through; font-size: 0.9em;">

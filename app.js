@@ -74,6 +74,24 @@ const companionItems = fs
     type: "companion",
     price: 2400,
   }));
+const boostItems = [
+  {
+    id: "boost-master-ball",
+    name: "Master Ball Upgrade",
+    type: "boost",
+    price: 2500,
+    imageUrl: "/public/images/shop/boosts/masterball.webp",
+    description: "Upgrades to Master Ball tier for the next catch.",
+  },
+  {
+    id: "boost-double-earnings",
+    name: "2x Earnings (7 Days)",
+    type: "boost",
+    price: 3000,
+    imageUrl: "/public/images/shop/boosts/2x_multiplier.webp",
+    description: "Doubles Pokédollars earned for the next 7 days.",
+  },
+];
 const collectibleCatalog = {
   overlay: overlayItems,
   companion: companionItems,
@@ -950,6 +968,7 @@ app.get("/shop", (req, res) => {
     ...shopBackgrounds.map((item) => ({ ...item, type: "background" })),
     ...overlayItems,
     ...companionItems,
+    ...boostItems,
   ].map((item) => {
     const discount = shopDiscounts[item.id];
     if (discount) {
@@ -1121,6 +1140,81 @@ app.post("/shop/collectibles/purchase", shopLimiter, async (req, res, next) => {
         [getOwnedCollectiblesField(type)]: ownedItems,
       });
       return { pokedollars: pokedollars - actualPrice, ownedItems };
+    });
+
+    if (result.error)
+      return res.status(result.status).send({ error: result.error });
+    res.status(200).send(result);
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
+});
+
+app.post("/shop/boost/purchase", shopLimiter, async (req, res, next) => {
+  const decodedToken = await verifyShopUserToken(req, res);
+  if (!decodedToken) return;
+
+  const { itemId } = req.body || {};
+  const boost = boostItems.find((b) => b.id === itemId);
+  if (!boost) return res.status(400).send({ error: "Unknown boost item" });
+
+  const discount = shopDiscounts[boost.id];
+  const actualPrice = discount
+    ? Math.round(boost.price * (1 - discount / 100))
+    : boost.price;
+
+  try {
+    const userRef = firestore.collection("users").doc(decodedToken.uid);
+    const result = await firestore.runTransaction(async (transaction) => {
+      const doc = await transaction.get(userRef);
+      const user = doc.data();
+      if (!user) return { error: "User not found", status: 404 };
+
+      const pokedollars =
+        Number.isSafeInteger(user.pokedollars) && user.pokedollars >= 0
+          ? user.pokedollars
+          : 0;
+
+      if (pokedollars < actualPrice)
+        return { error: "Not enough Pokédollars", status: 400 };
+
+      const updates = {
+        pokedollars: pokedollars - actualPrice,
+      };
+
+      const now = Date.now();
+      const currentDate = classicGetCurrentDate();
+      const alreadyWonToday = user.classicLastWinDate === currentDate;
+
+      if (boost.id === "boost-master-ball") {
+        if (alreadyWonToday) {
+          const tomorrow = new Date(now + 24 * 60 * 60 * 1000);
+          const { year, month, day } = classicGetDateTimeParts(tomorrow);
+          updates.masterBallBoostDate = `${String(day).padStart(
+            2,
+            "0",
+          )}-${String(month).padStart(2, "0")}-${year}`;
+        } else {
+          updates.masterBallBoostDate = currentDate;
+        }
+      } else if (boost.id === "boost-double-earnings") {
+        const currentExpire = user.doubleEarningsUntil || 0;
+        let baseTime;
+
+        if (currentExpire > now) {
+          baseTime = currentExpire;
+        } else if (alreadyWonToday) {
+          baseTime = now + classicGetRemainingTime();
+        } else {
+          baseTime = now;
+        }
+
+        updates.doubleEarningsUntil = baseTime + 7 * 24 * 60 * 60 * 1000;
+      }
+
+      transaction.update(userRef, updates);
+      return { pokedollars: updates.pokedollars, updates };
     });
 
     if (result.error)
@@ -1484,6 +1578,10 @@ function classicShouldResetStreak(user, currentDate) {
 function classicGetActiveBall(user, currentDate = classicGetCurrentDate()) {
   if (!user) return null;
 
+  if (user.masterBallBoostDate === currentDate) {
+    return "master-ball";
+  }
+
   const streak = Number.isInteger(user.classicWinStreak)
     ? user.classicWinStreak
     : 0;
@@ -1549,7 +1647,10 @@ async function updateStatsOnClassicWin(id, pokemon, tries, shinyRoll) {
       (classicWins * classicAvgTries + tries) / (classicWins + 1);
     user.classicWins = classicWins + 1;
     let pokedollarsEarned = classicGetPokedollarReward(tries);
-    if (classicDoubleEarningsEventActive) pokedollarsEarned *= 2;
+    const isDoubleEarningsActive =
+      classicDoubleEarningsEventActive ||
+      (user.doubleEarningsUntil && user.doubleEarningsUntil > Date.now());
+    if (isDoubleEarningsActive) pokedollarsEarned *= 2;
     const currentPokedollars =
       Number.isSafeInteger(user.pokedollars) && user.pokedollars >= 0
         ? user.pokedollars
@@ -1735,7 +1836,12 @@ const applyAssetCacheHeaders = (res, maxAge) => {
 
 function generateShopDiscounts() {
   shopDiscounts = {};
-  const allItems = [...shopBackgrounds, ...overlayItems, ...companionItems];
+  const allItems = [
+    ...shopBackgrounds,
+    ...overlayItems,
+    ...companionItems,
+    ...boostItems,
+  ];
   for (const item of allItems) {
     if (item.purchasable !== false && Math.random() < 0.25) {
       const discountPercent = Math.floor(Math.random() * 31) + 20; // tra 20% e 50%

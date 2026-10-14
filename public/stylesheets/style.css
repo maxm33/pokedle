@@ -1225,8 +1225,8 @@ input[type="hidden"] {
   align-items: center;
   color: white !important;
   display: flex;
-  font-size: 1.2em;
-  gap: 0.6em;
+  font-size: 1em;
+  gap: 0.45em;
   text-decoration: none;
 }
 .shop-back {
@@ -1349,6 +1349,41 @@ input[type="hidden"] {
 }
 #shop-inventory-count {
   color: black;
+}
+.shop-inventory-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25em;
+}
+.shop-inventory-btn {
+  align-items: center;
+  background-color: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  height: 2.6em;
+  justify-content: center;
+  padding: 0.4em;
+  transition:
+    transform 150ms ease,
+    background-color 150ms ease;
+  width: 2.6em;
+}
+.shop-inventory-btn:hover {
+  background-color: #f3f4f6;
+  transform: scale(1.05);
+}
+.shop-inventory-btn img {
+  height: 100%;
+  object-fit: contain;
+  width: 100%;
+}
+.shop-inventory-label {
+  color: white;
+  font-size: 0.65em;
+  white-space: nowrap;
 }
 .shop-grid {
   display: grid;
@@ -1509,7 +1544,7 @@ input[type="hidden"] {
     padding: 0.65em;
   }
   .shop-brand {
-    font-size: 0.95em;
+    font-size: 0.85em;
   }
   .shop-wallet {
     gap: 0.25em;
