@@ -1379,6 +1379,16 @@ input[type="hidden"] {
 .shop-item:hover .shop-image-frame {
   background-color: #fefce8;
 }
+.shop-item {
+  display: flex;
+  flex-direction: column;
+}
+.shop-item-content {
+  flex-grow: 1;
+}
+.shop-item-action {
+  margin-top: auto;
+}
 .shop-search-container {
   display: flex;
   justify-content: center;

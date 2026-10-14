@@ -186,20 +186,22 @@
           </picture>
           <div class="shop-item-content">
             <h2><%= item.name.replace("Farfetchd", "Farfetch'd").replace("Nidoranf", "Nidoran♀").replace("Nidoranm", "Nidoran♂").replace("Ho Oh", "Ho-Oh") %></h2>
-            <p class="shop-price">
+<div class="shop-price" style="flex-direction: column; gap: 0.3em;">
               <% if (item.discountPercent) { %>
-                <span style="color: #ef4444; text-decoration: line-through; margin-right: 0.4em; font-size: 0.85em;">
-                  ₽ <%= item.originalPrice.toLocaleString("en-US") %>
-                </span>
+                <div style="display: flex; align-items: center; gap: 0.5em;">
+                  <span style="color: #ef4444; text-decoration: line-through; font-size: 0.9em;">
+                    ₽ <%= item.originalPrice.toLocaleString("en-US") %>
+                  </span>
+                  <span style="background-color: #ef4444; color: white !important; font-size: 0.75em; padding: 0.1em 0.4em; border-radius: 0.5em;">
+                    -<%= item.discountPercent %>%
+                  </span>
+                </div>
               <% } %>
-              <span class="shop-currency" aria-hidden="true">₽</span>
-              <span><%= item.price.toLocaleString("en-US") %></span>
-              <% if (item.discountPercent) { %>
-                <span style="background-color: #ef4444; color: white !important; font-size: 0.7em; padding: 0.2em 0.4em; border-radius: 0.5em; margin-left: 0.5em;">
-                  -<%= item.discountPercent %>%
-                </span>
-              <% } %>
-            </p>
+              <div style="display: flex; align-items: center; gap: 0.35em;">
+                <span class="shop-currency" aria-hidden="true">₽</span>
+                <span><%= item.price.toLocaleString("en-US") %></span>
+              </div>
+            </div>
             <button
               class="shop-item-action"
               type="button"
