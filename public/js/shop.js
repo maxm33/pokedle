@@ -162,12 +162,32 @@ function getEquippedItem(type) {
   ];
 }
 
+function isBoostActive(itemId) {
+  if (!shopState) return false;
+  if (itemId === "boost-master-ball") {
+    return Boolean(shopState.masterBallBoostActive);
+  }
+  if (itemId === "boost-double-earnings") {
+    return (shopState.doubleEarningsRemainingDays || 0) > 0;
+  }
+  return false;
+}
+
 function renderShop() {
+  const activeBoostsCount =
+    (isBoostActive("boost-master-ball") ? 1 : 0) +
+    (isBoostActive("boost-double-earnings") ? 1 : 0);
   const totalOwned =
     getOwnedItems("background").length +
     getOwnedItems("overlay").length +
-    getOwnedItems("companion").length;
+    getOwnedItems("companion").length +
+    activeBoostsCount;
   inventoryCount.textContent = String(totalOwned);
+  if (inventoryButton) {
+    const isInventoryActive = activeSection === "inventory";
+    inventoryButton.classList.toggle("is-active", isInventoryActive);
+    inventoryButton.setAttribute("aria-pressed", String(isInventoryActive));
+  }
   sectionTabs.forEach((tab) => {
     const selected = tab.dataset.shopSection === activeSection;
     tab.classList.toggle("is-active", selected);
@@ -183,10 +203,50 @@ function renderShop() {
     const priceDisplay = item.querySelector(".shop-price");
     const titleElement = item.querySelector("h2");
     const itemName = titleElement ? titleElement.textContent.toLowerCase() : "";
+    const matchesSearch = itemName.includes(searchQuery);
+
+    if (type === "boost") {
+      const active = isBoostActive(itemId);
+      const visible =
+        (activeSection === "inventory" ? active : activeSection === "boost") &&
+        matchesSearch;
+
+      item.hidden = !visible;
+      if (!visible) return;
+      visibleCount++;
+
+      if (priceDisplay) {
+        priceDisplay.style.display =
+          activeSection === "inventory" ? "none" : "";
+      }
+
+      if (itemId === "boost-double-earnings" && titleElement) {
+        if (activeSection === "inventory") {
+          const daysLeft = shopState.doubleEarningsRemainingDays || 0;
+          titleElement.textContent = `2x Earnings (${daysLeft} ${
+            daysLeft === 1 ? "day" : "days"
+          } left)`;
+        } else {
+          titleElement.textContent = "2x Earnings (7 Days)";
+        }
+      }
+
+      button.dataset.action =
+        activeSection === "inventory" ? "active" : "purchase";
+      button.textContent = active ? "Active" : "Buy";
+
+      const price = Number(button.dataset.price);
+      const cannotAfford =
+        button.dataset.action === "purchase" && getPokedollars() < price;
+
+      button.disabled =
+        !currentUser || !shopState || requestPending || cannotAfford || active;
+      return;
+    }
+
     const owned = getOwnedItems(type).includes(itemId);
     const equipped = getEquippedItem(type) === itemId;
     const purchasable = item.dataset.purchasable === "true";
-    const matchesSearch = itemName.includes(searchQuery);
     const visible =
       (activeSection === "inventory"
         ? owned
@@ -211,6 +271,17 @@ function renderShop() {
     button.disabled =
       !currentUser || !shopState || requestPending || cannotAfford;
   });
+
+  if (activeSection === "inventory") {
+    const boostElements = Array.from(
+      items.querySelectorAll('.shop-item[data-item-type="boost"]'),
+    );
+    boostElements.reverse().forEach((boostEl) => {
+      if (!boostEl.hidden) {
+        items.prepend(boostEl);
+      }
+    });
+  }
 
   emptyState.hidden = visibleCount > 0;
   if (visibleCount === 0) {

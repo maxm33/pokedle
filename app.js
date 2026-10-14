@@ -996,6 +996,25 @@ app.get("/shop/state", firestoreReadLimiter, async (req, res, next) => {
     const doc = await firestore.collection("users").doc(decodedToken.uid).get();
     const user = doc.data();
     if (!user) return res.status(404).send({ error: "User not found" });
+
+    const now = Date.now();
+    const currentDate = classicGetCurrentDate();
+    const tomorrow = new Date(now + 24 * 60 * 60 * 1000);
+    const { year, month, day } = classicGetDateTimeParts(tomorrow);
+    const tomorrowDate = `${String(day).padStart(2, "0")}-${String(
+      month,
+    ).padStart(2, "0")}-${year}`;
+
+    const masterBallBoostActive =
+      user.masterBallBoostDate === currentDate ||
+      user.masterBallBoostDate === tomorrowDate;
+
+    const doubleEarningsUntil = Number(user.doubleEarningsUntil) || 0;
+    const doubleEarningsActive = doubleEarningsUntil > now;
+    const doubleEarningsRemainingDays = doubleEarningsActive
+      ? Math.ceil((doubleEarningsUntil - now) / (24 * 60 * 60 * 1000))
+      : 0;
+
     res.set("Cache-Control", "no-store");
     res.status(200).send({
       pokedollars:
@@ -1011,6 +1030,9 @@ app.get("/shop/state", firestoreReadLimiter, async (req, res, next) => {
       ownedCompanions: getOwnedCollectibles(user, "companion"),
       equippedCompanion:
         getCollectible("companion", user.equippedCompanion)?.id || null,
+      masterBallBoostActive,
+      doubleEarningsUntil,
+      doubleEarningsRemainingDays,
     });
   } catch (err) {
     console.error(err);

@@ -1348,7 +1348,7 @@ input[type="hidden"] {
   transform: scale(1.04);
 }
 #shop-inventory-count {
-  color: black;
+  color: white;
 }
 .shop-inventory-container {
   display: flex;
@@ -1371,9 +1371,17 @@ input[type="hidden"] {
     background-color 150ms ease;
   width: 2.6em;
 }
+.shop-inventory-btn.is-active {
+  background-color: #facc15;
+  border-color: #eab308;
+  transform: scale(1.05);
+}
 .shop-inventory-btn:hover {
   background-color: #f3f4f6;
   transform: scale(1.05);
+}
+.shop-inventory-btn.is-active:hover {
+  background-color: #eab308;
 }
 .shop-inventory-btn img {
   height: 100%;
