@@ -3,42 +3,72 @@
     "id": "overlay-1",
     "name": "Bibarel Overlay",
     "price": 1500,
-    "imageUrl": "/public/images/shop/overlays/bibarel.webp"
+    "imageUrl": "/public/images/shop/overlays/Bibarel.webp"
+  },
+  {
+    "id": "overlay-2",
+    "name": "Deoxys Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Deoxys.webp"
   },
   {
     "id": "overlay-3",
     "name": "Komala Overlay",
     "price": 1500,
-    "imageUrl": "/public/images/shop/overlays/komala.webp"
+    "imageUrl": "/public/images/shop/overlays/Komala.webp"
+  },
+  {
+    "id": "overlay-4",
+    "name": "XY Showdown Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/XY-Showdown.webp"
+  },
+  {
+    "id": "overlay-5",
+    "name": "XY Showdown 2 Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/XY-Showdown-2.webp"
   },
   {
     "id": "overlay-6",
     "name": "Nosepass Overlay",
     "price": 1500,
-    "imageUrl": "/public/images/shop/overlays/nosepass.webp"
+    "imageUrl": "/public/images/shop/overlays/Nosepass.webp"
   },
   {
     "id": "overlay-7",
     "name": "Oricorio Overlay",
     "price": 1500,
-    "imageUrl": "/public/images/shop/overlays/oricorio.webp"
+    "imageUrl": "/public/images/shop/overlays/Oricorio.webp"
   },
   {
     "id": "overlay-8",
     "name": "Pheromosa Overlay",
     "price": 1500,
-    "imageUrl": "/public/images/shop/overlays/pheromosa.webp"
+    "imageUrl": "/public/images/shop/overlays/Pheromosa.webp"
   },
   {
     "id": "overlay-9",
     "name": "Sentret Overlay",
     "price": 1500,
-    "imageUrl": "/public/images/shop/overlays/sentret.webp"
+    "imageUrl": "/public/images/shop/overlays/Sentret.webp"
   },
   {
     "id": "overlay-10",
     "name": "Vaporeon Overlay",
     "price": 1500,
-    "imageUrl": "/public/images/shop/overlays/vaporeon.webp"
+    "imageUrl": "/public/images/shop/overlays/Vaporeon.webp"
+  },
+  {
+    "id": "overlay-11",
+    "name": "Magmatic Tsunami Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Magmatic-Tsunami.webp"
+  },
+  {
+    "id": "overlay-12",
+    "name": "Emerald Storm Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Emerald-Storm.webp"
   }
 ]
