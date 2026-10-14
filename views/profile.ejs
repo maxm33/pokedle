@@ -165,20 +165,24 @@
           />
         </div>
         <% } %>
-        <div id="mode-title">Classic</div>
+        <div id="mode-title">
+          <span class="mode-line">Classic</span>
+        </div>
         <div id="mode-data">
-          Wins: <%= classicWins %><br />
-          Average Tries: <%= classicAvgTries %><br /><br />
+          <span class="mode-line">Wins: <%= classicWins %></span><br />
+          <span class="mode-line">Average Tries: <%= classicAvgTries %></span><br /><br />
           <button id="onprofile-dex-button">View Pokédex</button>
         </div>
       </div>
       <div class="profile-stat-card">
-        <div style="margin-top: 0.75em" id="mode-title">Sentry Duty</div>
+        <div style="margin-top: 0.75em" id="mode-title">
+          <span class="mode-line">Sentry Duty</span>
+        </div>
         <div id="mode-data">
-          Best Score: <%= sentryBestScore %><br />
-          Best Session: <%= sentryBestSession %> rounds<br />
-          Recognized: <%= sentrySessionsCompleted %><br />
-          Accuracy: <%= sentryAccuracy %>%<br />
+          <span class="mode-line">Best Score: <%= sentryBestScore %></span><br />
+          <span class="mode-line">Best Session: <%= sentryBestSession %> rounds</span><br />
+          <span class="mode-line">Recognized: <%= sentrySessionsCompleted %></span><br />
+          <span class="mode-line">Accuracy: <%= sentryAccuracy %>%</span><br />
         </div>
       </div>
     </div>
