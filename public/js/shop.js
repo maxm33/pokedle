@@ -169,9 +169,10 @@ function renderShop() {
   items.querySelectorAll(".shop-item").forEach((item) => {
     const itemId = item.dataset.itemId;
     const type = item.dataset.itemType;
-    const itemName = item.dataset.itemName || "";
     const button = item.querySelector(".shop-item-action");
     const priceDisplay = item.querySelector(".shop-price");
+    const titleElement = item.querySelector("h2");
+    const itemName = titleElement ? titleElement.textContent.toLowerCase() : "";
     const owned = getOwnedItems(type).includes(itemId);
     const equipped = getEquippedItem(type) === itemId;
     const purchasable = item.dataset.purchasable === "true";
