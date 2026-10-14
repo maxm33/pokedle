@@ -7,6 +7,7 @@ const items = document.getElementById("shop-items");
 const emptyState = document.getElementById("shop-empty-state");
 const inventoryCount = document.getElementById("shop-inventory-count");
 const sectionTabs = document.querySelectorAll("[data-shop-section]");
+const searchInput = document.getElementById("shop-search");
 let currentUser = null;
 let shopState = null;
 let requestPending = false;
@@ -33,9 +34,11 @@ sectionTabs.forEach((tab) => {
   });
 });
 
-searchInput.addEventListener("input", () => {
-  renderShop();
-});
+if (searchInput) {
+  searchInput.addEventListener("input", () => {
+    renderShop();
+  });
+}
 
 items.addEventListener("click", async (event) => {
   const button = event.target.closest("button[data-action]");
@@ -161,7 +164,7 @@ function renderShop() {
     tab.setAttribute("aria-pressed", String(selected));
   });
 
-  const searchQuery = searchInput.value.trim().toLowerCase();
+  const searchQuery = searchInput ? searchInput.value.trim().toLowerCase() : "";
   let visibleCount = 0;
   items.querySelectorAll(".shop-item").forEach((item) => {
     const itemId = item.dataset.itemId;
