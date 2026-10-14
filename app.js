@@ -38,6 +38,8 @@ let classicGameID; // to store uuid of current game
 let classicPreviousPokemon; // to store the previous generated pokemon
 let classicCurrentPokemon; // to store the current generated pokemon
 let classicEventActive = false;
+let classicDoubleEarningsEventActive = false;
+let shopDiscounts = {};
 
 // --- SENTRY DUTY MODE VARIABLES ---
 let sentryChallenges = {}; // store active sentry duty challenges
@@ -503,6 +505,7 @@ app.get("/classic/state", (_, res) => {
       ? null
       : { ID: classicPreviousPokemon.ID, name: classicPreviousPokemon.name },
     classicEventActive,
+    classicDoubleEarningsEventActive,
   ]);
 });
 
@@ -943,13 +946,26 @@ app.get("/user/:gid/profile", firestoreReadLimiter, async (req, res, next) => {
 });
 
 app.get("/shop", (req, res) => {
+  const discountedItems = [
+    ...shopBackgrounds.map((item) => ({ ...item, type: "background" })),
+    ...overlayItems,
+    ...companionItems,
+  ].map((item) => {
+    const discount = shopDiscounts[item.id];
+    if (discount) {
+      return {
+        ...item,
+        originalPrice: item.price,
+        price: Math.round(item.price * (1 - discount / 100)),
+        discountPercent: discount,
+      };
+    }
+    return item;
+  });
+
   res.render("shop", {
     bg: bgPathSelector(req.device.type),
-    shopItems: [
-      ...shopBackgrounds.map((item) => ({ ...item, type: "background" })),
-      ...overlayItems,
-      ...companionItems,
-    ],
+    shopItems: discountedItems,
   });
 });
 
@@ -991,6 +1007,11 @@ app.post("/shop/purchase", shopLimiter, async (req, res, next) => {
   if (!background || background.purchasable === false)
     return res.status(400).send({ error: "Unknown background" });
 
+  const discount = shopDiscounts[background.id];
+  const actualPrice = discount
+    ? Math.round(background.price * (1 - discount / 100))
+    : background.price;
+
   try {
     const userRef = firestore.collection("users").doc(decodedToken.uid);
     const result = await firestore.runTransaction(async (transaction) => {
@@ -1006,15 +1027,15 @@ app.post("/shop/purchase", shopLimiter, async (req, res, next) => {
         Number.isSafeInteger(user.pokedollars) && user.pokedollars >= 0
           ? user.pokedollars
           : 0;
-      if (pokedollars < background.price)
+      if (pokedollars < actualPrice)
         return { error: "Not enough Pokédollars", status: 400 };
 
       ownedBackgrounds.push(background.id);
       transaction.update(userRef, {
-        pokedollars: pokedollars - background.price,
+        pokedollars: pokedollars - actualPrice,
         ownedBackgrounds,
       });
-      return { pokedollars: pokedollars - background.price, ownedBackgrounds };
+      return { pokedollars: pokedollars - actualPrice, ownedBackgrounds };
     });
 
     if (result.error)
@@ -1071,6 +1092,11 @@ app.post("/shop/collectibles/purchase", shopLimiter, async (req, res, next) => {
   const item = getCollectible(type, itemId);
   if (!item) return res.status(400).send({ error: "Unknown shop item" });
 
+  const discount = shopDiscounts[item.id];
+  const actualPrice = discount
+    ? Math.round(item.price * (1 - discount / 100))
+    : item.price;
+
   try {
     const userRef = firestore.collection("users").doc(decodedToken.uid);
     const result = await firestore.runTransaction(async (transaction) => {
@@ -1086,15 +1112,15 @@ app.post("/shop/collectibles/purchase", shopLimiter, async (req, res, next) => {
         Number.isSafeInteger(user.pokedollars) && user.pokedollars >= 0
           ? user.pokedollars
           : 0;
-      if (pokedollars < item.price)
+      if (pokedollars < actualPrice)
         return { error: "Not enough Pokédollars", status: 400 };
 
       ownedItems.push(item.id);
       transaction.update(userRef, {
-        pokedollars: pokedollars - item.price,
+        pokedollars: pokedollars - actualPrice,
         [getOwnedCollectiblesField(type)]: ownedItems,
       });
-      return { pokedollars: pokedollars - item.price, ownedItems };
+      return { pokedollars: pokedollars - actualPrice, ownedItems };
     });
 
     if (result.error)
@@ -1195,6 +1221,8 @@ async function classicGeneratePokemon() {
     (pokemonName) => pokemonName !== previousPokemon.name,
   );
   const useEventPool = eligibleEventPokemon.length > 0 && Math.random() < 0.1;
+  const useDoubleEarnings = Math.random() < 0.2;
+
   let nextPokemon;
   if (useEventPool) {
     const pokemonName =
@@ -1236,8 +1264,12 @@ async function classicGeneratePokemon() {
   classicWinners = [];
   classicPlayerStates.clear();
   classicEventActive = useEventPool;
+  classicDoubleEarningsEventActive = useDoubleEarnings;
   bg_desktop_option = nextDesktopBackground;
   bg_mobile_option = nextMobileBackground;
+
+  generateShopDiscounts();
+
   console.log("#DEV Solution: " + classicCurrentPokemon.name);
   scheduleClassicGeneration();
 }
@@ -1516,7 +1548,8 @@ async function updateStatsOnClassicWin(id, pokemon, tries, shinyRoll) {
     user.classicAvgTries =
       (classicWins * classicAvgTries + tries) / (classicWins + 1);
     user.classicWins = classicWins + 1;
-    const pokedollarsEarned = classicGetPokedollarReward(tries);
+    let pokedollarsEarned = classicGetPokedollarReward(tries);
+    if (classicDoubleEarningsEventActive) pokedollarsEarned *= 2;
     const currentPokedollars =
       Number.isSafeInteger(user.pokedollars) && user.pokedollars >= 0
         ? user.pokedollars
@@ -1699,5 +1732,16 @@ async function verifyShopUserToken(req, res) {
 const applyAssetCacheHeaders = (res, maxAge) => {
   res.setHeader("Cache-Control", `public, max-age=${maxAge}, must-revalidate`);
 };
+
+function generateShopDiscounts() {
+  shopDiscounts = {};
+  const allItems = [...shopBackgrounds, ...overlayItems, ...companionItems];
+  for (const item of allItems) {
+    if (item.purchasable !== false && Math.random() < 0.25) {
+      const discountPercent = Math.floor(Math.random() * 31) + 20; // tra 20% e 50%
+      shopDiscounts[item.id] = discountPercent;
+    }
+  }
+}
 
 module.exports = app;

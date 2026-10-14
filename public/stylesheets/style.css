@@ -193,14 +193,13 @@ body::before {
 #mode-title,
 #mode-data {
   animation: fadeIn 1.5s;
-  background-color: rgba(255, 255, 255, 0.75);
+  background-color: transparent;
   border: none;
   color: black;
   height: inherit;
   width: inherit;
   position: relative;
   z-index: 10;
-  backdrop-filter: blur(4px);
 }
 #mode-title {
   order: 0;
@@ -1379,6 +1378,33 @@ input[type="hidden"] {
 }
 .shop-item:hover .shop-image-frame {
   background-color: #fefce8;
+}
+.shop-search-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5em;
+  width: 100%;
+}
+.shop-search-input {
+  background-color: white !important;
+  border: 2px solid #e5e7eb !important;
+  border-radius: 2em !important;
+  color: #374151 !important;
+  font-size: 0.75em !important;
+  max-width: 26em;
+  padding: 0.75em 1.25em !important;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+.shop-search-input::placeholder {
+  color: #9ca3af;
+  overflow: visible;
+}
+.shop-search-input:focus {
+  border-color: #facc15 !important;
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2);
+  outline: none;
 }
 .shop-preview {
   height: 100%;

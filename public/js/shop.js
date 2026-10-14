@@ -33,6 +33,10 @@ sectionTabs.forEach((tab) => {
   });
 });
 
+searchInput.addEventListener("input", () => {
+  renderShop();
+});
+
 items.addEventListener("click", async (event) => {
   const button = event.target.closest("button[data-action]");
   const user = currentUser;
@@ -157,21 +161,29 @@ function renderShop() {
     tab.setAttribute("aria-pressed", String(selected));
   });
 
+  const searchQuery = searchInput.value.trim().toLowerCase();
   let visibleCount = 0;
   items.querySelectorAll(".shop-item").forEach((item) => {
     const itemId = item.dataset.itemId;
     const type = item.dataset.itemType;
+    const itemName = item.dataset.itemName || "";
     const button = item.querySelector(".shop-item-action");
+    const priceDisplay = item.querySelector(".shop-price");
     const owned = getOwnedItems(type).includes(itemId);
     const equipped = getEquippedItem(type) === itemId;
     const purchasable = item.dataset.purchasable === "true";
+    const matchesSearch = itemName.includes(searchQuery);
     const visible =
-      activeSection === "inventory"
+      (activeSection === "inventory"
         ? owned
-        : type === activeSection && purchasable && !owned;
+        : type === activeSection && purchasable && !owned) && matchesSearch;
     item.hidden = !visible;
     if (!visible) return;
     visibleCount++;
+
+    if (priceDisplay) {
+      priceDisplay.style.display = activeSection === "inventory" ? "none" : "";
+    }
 
     button.dataset.action = owned
       ? equipped
@@ -187,9 +199,14 @@ function renderShop() {
   });
 
   emptyState.hidden = visibleCount > 0;
-  if (visibleCount === 0)
-    emptyState.textContent =
-      activeSection === "inventory"
-        ? "Your inventory is empty."
-        : `No ${activeSection} items are available.`;
+  if (visibleCount === 0) {
+    if (searchQuery) {
+      emptyState.textContent = "No items match your search.";
+    } else {
+      emptyState.textContent =
+        activeSection === "inventory"
+          ? "Your inventory is empty."
+          : `No ${activeSection} items are available.`;
+    }
+  }
 }

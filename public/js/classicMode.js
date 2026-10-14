@@ -21,6 +21,9 @@ let containertitles = document.getElementById("titles-container");
 let stateLoading = document.getElementById("state-loading");
 let stateLoadingMessage = document.getElementById("state-loading-message");
 let eventNotification = document.getElementById("event-notification");
+let eventNotificationDouble = document.getElementById(
+  "event-notification-double",
+);
 let guessBallScene = document.querySelector(".guess-pokeball-scene");
 const guessBallVariants = ["great-ball", "ultra-ball", "master-ball"];
 
@@ -46,6 +49,7 @@ axios
   .then((res) => {
     manageGameState(res.data[0], res.data[1], res.data[2]);
     eventNotification.hidden = !res.data[3];
+    if (eventNotificationDouble) eventNotificationDouble.hidden = !res.data[4];
     stateLoading.hidden = true;
   })
   .catch((err) => {
