@@ -1014,7 +1014,7 @@ app.get("/shop/state", firestoreReadLimiter, async (req, res, next) => {
     const doubleEarningsUntilDate = user.doubleEarningsUntilDate || null;
     const remainingDays = doubleEarningsUntilDate
       ? classicGetDaysBetween(currentDate, doubleEarningsUntilDate)
-      : 0;
+      : null;
     const doubleEarningsActive = remainingDays !== null && remainingDays >= 0;
 
     res.set("Cache-Control", "no-store");
