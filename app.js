@@ -941,9 +941,11 @@ app.get("/user/:gid/profile", firestoreReadLimiter, async (req, res, next) => {
             : 0;
         res.render("profile", {
           profileId: req.params.gid,
-          username: user.username,
-          classicWins: user.classicWins,
-          classicAvgTries: Math.round(user.classicAvgTries * 100) / 100,
+          username: user.username || "???",
+          classicWins: Number(user.classicWins) || 0,
+          classicAvgTries: Number(user.classicAvgTries)
+            ? Math.round(user.classicAvgTries * 100) / 100
+            : 0,
           sentryBestScore: user.sentryBestScore || 0,
           sentrySessionsCompleted: sessions,
           sentryAccuracy: accuracy,
@@ -1009,11 +1011,11 @@ app.get("/shop/state", firestoreReadLimiter, async (req, res, next) => {
       user.masterBallBoostDate === currentDate ||
       user.masterBallBoostDate === tomorrowDate;
 
-    const doubleEarningsUntil = Number(user.doubleEarningsUntil) || 0;
-    const doubleEarningsActive = doubleEarningsUntil > now;
-    const doubleEarningsRemainingDays = doubleEarningsActive
-      ? Math.ceil((doubleEarningsUntil - now) / (24 * 60 * 60 * 1000))
+    const doubleEarningsUntilDate = user.doubleEarningsUntilDate || null;
+    const remainingDays = doubleEarningsUntilDate
+      ? classicGetDaysBetween(currentDate, doubleEarningsUntilDate)
       : 0;
+    const doubleEarningsActive = remainingDays !== null && remainingDays >= 0;
 
     res.set("Cache-Control", "no-store");
     res.status(200).send({
@@ -1031,8 +1033,8 @@ app.get("/shop/state", firestoreReadLimiter, async (req, res, next) => {
       equippedCompanion:
         getCollectible("companion", user.equippedCompanion)?.id || null,
       masterBallBoostActive,
-      doubleEarningsUntil,
-      doubleEarningsRemainingDays,
+      doubleEarningsUntilDate,
+      doubleEarningsRemainingDays: doubleEarningsActive ? remainingDays + 1 : 0,
     });
   } catch (err) {
     console.error(err);
@@ -1221,18 +1223,30 @@ app.post("/shop/boost/purchase", shopLimiter, async (req, res, next) => {
           updates.masterBallBoostDate = currentDate;
         }
       } else if (boost.id === "boost-double-earnings") {
-        const currentExpire = user.doubleEarningsUntil || 0;
-        let baseTime;
+        const currentDate = classicGetCurrentDate();
+        const currentUntil = user.doubleEarningsUntilDate;
+        let baseDate = currentDate;
 
-        if (currentExpire > now) {
-          baseTime = currentExpire;
-        } else if (alreadyWonToday) {
-          baseTime = now + classicGetRemainingTime();
-        } else {
-          baseTime = now;
+        if (typeof currentUntil === "string") {
+          const daysRemaining = classicGetDaysBetween(
+            currentDate,
+            currentUntil,
+          );
+          if (daysRemaining !== null && daysRemaining > 0) {
+            baseDate = currentUntil;
+          }
         }
 
-        updates.doubleEarningsUntil = baseTime + 7 * 24 * 60 * 60 * 1000;
+        const [day, month, year] = baseDate.split("-").map(Number);
+        const targetUtc = Date.UTC(year, month - 1, day + 7);
+        const targetDateObj = new Date(targetUtc);
+        const {
+          year: y,
+          month: m,
+          day: d,
+        } = classicGetDateTimeParts(targetDateObj);
+
+        updates.doubleEarningsUntilDate = `${String(d).padStart(2, "0")}-${String(m).padStart(2, "0")}-${y}`;
       }
 
       transaction.update(userRef, updates);
@@ -1304,8 +1318,10 @@ app.get("/user/:gid/pokedex", firestoreReadLimiter, async (req, res, next) => {
       else {
         res.status(200);
         res.render("pokedex", {
-          username: user.username,
-          history: user.classicHistory,
+          username: user.username || "???",
+          history: Array.isArray(user.classicHistory)
+            ? user.classicHistory
+            : [],
           bg: bgPathSelector(req.device.type),
         });
       }
@@ -1669,9 +1685,13 @@ async function updateStatsOnClassicWin(id, pokemon, tries, shinyRoll) {
       (classicWins * classicAvgTries + tries) / (classicWins + 1);
     user.classicWins = classicWins + 1;
     let pokedollarsEarned = classicGetPokedollarReward(tries);
+    const doubleEarningsUntilDate = user.doubleEarningsUntilDate;
+    const remainingDays = doubleEarningsUntilDate
+      ? classicGetDaysBetween(streakDate, doubleEarningsUntilDate)
+      : null;
     const isDoubleEarningsActive =
       classicDoubleEarningsEventActive ||
-      (user.doubleEarningsUntil && user.doubleEarningsUntil > Date.now());
+      (remainingDays !== null && remainingDays >= 0);
     if (isDoubleEarningsActive) pokedollarsEarned *= 2;
     const currentPokedollars =
       Number.isSafeInteger(user.pokedollars) && user.pokedollars >= 0

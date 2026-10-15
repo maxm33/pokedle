@@ -70,5 +70,11 @@
     "name": "Emerald Storm Overlay",
     "price": 1500,
     "imageUrl": "/public/images/shop/overlays/Emerald-Storm.webp"
+  },
+  {
+    "id": "overlay-13",
+    "name": "Eeveelutions Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Eeveelutions.webp"
   }
 ]
