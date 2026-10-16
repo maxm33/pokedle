@@ -23,7 +23,7 @@ In the project's early stages, this was a web application for Web Application De
 Pokédle is a game inspired by Wordle and LoLdle.<br>
 The goal of this game is to guess a secret pokémon, which changes daily.<br>
 
-All pokémons are represented by features such as `habitat` where they live, their `colors`, `types`, `evolution stage` and `generation`.<br>
+All pokémons are represented by features such as `habitat` where they live, their `colors`, `types`, `evolution stage` (both the stage level and whether that stage is the last one of its evolution line) and `generation`.<br>
 Based on each guess made, you will be given `colored hints` on each of these categories in relation to the secret pokémon ones.<br>
 Such hints will help you figure out what is the secret pokémon by looking at their colors:<br>
 
@@ -111,13 +111,17 @@ A new minor update has been implemented:<br>
 
 - each `ball tier` has an increasing chance of capturing a shiny version of the daily pokémon;
 
-- added `PokéShop`, in which you can spend `PokéDollars`, earned by playing `Classic` mode, to buy some customization items for your own `profile` page;
+- added `PokéShop`, in which you can spend `PokéDollars`, earned by playing `Classic` mode, to buy some customization items (`backgrounds`, `overlays` and `companions`) for your own `profile` page;
+
+- added purchasable `boosts` in the shop, such as `Master Ball tier boost` and `2x pokédollars boost`;
+
+- added for all items an indipendent possibility of being `discounted` between 20% - 50% of their original cost;
 
 - added customizable `usernames` for logged-in players;
 
 - added medals to third, second and first places in `rankings` pages;
 
-- added randomic trigger of `events`, as of right now there is just a `legendary-only event`.
+- added randomic trigger of `events`, as of right now there is a `legendary-only event` and a `2x pokédollars event`.
 
 <br>
 
