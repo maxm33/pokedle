@@ -12,9 +12,8 @@ In the project's early stages, this was a web application for Web Application De
   - [V1.5.6](#v156)
   - [V1.6.0](#v160)
   - [V1.7.1](#v171)
-  - [V1.8.0](#v180)
-- [Usage](#usage)
-- [Troubleshooting](#troubleshooting)
+  - [V1.8.0](#v180)
+- [Troubleshooting and Suggestions](#troubleshooting-and-suggestions)
 
 <br>
 
@@ -125,32 +124,12 @@ A new minor update has been implemented:<br>
 
 <br>
 
-## Usage
-
-- Install all the dependencies
-
-```
-npm install
-```
-
-- Start the app
-
-```
-npm start
-```
-
-<br>
-
-> [!NOTE]
-> Locally, Pokédle is available at `localhost:3000`.
-
-> [!NOTE]
-> Firebase/Firestore API interactions are not available on localhost, unless you build your own storage and choose to abilitate it to do so.
-
-<br>
-
-## Troubleshooting
+## Troubleshooting and Suggestions
 
 If you are having trouble with the site (e.g. it looks broken), clearing the browser cache relative to this site is most likely the solution. Check [how to clear cache on Chrome](https://support.google.com/accounts/answer/32050?sjid=9309983268576311148-EU).
+
+<br>
+
+If you still need help for any problem, or if you have a cool idea that you would like to see implemented on this site, please feel free to make an issue here to reach me out! ^-^
 
 <br>
