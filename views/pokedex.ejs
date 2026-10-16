@@ -207,10 +207,29 @@
       reducedMotion.addEventListener("change", updateLightBlinking);
       updateLightBlinking();
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="/public/js/auth.js"></script>
     <script type="module">
       import { pokemons } from "../../public/js/pokemons.js";
 
-      const history = <%- JSON.stringify(history || []).replace(/</g, "\\u003c") %>;
+      let history = <%- JSON.stringify(history || []).replace(/</g, "\\u003c") %>;
+
+      const secretEntryIndex = history.findIndex(e => e.pokemon === "SECRET_TODAY");
+
+      if (secretEntryIndex !== -1) {
+        // Wait briefly for auth.js to initialize Firebase and Axios interceptors
+        await new Promise(resolve => setTimeout(resolve, 800));
+        try {
+          const guestId = localStorage.getItem("uid") || localStorage.getItem("guestId") || "";
+          const response = await axios.get("/classic/today", { params: { guestId } });
+          // If authorized, inject the real Pokemon name back into the record
+          history[secretEntryIndex].pokemon = response.data.pokemon;
+        } catch (error) {
+          // If not authorized (hasn't won), remove the entry so it stays hidden/undiscovered
+          history.splice(secretEntryIndex, 1);
+        }
+      }
+
       const normalizeName = (name) => name.toLowerCase().replace(/[^a-z0-9]/g, "");
       const errorElement = document.getElementById("dex-error");
       function showDescriptionError(error) {
@@ -495,7 +514,5 @@
 
       updateVisibleRecords();
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script type="module" src="/public/js/auth.js"></script>
   </body>
 </html>

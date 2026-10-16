@@ -527,6 +527,41 @@ app.get("/classic/state", (_, res) => {
   ]);
 });
 
+app.get("/classic/today", async (req, res, next) => {
+  try {
+    const token = req.get("authorization")?.match(/^Bearer\s+(.+)$/i)?.[1];
+    let authenticatedUid = null;
+
+    if (token) {
+      try {
+        authenticatedUid = (await auth.verifyIdToken(token)).uid;
+      } catch (_) {}
+    }
+
+    const guestId =
+      typeof req.query.guestId === "string" ? req.query.guestId : null;
+    const playerId = authenticatedUid
+      ? `user:${authenticatedUid}`
+      : guestId
+        ? `guest:${guestId}`
+        : null;
+
+    // If the requesting player has won today, reveal the Pokémon
+    if (
+      playerId &&
+      classicWinners.includes(playerId) &&
+      classicCurrentPokemon
+    ) {
+      res.status(200).send({ pokemon: classicCurrentPokemon.name });
+    } else {
+      res.status(403).send({ error: "User has not won today's game" });
+    }
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
+});
+
 app.get("/classic/ball", firestoreReadLimiter, async (req, res, next) => {
   const token = req.get("authorization")?.match(/^Bearer\s+(.+)$/i)?.[1];
   if (!token) return res.status(401).send({ error: "Authentication required" });
@@ -1316,12 +1351,29 @@ app.get("/user/:gid/pokedex", firestoreReadLimiter, async (req, res, next) => {
       let user = doc.data();
       if (user == undefined) next(createError(404, "User does not exist"));
       else {
+        const currentDate = classicGetCurrentDate();
+        const currentPokemonName = classicCurrentPokemon
+          ? classicCurrentPokemon.name
+          : null;
+
+        let history = Array.isArray(user.classicHistory)
+          ? user.classicHistory
+          : [];
+        history = history.map((entry) => {
+          // If the entry is today's active game, hide its identity
+          if (
+            entry.date === currentDate &&
+            entry.pokemon === currentPokemonName
+          ) {
+            return { ...entry, pokemon: "SECRET_TODAY" };
+          }
+          return entry;
+        });
+
         res.status(200);
         res.render("pokedex", {
           username: user.username || "???",
-          history: Array.isArray(user.classicHistory)
-            ? user.classicHistory
-            : [],
+          history: history,
           bg: bgPathSelector(req.device.type),
         });
       }
@@ -1698,6 +1750,11 @@ async function updateStatsOnClassicWin(id, pokemon, tries, shinyRoll) {
         ? user.pokedollars
         : 0;
     user.pokedollars = currentPokedollars + pokedollarsEarned;
+
+    if (user.masterBallBoostDate === streakDate)
+      user.masterBallBoostDate = null;
+    if (remainingDays === 0) user.doubleEarningsUntilDate = null;
+
     if (!Array.isArray(user.classicHistory)) user.classicHistory = [];
     const shiny = shinyRoll < classicGetShinyChance(ball);
     let found = false;

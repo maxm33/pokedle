@@ -76,5 +76,11 @@
     "name": "Eeveelutions Overlay",
     "price": 1500,
     "imageUrl": "/public/images/shop/overlays/Eeveelutions.webp"
+  },
+  {
+    "id": "overlay-14",
+    "name": "Dual Galaxies Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Dual-Galaxies.webp"
   }
 ]
