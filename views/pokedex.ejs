@@ -95,7 +95,7 @@
             src="/public/images/icons/pokedle-logo.webp"
         /></a>
       </div>
-      <div id="dex-device" class="fadeIn">
+      <div id="dex-device" style="visibility: hidden">
         <section class="dex-panel dex-left-panel" aria-label="Pokémon sprite">
           <div class="dex-sensor-header" aria-hidden="true">
             <span class="dex-main-lens"></span>
@@ -519,6 +519,9 @@
         });
 
         updateVisibleRecords();
+        const dexDevice = document.getElementById("dex-device");
+        dexDevice.style.visibility = "visible";
+        dexDevice.classList.add("fadeIn");
     </script>
   </body>
 </html>
