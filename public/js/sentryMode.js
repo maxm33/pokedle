@@ -66,7 +66,7 @@ async function loadChallenge(resetSession = false) {
 function renderChallenge() {
   const scoreEl = document.getElementById("sentry-score-count");
   if (scoreEl) scoreEl.textContent = totalScore;
-  if (totalScore !== 0) feedback.innerHTML = `Whose foot is this?`;
+  if (feedback) feedback.innerHTML = `Whose foot is this?`;
   const footprintElement = document.getElementById("sentry-footprint");
   const overlay = document.getElementById("sentry-overlay");
   if (overlay) {
@@ -162,14 +162,14 @@ async function submitGuess(option) {
     if (result.correct) {
       if (selectedBtn) selectedBtn.classList.add("sentry-correct");
       playFeedbackSound("correct");
-      feedback.innerHTML = `Correct! +${result.score} points.`;
+      if (feedback) feedback.innerHTML = `Correct! +${result.score} points.`;
       disableOptions();
       setTimeout(() => loadChallenge(false), 1500);
     } else {
       if (selectedBtn) selectedBtn.classList.add("sentry-wrong");
       if (correctBtn) correctBtn.classList.add("sentry-correct");
       playFeedbackSound("wrong");
-      feedback.innerHTML = `Wrong!`;
+      if (feedback) feedback.innerHTML = `Wrong!`;
       handleFailure(result.failures);
     }
   } catch (err) {

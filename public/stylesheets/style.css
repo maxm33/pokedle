@@ -431,6 +431,22 @@ input[type="hidden"] {
   top: 10%;
   right: 8%;
 }
+.sentry-top-mid {
+  top: 7%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+#sentry-mute {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 1.4em;
+  transition: transform 0.2s ease;
+}
+#sentry-mute:hover {
+  transform: translateX(-50%) scale(1.15);
+}
 #sentry-timer-bar-container {
   position: absolute;
   bottom: 8%;
@@ -512,30 +528,6 @@ input[type="hidden"] {
   height: 64px;
   object-fit: contain;
   margin-left: 0.8em;
-}
-#sentry-meta {
-  display: flex;
-  gap: 1em;
-  justify-content: center;
-  align-items: center;
-  margin-top: 0.5em;
-}
-#sentry-mute {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 3rem;
-  min-width: 3rem;
-  height: 3rem;
-  border-radius: 0.8em;
-  border: 0.1em solid #fff;
-  background: rgba(0, 0, 0, 0.35);
-  color: white;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-#sentry-mute:hover {
-  background: rgba(255, 255, 255, 0.15);
 }
 .sentry-option {
   position: relative;
