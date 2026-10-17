@@ -1751,9 +1751,13 @@ async function updateStatsOnClassicWin(id, pokemon, tries, shinyRoll) {
         : 0;
     user.pokedollars = currentPokedollars + pokedollarsEarned;
 
-    if (user.masterBallBoostDate === streakDate)
+    if (
+      user.masterBallBoostDate &&
+      classicGetDaysBetween(streakDate, user.masterBallBoostDate) <= 0
+    )
       user.masterBallBoostDate = null;
-    if (remainingDays === 0) user.doubleEarningsUntilDate = null;
+    if (remainingDays !== null && remainingDays <= 0)
+      user.doubleEarningsUntilDate = null;
 
     if (!Array.isArray(user.classicHistory)) user.classicHistory = [];
     const shiny = shinyRoll < classicGetShinyChance(ball);
