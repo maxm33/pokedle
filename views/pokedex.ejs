@@ -221,7 +221,7 @@
         // Wait explicitly for Firebase auth to initialize
         await auth.authStateReady();
         try {
-          const guestId = localStorage.getItem("userID");
+          const guestId = localStorage.getItem("userID").replace(/^["']|["']$/g, "");
           const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
           const headers = token ? { Authorization: `Bearer ${token}` } : {};
           const response = await axios.get("/classic/today", {
