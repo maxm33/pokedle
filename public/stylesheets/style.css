@@ -1946,6 +1946,8 @@ input[type="hidden"] {
     "PokemonUnownGB", "PokemonGB", "Lucida Sans", sans-serif !important;
   text-transform: lowercase;
   font-weight: 400;
+  user-select: none;
+  -webkit-user-select: none;
 }
 .dex-record {
   border-top: 1px solid rgb(13 43 19 / 45%);
