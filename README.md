@@ -88,9 +88,9 @@ A new minor update has been implemented:<br>
 
 A new minor update has been implemented:<br>
 
-- added new mode `Sentry Duty`, based on the PMD2 mini-game;
+- added new mode `Sentry Duty`, based on the mini-game of Pokémon Mystery Dungeon 2;
 
-- added new logo image and new gameboy-like pokémon font.
+- added new logo image and new GameBoy-like pokémon font.
 
 <br>
 
@@ -101,6 +101,8 @@ A new minor update has been implemented:<br>
 - added `shiny pokémons`;
 
 - restyled the `pokédex` view;
+
+- restyled the `Sentry Duty` mode view;
 
 - reworked visuals of the old `guess button`, from now it is referred to as the `ball button`;
 
