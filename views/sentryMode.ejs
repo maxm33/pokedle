@@ -37,7 +37,12 @@
           height="20px"
         />
       </div>
-      <div id="auth-loading" class="auth-loading" role="status" aria-live="polite">
+      <div
+        id="auth-loading"
+        class="auth-loading"
+        role="status"
+        aria-live="polite"
+      >
         <span class="profile-loader" aria-hidden="true"></span>
         <span>Checking authentication...</span>
       </div>
@@ -110,8 +115,6 @@
       <div id="sentry-status" class="fadeIn">
         <h2 id="sentry-title" class="fadeIn">Guess the footprint quickly!</h2>
         <div id="sentry-meta" class="fadeIn">
-          <div id="sentry-timer" class="fadeIn">Time left: --</div>
-          <div id="sentry-failures" class="fadeIn">Failures: 0/3</div>
           <button
             id="sentry-mute"
             class="fadeIn"
@@ -121,9 +124,26 @@
             🔊
           </button>
         </div>
-        <div id="sentry-feedback" class="fadeIn">Total score: 0</div>
+        <div id="sentry-feedback" class="fadeIn">Whose foot is this?</div>
       </div>
       <div id="sentry-footprint-container" class="fadeIn">
+        <div
+          id="sentry-failures-count"
+          class="sentry-grate-stat sentry-top-left"
+          title="Failures"
+        >
+          X: 0/3
+        </div>
+        <div
+          id="sentry-score-count"
+          class="sentry-grate-stat sentry-top-right"
+          title="Score"
+        >
+          0
+        </div>
+        <div id="sentry-timer-bar-container">
+          <div id="sentry-timer-bar"></div>
+        </div>
         <img id="sentry-footprint" alt="" />
         <div id="sentry-overlay" aria-hidden="true"></div>
       </div>
