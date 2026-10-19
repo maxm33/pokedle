@@ -54,7 +54,7 @@ A new minor update has been implemented:<br>
 
 ## V1.5.6
 
-A new minor update has been implemented:<br>
+A new update has been implemented:<br>
 
 - added `2nd, 3rd, 4th and 5th generation of pokémons`;<br>
 
@@ -98,7 +98,7 @@ A new minor update has been implemented:<br>
 
 ## V1.8.0
 
-A new minor update has been implemented:<br>
+A new update has been implemented:<br>
 
 - added `shiny pokémons`;
 
