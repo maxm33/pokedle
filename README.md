@@ -66,7 +66,7 @@ Several minor updates have been implemented:<br>
 
 - the `API endpoints' structure` has been reorganized to create a more intuitive hierarchical order, improved server-side `error handling`;<br>
 
-- renamed the only mode currently available to `classic mode` in prevision of new future game modes;<br>
+- renamed the only mode currently available to `Classic` mode in prevision of new future game modes;<br>
 
 - more `backgrounds` added for both PC and mobile resolutions, implemented a `background randomizer`;<br>
 
