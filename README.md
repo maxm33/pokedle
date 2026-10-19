@@ -129,7 +129,7 @@ A new update has been implemented:<br>
 
 ## Troubleshooting and Suggestions
 
-If you are having trouble with the site (e.g. it looks broken), clearing the browser cache relative to this site is most likely the solution. Check [how to clear cache on Chrome](https://support.google.com/accounts/answer/32050?sjid=9309983268576311148-EU).
+If you are having trouble with the site, clearing the browser cache relative to this site is most likely the solution. Check [how to clear cache on Chrome](https://support.google.com/accounts/answer/32050?sjid=9309983268576311148-EU).
 
 <br>
 
