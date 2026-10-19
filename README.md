@@ -45,10 +45,10 @@ Visit Pokédle [here](https://pokedle.onrender.com/) and have fun guessing 'em a
 
 A new minor update has been implemented:<br>
 
-- the server-side has been granted the admin privileges to his Firestore Cloud Storage access through the `Firebase Admin SDK` module,
+- granted the admin privileges to server-side for Firestore Cloud Storage access through the `Firebase Admin SDK` module,
   allowing a strong, simple and secure implementation of the `Firebase Security Rules`;<br>
 
-- `possibly-sensible data` has been moved to the hosting site using environment variables and secret files;<br>
+- moved `possibly-sensible data` to the hosting site using environment variables and secret files;<br>
 
 - changed the CSS, EJS views and client's code to adapt to server-side changes.
 
@@ -62,13 +62,13 @@ Several minor updates have been implemented:<br>
 
 - implemented the server-side verification of `Firebase ID Tokens` (based on JWT) for sensible requests, enhancing the security;<br>
 
-- greatly improved `data consistency` both on client and server, improved the `rendering` of guesses;<br>
+- improved `data consistency` both on client and server, improved the `rendering` of guesses;<br>
 
-- the `API endpoints' structure` has been reorganized to create a more intuitive hierarchical order, improved server-side `error handling`;<br>
+- restructured the `API endpoints` to create a more intuitive hierarchical order, improved server-side `error handling`;<br>
 
 - renamed the only mode currently available to `Classic` mode in prevision of new future game modes;<br>
 
-- more `backgrounds` added for both PC and mobile resolutions, implemented a `background randomizer`;<br>
+- added more `backgrounds` for both PC and mobile resolutions, implemented a `background randomizer`;<br>
 
 - changed the CSS, EJS views, static .webp assets and client's code.
 
@@ -78,9 +78,9 @@ Several minor updates have been implemented:<br>
 
 A new minor update has been implemented:<br>
 
-- reworked the `user interface` style;<br>
+- restyled the `user interface`;<br>
 
-- the handling of `authentication` on client-side has been separated and modularized.
+- modularized the handling of `authentication` on client-side.
 
 <br>
 
@@ -90,7 +90,7 @@ A new minor update has been implemented:<br>
 
 - added new mode `Sentry Duty`, based on the mini-game of Pokémon Mystery Dungeon 2;
 
-- added new logo image and new GameBoy-like pokémon font.
+- added new logo image and new `GameBoy-like pokémon font`.
 
 <br>
 
@@ -104,7 +104,7 @@ A new minor update has been implemented:<br>
 
 - restyled the `Sentry Duty` mode view;
 
-- reworked visuals of the old `guess button`, from now it is referred to as the `ball button`;
+- restyled the old `guess button`, from now on it is referred to as the `ball button`;
 
 - added a few new game-like animations to the `ball button`;
 
