@@ -68,7 +68,7 @@ A new minor update has been implemented:<br>
 
 - improved server-side `error handling`;<br>
 
-- renamed the only mode currently available to `Classic` mode in prevision of new future game modes;<br>
+- renamed the only mode currently available to `Classic` in prevision of new future modes;<br>
 
 - added more `backgrounds` for both PC and mobile resolutions;<br>
 
