@@ -108,9 +108,7 @@ A new minor update has been implemented:<br>
 
 - added a few new game-like animations to the `ball button`;
 
-- added `daily-consecutive win-streaks` for logged-in players with incremental upgrades to the `ball tier` of the `ball button` (pokeball -> great ball -> ultra ball -> master ball -> reset);
-
-- each `ball tier` has an increasing chance of capturing a shiny version of the daily pokémon;
+- added `daily-consecutive win-streaks` for logged-in players with incremental upgrades to the `ball tier` of the `ball button` (pokeball -> great ball -> ultra ball -> master ball -> reset). Each `ball tier` has an increasing chance of capturing a shiny version of the daily pokémon;
 
 - added `PokéShop`, in which you can spend `PokéDollars`, earned by playing `Classic` mode, to buy some customization items (`backgrounds`, `overlays` and `companions`) for your own `profile` page;
 
