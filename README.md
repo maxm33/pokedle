@@ -45,12 +45,10 @@ Visit Pokédle [here](https://pokedle.onrender.com/) and have fun guessing 'em a
 
 A new minor update has been implemented:<br>
 
-- granted the admin privileges to server-side for Firestore Cloud Storage access through the `Firebase Admin SDK` module,
+- granted the admin privileges to server-side for `Firestore Cloud Storage` access through the `Firebase Admin SDK` module,
   allowing a strong, simple and secure implementation of the `Firebase Security Rules`;<br>
 
-- moved `possibly-sensible data` to the hosting site using environment variables and secret files;<br>
-
-- changed the CSS, EJS views and client's code to adapt to server-side changes.
+- moved `possibly-sensible data` to the hosting site using environment variables and secret files.
 
 <br>
 
@@ -62,15 +60,13 @@ Several minor updates have been implemented:<br>
 
 - implemented the server-side verification of `Firebase ID Tokens` (based on JWT) for sensible requests, enhancing the security;<br>
 
-- improved `data consistency` both on client and server, improved the `rendering` of guesses;<br>
+- improved `data consistency` both on client-side and server-side, improved the `rendering` of guesses;<br>
 
 - restructured the `API endpoints` to create a more intuitive hierarchical order, improved server-side `error handling`;<br>
 
 - renamed the only mode currently available to `Classic` mode in prevision of new future game modes;<br>
 
-- added more `backgrounds` for both PC and mobile resolutions, implemented a `background randomizer`;<br>
-
-- changed the CSS, EJS views, static .webp assets and client's code.
+- added more `backgrounds` for both PC and mobile resolutions, implemented a `background randomizer`.
 
 <br>
 
