@@ -45,8 +45,7 @@ Visit Pokédle [here](https://pokedle.onrender.com/) and have fun guessing 'em a
 
 A new minor update has been implemented:<br>
 
-- granted the admin privileges to server-side for `Firestore Cloud Storage` access through the `Firebase Admin SDK` module,
-  allowing a strong, simple and secure implementation of the `Firebase Security Rules`;<br>
+- granted the admin privileges to server-side for `Firestore Cloud Storage` access through the `Firebase Admin SDK` module, allowing a simple and secure implementation of the `Firebase Security Rules`;<br>
 
 - moved `possibly-sensible data` to the hosting site using environment variables and secret files.
 
@@ -58,7 +57,7 @@ A new update has been implemented:<br>
 
 - added `2nd, 3rd, 4th and 5th generation of pokémons`;<br>
 
-- implemented the server-side verification of `Firebase ID Tokens` (based on JWT) for sensible requests, enhancing the security;<br>
+- implemented the server-side verification of `Firebase ID Tokens` for sensible requests, enhancing the security;<br>
 
 - improved `data consistency` both on client-side and server-side;<br>
 
@@ -68,11 +67,11 @@ A new update has been implemented:<br>
 
 - improved server-side `error handling`;<br>
 
-- renamed the only mode currently available to `Classic` in prevision of new future modes;<br>
+- implemented a `background randomizer`;<br>
 
 - added more `backgrounds` for both PC and mobile resolutions;<br>
 
-- implemented a `background randomizer`.
+- renamed the only mode currently available to `Classic` in prevision of new future modes.
 
 <br>
 
@@ -92,7 +91,9 @@ A new minor update has been implemented:<br>
 
 - added new mode `Sentry Duty`, based on the mini-game of Pokémon Mystery Dungeon 2;
 
-- added new logo image and new `GameBoy-like pokémon font`.
+- added new `logo` image;<br>
+
+- added new `GameBoy-like pokémon font`.
 
 <br>
 
