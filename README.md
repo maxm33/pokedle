@@ -1,6 +1,6 @@
 # Pokédle
 
-In the project's early stages, this was a web application for Web Application Development course. Sometimes, I do extend it as ideas come to the mind and free time is available.
+When the project was still in its early-stages, it was meant to be just a simple web application for Web Application Development course. Sometimes, I do extend it and make it a more complex experience, whenever ideas come to the mind and free time is available.
 
 <br>
 
