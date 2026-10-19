@@ -54,19 +54,25 @@ A new minor update has been implemented:<br>
 
 ## V1.5.6
 
-Several minor updates have been implemented:<br>
+A new minor update has been implemented:<br>
 
 - added `2nd, 3rd, 4th and 5th generation of pokémons`;<br>
 
 - implemented the server-side verification of `Firebase ID Tokens` (based on JWT) for sensible requests, enhancing the security;<br>
 
-- improved `data consistency` both on client-side and server-side, improved the `rendering` of guesses;<br>
+- improved `data consistency` both on client-side and server-side;<br>
 
-- restructured the `API endpoints` to create a more intuitive hierarchical order, improved server-side `error handling`;<br>
+- improved the `rendering` of guesses;<br>
+
+- restructured the `API endpoints` to create a more intuitive hierarchical order;<br>
+
+- improved server-side `error handling`;<br>
 
 - renamed the only mode currently available to `Classic` mode in prevision of new future game modes;<br>
 
-- added more `backgrounds` for both PC and mobile resolutions, implemented a `background randomizer`.
+- added more `backgrounds` for both PC and mobile resolutions;<br>
+
+- implemented a `background randomizer`.
 
 <br>
 
