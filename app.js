@@ -38,6 +38,8 @@ let classicGameID; // to store uuid of current game
 let classicPreviousPokemon; // to store the previous generated pokemon
 let classicCurrentPokemon; // to store the current generated pokemon
 let classicEventActive = false;
+let classicDoubleEarningsEventActive = false;
+let shopDiscounts = {};
 
 // --- SENTRY DUTY MODE VARIABLES ---
 let sentryChallenges = {}; // store active sentry duty challenges
@@ -52,40 +54,48 @@ const rankingCacheTtlMs = 1 * 60 * 60 * 1000;
 const classicRankingCache = { data: null, expiresAt: 0, pending: null };
 const sentryRankingCache = { data: null, expiresAt: 0, pending: null };
 const shopBackgrounds = require("./data/shopBackgrounds.json");
-const legacyShopBackgrounds = [
+const shopOverlays = require("./data/shopOverlays.json");
+const companionDirectory = "./public/images/gifs";
+const overlayItems = shopOverlays.map((overlay) => ({
+  ...overlay,
+  type: "overlay",
+}));
+const companionItems = fs
+  .readdirSync(companionDirectory)
+  .filter((file) => file.toLowerCase().endsWith(".gif"))
+  .sort((a, b) => a.localeCompare(b))
+  .map((file) => ({
+    id: `companion-${file.slice(0, -4).toLowerCase()}`,
+    name: file
+      .slice(0, -4)
+      .replace(/[-_]/g, " ")
+      .replace(/\b\w/g, (letter) => letter.toUpperCase()),
+    imageUrl: `/public/images/gifs/${encodeURIComponent(file)}`,
+    type: "companion",
+    price: 2400,
+  }));
+const boostItems = [
   {
-    id: "background-1",
-    name: "Hoenn Legends",
-    price: 1200,
-    purchasable: false,
-    desktopUrl: "/public/images/backgrounds_desktop/1.webp",
-    mobileUrl: "/public/images/backgrounds_mobile/1.webp",
+    id: "boost-master-ball",
+    name: "Master Ball Upgrade",
+    type: "boost",
+    price: 2500,
+    imageUrl: "/public/images/shop/boosts/masterball.webp",
+    description: "Upgrades to Master Ball tier for the next catch.",
   },
   {
-    id: "background-2",
-    name: "Mega Evolution",
-    price: 2200,
-    purchasable: false,
-    desktopUrl: "/public/images/backgrounds_desktop/2.webp",
-    mobileUrl: "/public/images/backgrounds_mobile/2.webp",
-  },
-  {
-    id: "background-3",
-    name: "Psychic Showdown",
-    price: 3500,
-    purchasable: false,
-    desktopUrl: "/public/images/backgrounds_desktop/3.webp",
-    mobileUrl: "/public/images/backgrounds_mobile/3.webp",
-  },
-  {
-    id: "background-4",
-    name: "Sinnoh Legends",
-    price: 5000,
-    purchasable: false,
-    desktopUrl: "/public/images/backgrounds_desktop/4.webp",
-    mobileUrl: "/public/images/backgrounds_mobile/4.webp",
+    id: "boost-double-earnings",
+    name: "2x Earnings (7 Days)",
+    type: "boost",
+    price: 3000,
+    imageUrl: "/public/images/shop/boosts/2x_multiplier.webp",
+    description: "Doubles Pokédollars earned for the next 7 days.",
   },
 ];
+const collectibleCatalog = {
+  overlay: overlayItems,
+  companion: companionItems,
+};
 
 // Background images per device type
 let bg_desktop_option; // to store current background option for rendering desktop views
@@ -261,7 +271,7 @@ const firestoreReadLimiter = rateLimit({
   }),
 });
 const shopLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
+  windowMs: 60 * 1000,
   limit: 20,
   message: { error: "Too many shop requests. Please try again later." },
   handler: handleRateLimit,
@@ -347,6 +357,20 @@ app.use(
     },
   }),
 );
+
+app.get("/data/shopBackgrounds.json", (_, res, next) => {
+  applyAssetCacheHeaders(res, 24 * 3600);
+  res.sendFile(require.resolve("./data/shopBackgrounds.json"), (err) => {
+    if (err) next(err);
+  });
+});
+
+app.get("/data/shopOverlays.json", (_, res, next) => {
+  applyAssetCacheHeaders(res, 24 * 3600);
+  res.sendFile(require.resolve("./data/shopOverlays.json"), (err) => {
+    if (err) next(err);
+  });
+});
 
 app.get("/app/version", (_, res) => {
   res.status(200);
@@ -499,7 +523,43 @@ app.get("/classic/state", (_, res) => {
       ? null
       : { ID: classicPreviousPokemon.ID, name: classicPreviousPokemon.name },
     classicEventActive,
+    classicDoubleEarningsEventActive,
   ]);
+});
+
+app.get("/classic/today", async (req, res, next) => {
+  try {
+    const token = req.get("authorization")?.match(/^Bearer\s+(.+)$/i)?.[1];
+    let authenticatedUid = null;
+
+    if (token) {
+      try {
+        authenticatedUid = (await auth.verifyIdToken(token)).uid;
+      } catch (_) {}
+    }
+
+    const guestId =
+      typeof req.query.guestId === "string" ? req.query.guestId : null;
+    const playerId = authenticatedUid
+      ? `user:${authenticatedUid}`
+      : guestId
+        ? `guest:${guestId}`
+        : null;
+
+    // If the requesting player has won today, reveal the Pokémon
+    if (
+      playerId &&
+      classicWinners.includes(playerId) &&
+      classicCurrentPokemon
+    ) {
+      res.status(200).send({ pokemon: classicCurrentPokemon.name });
+    } else {
+      res.status(403).send({ error: "User has not won today's game" });
+    }
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
 });
 
 app.get("/classic/ball", firestoreReadLimiter, async (req, res, next) => {
@@ -844,6 +904,10 @@ app.put("/user/:gid", authLimiter, async (req, res, next) => {
         pokedollars: 0,
         ownedBackgrounds: [],
         equippedBackground: null,
+        ownedOverlays: [],
+        equippedOverlay: null,
+        ownedCompanions: [],
+        equippedCompanion: null,
         sentryBestScore: 0,
         sentrySessionsCompleted: 0,
         sentryFailures: 0,
@@ -910,16 +974,28 @@ app.get("/user/:gid/profile", firestoreReadLimiter, async (req, res, next) => {
           sessions > 0
             ? Math.round(((sessions - failures) / sessions) * 1000) / 10
             : 0;
+        const hasCustomBackground = Boolean(
+          getShopBackground(user.equippedBackground),
+        );
         res.render("profile", {
           profileId: req.params.gid,
-          username: user.username,
-          classicWins: user.classicWins,
-          classicAvgTries: Math.round(user.classicAvgTries * 100) / 100,
+          username: user.username || "???",
+          classicWins: Number(user.classicWins) || 0,
+          classicAvgTries: Number(user.classicAvgTries)
+            ? Math.round(user.classicAvgTries * 100) / 100
+            : 0,
           sentryBestScore: user.sentryBestScore || 0,
           sentrySessionsCompleted: sessions,
           sentryAccuracy: accuracy,
           sentryBestSession: user.sentryBestSession || 0,
+          hasCustomBackground,
           bg: profileBgPathSelector(user.equippedBackground, req.device.type),
+          defaultBg: bgPathSelector(req.device.type),
+          overlay:
+            getCollectible("overlay", user.equippedOverlay)?.imageUrl || null,
+          companion:
+            getCollectible("companion", user.equippedCompanion)?.imageUrl ||
+            null,
         });
       }
     })
@@ -930,9 +1006,27 @@ app.get("/user/:gid/profile", firestoreReadLimiter, async (req, res, next) => {
 });
 
 app.get("/shop", (req, res) => {
+  const discountedItems = [
+    ...shopBackgrounds.map((item) => ({ ...item, type: "background" })),
+    ...overlayItems,
+    ...companionItems,
+    ...boostItems,
+  ].map((item) => {
+    const discount = shopDiscounts[item.id];
+    if (discount) {
+      return {
+        ...item,
+        originalPrice: item.price,
+        price: Math.round(item.price * (1 - discount / 100)),
+        discountPercent: discount,
+      };
+    }
+    return item;
+  });
+
   res.render("shop", {
     bg: bgPathSelector(req.device.type),
-    shopItems: [...shopBackgrounds, ...legacyShopBackgrounds],
+    shopItems: discountedItems,
   });
 });
 
@@ -944,6 +1038,25 @@ app.get("/shop/state", firestoreReadLimiter, async (req, res, next) => {
     const doc = await firestore.collection("users").doc(decodedToken.uid).get();
     const user = doc.data();
     if (!user) return res.status(404).send({ error: "User not found" });
+
+    const now = Date.now();
+    const currentDate = classicGetCurrentDate();
+    const tomorrow = new Date(now + 24 * 60 * 60 * 1000);
+    const { year, month, day } = classicGetDateTimeParts(tomorrow);
+    const tomorrowDate = `${String(day).padStart(2, "0")}-${String(
+      month,
+    ).padStart(2, "0")}-${year}`;
+
+    const masterBallBoostActive =
+      user.masterBallBoostDate === currentDate ||
+      user.masterBallBoostDate === tomorrowDate;
+
+    const doubleEarningsUntilDate = user.doubleEarningsUntilDate || null;
+    const remainingDays = doubleEarningsUntilDate
+      ? classicGetDaysBetween(currentDate, doubleEarningsUntilDate)
+      : null;
+    const doubleEarningsActive = remainingDays !== null && remainingDays >= 0;
+
     res.set("Cache-Control", "no-store");
     res.status(200).send({
       pokedollars:
@@ -953,6 +1066,15 @@ app.get("/shop/state", firestoreReadLimiter, async (req, res, next) => {
       ownedBackgrounds: getOwnedShopBackgrounds(user),
       equippedBackground:
         getShopBackground(user.equippedBackground)?.id || null,
+      ownedOverlays: getOwnedCollectibles(user, "overlay"),
+      equippedOverlay:
+        getCollectible("overlay", user.equippedOverlay)?.id || null,
+      ownedCompanions: getOwnedCollectibles(user, "companion"),
+      equippedCompanion:
+        getCollectible("companion", user.equippedCompanion)?.id || null,
+      masterBallBoostActive,
+      doubleEarningsUntilDate,
+      doubleEarningsRemainingDays: doubleEarningsActive ? remainingDays + 1 : 0,
     });
   } catch (err) {
     console.error(err);
@@ -967,6 +1089,11 @@ app.post("/shop/purchase", shopLimiter, async (req, res, next) => {
   const background = getShopBackground(req.body?.backgroundId);
   if (!background || background.purchasable === false)
     return res.status(400).send({ error: "Unknown background" });
+
+  const discount = shopDiscounts[background.id];
+  const actualPrice = discount
+    ? Math.round(background.price * (1 - discount / 100))
+    : background.price;
 
   try {
     const userRef = firestore.collection("users").doc(decodedToken.uid);
@@ -983,15 +1110,15 @@ app.post("/shop/purchase", shopLimiter, async (req, res, next) => {
         Number.isSafeInteger(user.pokedollars) && user.pokedollars >= 0
           ? user.pokedollars
           : 0;
-      if (pokedollars < background.price)
+      if (pokedollars < actualPrice)
         return { error: "Not enough Pokédollars", status: 400 };
 
       ownedBackgrounds.push(background.id);
       transaction.update(userRef, {
-        pokedollars: pokedollars - background.price,
+        pokedollars: pokedollars - actualPrice,
         ownedBackgrounds,
       });
-      return { pokedollars: pokedollars - background.price, ownedBackgrounds };
+      return { pokedollars: pokedollars - actualPrice, ownedBackgrounds };
     });
 
     if (result.error)
@@ -1040,6 +1167,185 @@ app.patch("/shop/equipped-background", shopLimiter, async (req, res, next) => {
   }
 });
 
+app.post("/shop/collectibles/purchase", shopLimiter, async (req, res, next) => {
+  const decodedToken = await verifyShopUserToken(req, res);
+  if (!decodedToken) return;
+
+  const { type, itemId } = req.body || {};
+  const item = getCollectible(type, itemId);
+  if (!item) return res.status(400).send({ error: "Unknown shop item" });
+
+  const discount = shopDiscounts[item.id];
+  const actualPrice = discount
+    ? Math.round(item.price * (1 - discount / 100))
+    : item.price;
+
+  try {
+    const userRef = firestore.collection("users").doc(decodedToken.uid);
+    const result = await firestore.runTransaction(async (transaction) => {
+      const doc = await transaction.get(userRef);
+      const user = doc.data();
+      if (!user) return { error: "User not found", status: 404 };
+
+      const ownedItems = getOwnedCollectibles(user, type);
+      if (ownedItems.includes(item.id))
+        return { error: "You already own this item", status: 409 };
+
+      const pokedollars =
+        Number.isSafeInteger(user.pokedollars) && user.pokedollars >= 0
+          ? user.pokedollars
+          : 0;
+      if (pokedollars < actualPrice)
+        return { error: "Not enough Pokédollars", status: 400 };
+
+      ownedItems.push(item.id);
+      transaction.update(userRef, {
+        pokedollars: pokedollars - actualPrice,
+        [getOwnedCollectiblesField(type)]: ownedItems,
+      });
+      return { pokedollars: pokedollars - actualPrice, ownedItems };
+    });
+
+    if (result.error)
+      return res.status(result.status).send({ error: result.error });
+    res.status(200).send(result);
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
+});
+
+app.post("/shop/boost/purchase", shopLimiter, async (req, res, next) => {
+  const decodedToken = await verifyShopUserToken(req, res);
+  if (!decodedToken) return;
+
+  const { itemId } = req.body || {};
+  const boost = boostItems.find((b) => b.id === itemId);
+  if (!boost) return res.status(400).send({ error: "Unknown boost item" });
+
+  const discount = shopDiscounts[boost.id];
+  const actualPrice = discount
+    ? Math.round(boost.price * (1 - discount / 100))
+    : boost.price;
+
+  try {
+    const userRef = firestore.collection("users").doc(decodedToken.uid);
+    const result = await firestore.runTransaction(async (transaction) => {
+      const doc = await transaction.get(userRef);
+      const user = doc.data();
+      if (!user) return { error: "User not found", status: 404 };
+
+      const pokedollars =
+        Number.isSafeInteger(user.pokedollars) && user.pokedollars >= 0
+          ? user.pokedollars
+          : 0;
+
+      if (pokedollars < actualPrice)
+        return { error: "Not enough Pokédollars", status: 400 };
+
+      const updates = {
+        pokedollars: pokedollars - actualPrice,
+      };
+
+      const now = Date.now();
+      const currentDate = classicGetCurrentDate();
+      const alreadyWonToday = user.classicLastWinDate === currentDate;
+
+      if (boost.id === "boost-master-ball") {
+        if (alreadyWonToday) {
+          const tomorrow = new Date(now + 24 * 60 * 60 * 1000);
+          const { year, month, day } = classicGetDateTimeParts(tomorrow);
+          updates.masterBallBoostDate = `${String(day).padStart(
+            2,
+            "0",
+          )}-${String(month).padStart(2, "0")}-${year}`;
+        } else {
+          updates.masterBallBoostDate = currentDate;
+        }
+      } else if (boost.id === "boost-double-earnings") {
+        const currentDate = classicGetCurrentDate();
+        const currentUntil = user.doubleEarningsUntilDate;
+        let baseDate = currentDate;
+
+        if (typeof currentUntil === "string") {
+          const daysRemaining = classicGetDaysBetween(
+            currentDate,
+            currentUntil,
+          );
+          if (daysRemaining !== null && daysRemaining > 0) {
+            baseDate = currentUntil;
+          }
+        }
+
+        const [day, month, year] = baseDate.split("-").map(Number);
+        const targetUtc = Date.UTC(year, month - 1, day + 7);
+        const targetDateObj = new Date(targetUtc);
+        const {
+          year: y,
+          month: m,
+          day: d,
+        } = classicGetDateTimeParts(targetDateObj);
+
+        updates.doubleEarningsUntilDate = `${String(d).padStart(2, "0")}-${String(m).padStart(2, "0")}-${y}`;
+      }
+
+      transaction.update(userRef, updates);
+      return { pokedollars: updates.pokedollars, updates };
+    });
+
+    if (result.error)
+      return res.status(result.status).send({ error: result.error });
+    res.status(200).send(result);
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
+});
+
+app.patch(
+  "/shop/collectibles/equipped",
+  shopLimiter,
+  async (req, res, next) => {
+    const decodedToken = await verifyShopUserToken(req, res);
+    if (!decodedToken) return;
+
+    const { type, itemId } = req.body || {};
+    if (
+      !Object.prototype.hasOwnProperty.call(collectibleCatalog, type) ||
+      (itemId !== null &&
+        (typeof itemId !== "string" || !getCollectible(type, itemId)))
+    )
+      return res.status(400).send({ error: "Unknown shop item" });
+
+    try {
+      const userRef = firestore.collection("users").doc(decodedToken.uid);
+      const result = await firestore.runTransaction(async (transaction) => {
+        const doc = await transaction.get(userRef);
+        const user = doc.data();
+        if (!user) return { error: "User not found", status: 404 };
+
+        if (
+          itemId !== null &&
+          !getOwnedCollectibles(user, type).includes(itemId)
+        )
+          return { error: "You do not own this item", status: 403 };
+
+        transaction.update(userRef, {
+          [getEquippedCollectibleField(type)]: itemId,
+        });
+        return { itemId };
+      });
+
+      if (result.error)
+        return res.status(result.status).send({ error: result.error });
+      res.status(200).send(result);
+    } catch (err) {
+      console.error(err);
+      next(createError(500));
+    }
+  },
+);
+
 // render requested user's pokedex page
 app.get("/user/:gid/pokedex", firestoreReadLimiter, async (req, res, next) => {
   firestore
@@ -1050,10 +1356,29 @@ app.get("/user/:gid/pokedex", firestoreReadLimiter, async (req, res, next) => {
       let user = doc.data();
       if (user == undefined) next(createError(404, "User does not exist"));
       else {
+        const currentDate = classicGetCurrentDate();
+        const currentPokemonName = classicCurrentPokemon
+          ? classicCurrentPokemon.name
+          : null;
+
+        let history = Array.isArray(user.classicHistory)
+          ? user.classicHistory
+          : [];
+        history = history.map((entry) => {
+          // If the entry is today's active game, hide its identity
+          if (
+            entry.date === currentDate &&
+            entry.pokemon === currentPokemonName
+          ) {
+            return { ...entry, pokemon: "SECRET_TODAY" };
+          }
+          return entry;
+        });
+
         res.status(200);
         res.render("pokedex", {
-          username: user.username,
-          history: user.classicHistory,
+          username: user.username || "???",
+          history: history,
           bg: bgPathSelector(req.device.type),
         });
       }
@@ -1085,6 +1410,8 @@ async function classicGeneratePokemon() {
     (pokemonName) => pokemonName !== previousPokemon.name,
   );
   const useEventPool = eligibleEventPokemon.length > 0 && Math.random() < 0.1;
+  const useDoubleEarnings = Math.random() < 0.2;
+
   let nextPokemon;
   if (useEventPool) {
     const pokemonName =
@@ -1126,9 +1453,12 @@ async function classicGeneratePokemon() {
   classicWinners = [];
   classicPlayerStates.clear();
   classicEventActive = useEventPool;
+  classicDoubleEarningsEventActive = useDoubleEarnings;
   bg_desktop_option = nextDesktopBackground;
   bg_mobile_option = nextMobileBackground;
-  console.log("#DEV Solution: " + classicCurrentPokemon.name);
+
+  generateShopDiscounts();
+
   scheduleClassicGeneration();
 }
 
@@ -1342,6 +1672,10 @@ function classicShouldResetStreak(user, currentDate) {
 function classicGetActiveBall(user, currentDate = classicGetCurrentDate()) {
   if (!user) return null;
 
+  if (user.masterBallBoostDate === currentDate) {
+    return "master-ball";
+  }
+
   const streak = Number.isInteger(user.classicWinStreak)
     ? user.classicWinStreak
     : 0;
@@ -1406,12 +1740,29 @@ async function updateStatsOnClassicWin(id, pokemon, tries, shinyRoll) {
     user.classicAvgTries =
       (classicWins * classicAvgTries + tries) / (classicWins + 1);
     user.classicWins = classicWins + 1;
-    const pokedollarsEarned = classicGetPokedollarReward(tries);
+    let pokedollarsEarned = classicGetPokedollarReward(tries);
+    const doubleEarningsUntilDate = user.doubleEarningsUntilDate;
+    const remainingDays = doubleEarningsUntilDate
+      ? classicGetDaysBetween(streakDate, doubleEarningsUntilDate)
+      : null;
+    const isDoubleEarningsActive =
+      classicDoubleEarningsEventActive ||
+      (remainingDays !== null && remainingDays >= 0);
+    if (isDoubleEarningsActive) pokedollarsEarned *= 2;
     const currentPokedollars =
       Number.isSafeInteger(user.pokedollars) && user.pokedollars >= 0
         ? user.pokedollars
         : 0;
     user.pokedollars = currentPokedollars + pokedollarsEarned;
+
+    if (
+      user.masterBallBoostDate &&
+      classicGetDaysBetween(streakDate, user.masterBallBoostDate) <= 0
+    )
+      user.masterBallBoostDate = null;
+    if (remainingDays !== null && remainingDays <= 0)
+      user.doubleEarningsUntilDate = null;
+
     if (!Array.isArray(user.classicHistory)) user.classicHistory = [];
     const shiny = shinyRoll < classicGetShinyChance(ball);
     let found = false;
@@ -1470,7 +1821,6 @@ async function generateSentryChallenge(sessionID, session) {
     answer: answer.name,
     options: options,
     startTime: startTime,
-    expiration: startTime + sentryDurationMs,
     sessionID: sessionID,
     processing: false,
   };
@@ -1525,10 +1875,33 @@ const bgPathSelector = (device) =>
     : `/public/images/backgrounds_desktop/${bg_desktop_option}.webp`;
 
 function getShopBackground(backgroundId) {
-  return (
-    shopBackgrounds.find((background) => background.id === backgroundId) ||
-    legacyShopBackgrounds.find((background) => background.id === backgroundId)
-  );
+  return shopBackgrounds.find((background) => background.id === backgroundId);
+}
+
+function getCollectible(type, itemId) {
+  if (
+    typeof type !== "string" ||
+    !Object.prototype.hasOwnProperty.call(collectibleCatalog, type) ||
+    typeof itemId !== "string"
+  )
+    return null;
+  return collectibleCatalog[type]?.find((item) => item.id === itemId) || null;
+}
+
+function getOwnedCollectiblesField(type) {
+  return type === "overlay" ? "ownedOverlays" : "ownedCompanions";
+}
+
+function getEquippedCollectibleField(type) {
+  return type === "overlay" ? "equippedOverlay" : "equippedCompanion";
+}
+
+function getOwnedCollectibles(user, type) {
+  const field = getOwnedCollectiblesField(type);
+  if (!Array.isArray(user[field])) return [];
+  return [
+    ...new Set(user[field].filter((itemId) => getCollectible(type, itemId))),
+  ];
 }
 
 function getOwnedShopBackgrounds(user) {
@@ -1566,5 +1939,21 @@ async function verifyShopUserToken(req, res) {
 const applyAssetCacheHeaders = (res, maxAge) => {
   res.setHeader("Cache-Control", `public, max-age=${maxAge}, must-revalidate`);
 };
+
+function generateShopDiscounts() {
+  shopDiscounts = {};
+  const allItems = [
+    ...shopBackgrounds,
+    ...overlayItems,
+    ...companionItems,
+    ...boostItems,
+  ];
+  for (const item of allItems) {
+    if (item.purchasable !== false && Math.random() < 0.25) {
+      const discountPercent = Math.floor(Math.random() * 31) + 20; // tra 20% e 50%
+      shopDiscounts[item.id] = discountPercent;
+    }
+  }
+}
 
 module.exports = app;

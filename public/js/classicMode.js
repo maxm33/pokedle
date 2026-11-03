@@ -5,10 +5,7 @@ import { animateFadeIn, auth } from "./auth.js";
 
 // request for browser notifications
 if ("Notification" in window)
-  Notification.requestPermission((permission) => {
-    if (permission != "granted") console.log("Notifications: no permission");
-    else console.log("Notifications: enabled");
-  });
+  Notification.requestPermission();
 
 // get all important HTML elements to manage
 let timer = document.getElementById("timer");
@@ -21,6 +18,9 @@ let containertitles = document.getElementById("titles-container");
 let stateLoading = document.getElementById("state-loading");
 let stateLoadingMessage = document.getElementById("state-loading-message");
 let eventNotification = document.getElementById("event-notification");
+let eventNotificationDouble = document.getElementById(
+  "event-notification-double",
+);
 let guessBallScene = document.querySelector(".guess-pokeball-scene");
 const guessBallVariants = ["great-ball", "ultra-ball", "master-ball"];
 
@@ -46,6 +46,7 @@ axios
   .then((res) => {
     manageGameState(res.data[0], res.data[1], res.data[2]);
     eventNotification.hidden = !res.data[3];
+    if (eventNotificationDouble) eventNotificationDouble.hidden = !res.data[4];
     stateLoading.hidden = true;
   })
   .catch((err) => {
@@ -301,7 +302,10 @@ function manageGameState(id, remainingTime) {
 
 function onVictory(tries, pokemon, shiny, pokedollarsEarned) {
   let pokemonDisplayName = getPokemonDisplayName(pokemon.name);
-  let spriteName = shiny ? `${pokemon.name}_shiny` : pokemon.name;
+  let gifName = encodeURIComponent(pokemon.name.toLowerCase());
+  let victoryImageUrl = shiny
+    ? `/public/images/sprites/${encodeURIComponent(`${pokemon.name}_shiny`)}.webp`
+    : `/public/images/gifs/${gifName}.gif`;
   let victoryText = shiny
     ? `It was a shiny ${pokemonDisplayName} indeed!`
     : `It was ${pokemonDisplayName} indeed!`;
@@ -318,7 +322,40 @@ function onVictory(tries, pokemon, shiny, pokedollarsEarned) {
     let ad = document.createElement("DIV");
     ad.setAttribute("id", "victory-ad-container");
     subtitle.insertAdjacentElement("afterend", ad);
-    ad.innerHTML = `<div id="victory-text1"><b>GG!</b></div><div id="victory-text2"><b>${victoryText}</b></div><div><img alt="${pokemonDisplayName}${shiny ? " (Shiny)" : ""}" style="animation: fadeIn 500ms" src='/public/images/sprites/${spriteName}.webp' width='180px' height='180px'></div><div id="victory-text3"><b>You guessed it in ${tries} tries...</b></div><div id="victory-text5"><b>${pokedollarsText}</b></div><div id="victory-text4"><b>Think you can do better? Let's see!</b></div><a aria-label="Go to Home" href='/'><button id='continue-button'>Continue</button></a>`;
+    const appendVictoryText = (id, text) => {
+      const container = document.createElement("div");
+      container.id = id;
+      const boldText = document.createElement("b");
+      boldText.textContent = text;
+      container.appendChild(boldText);
+      ad.appendChild(container);
+    };
+
+    appendVictoryText("victory-text1", "GG!");
+    appendVictoryText("victory-text2", victoryText);
+
+    const imageContainer = document.createElement("div");
+    const image = document.createElement("img");
+    image.alt = `${pokemonDisplayName}${shiny ? " (Shiny)" : ""}`;
+    image.style.animation = "fadeIn 500ms";
+    image.src = victoryImageUrl;
+    image.width = 180;
+    image.height = 180;
+    imageContainer.appendChild(image);
+    ad.appendChild(imageContainer);
+
+    appendVictoryText("victory-text3", `You guessed it in ${tries} tries...`);
+    appendVictoryText("victory-text5", pokedollarsText);
+    appendVictoryText("victory-text4", "Think you can do better? Let's see!");
+
+    const homeLink = document.createElement("a");
+    homeLink.setAttribute("aria-label", "Go to Home");
+    homeLink.href = "/";
+    const continueButton = document.createElement("button");
+    continueButton.id = "continue-button";
+    continueButton.textContent = "Continue";
+    homeLink.appendChild(continueButton);
+    ad.appendChild(homeLink);
   }, 1000);
 }
 
@@ -343,12 +380,25 @@ function initializeAutocomplete(element, array) {
       let displayRest = displayName.substr(val.length);
       let option = document.createElement("DIV");
       option.className = "list-options";
-      option.innerHTML = `
-        <img alt="" src="/public/images/sprites/${originalName}.webp"
-             width="70px" height="70px">
-        <strong style="color: #8cff66;">${displayMatch}</strong>${displayRest}
-        <input type="hidden" value="${originalName}">
-      `;
+      const image = document.createElement("img");
+      image.alt = "";
+      image.src = `/public/images/sprites/${encodeURIComponent(
+        originalName,
+      )}.webp`;
+      image.width = 70;
+      image.height = 70;
+      option.appendChild(image);
+
+      const match = document.createElement("strong");
+      match.style.color = "#8cff66";
+      match.textContent = displayMatch;
+      option.appendChild(match);
+      option.appendChild(document.createTextNode(displayRest));
+
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.value = originalName;
+      option.appendChild(input);
       option.addEventListener("click", async function () {
         element.value = originalName;
         closeList();

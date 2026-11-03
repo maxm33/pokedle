@@ -51,7 +51,15 @@ export class classicAppState {
     let menucontainer = document.getElementById("answers-container");
     let menuoption = document.createElement("DIV");
     menuoption.setAttribute("class", "answers");
-    menuoption.innerHTML = `<img alt="" aria-label="${pokemon.name}" src='/public/images/sprites/${pokemon.name}.webp' width="100px" height="100px">`;
+    const pokemonImage = document.createElement("img");
+    pokemonImage.alt = "";
+    pokemonImage.setAttribute("aria-label", pokemon.name);
+    pokemonImage.src = `/public/images/sprites/${encodeURIComponent(
+      pokemon.name,
+    )}.webp`;
+    pokemonImage.width = 100;
+    pokemonImage.height = 100;
+    menuoption.appendChild(pokemonImage);
     const getColorHex = (color) =>
       Array.isArray(color)
         ? color[1]
@@ -61,37 +69,56 @@ export class classicAppState {
     for (let property in response) {
       let card = document.createElement("DIV");
       card.setAttribute("class", response[property]);
+      let text;
       switch (property) {
-        case "habitat":
-          card.innerHTML = `<img alt="" aria-label="${pokemon[property]}" class="habitat" src="/public/images/classic/habitats/${pokemon[property]}.webp"/>`;
+        case "habitat": {
+          const habitatImage = document.createElement("img");
+          habitatImage.alt = "";
+          habitatImage.setAttribute("aria-label", pokemon[property]);
+          habitatImage.className = "habitat";
+          habitatImage.src = `/public/images/classic/habitats/${encodeURIComponent(
+            pokemon[property],
+          )}.webp`;
+          card.appendChild(habitatImage);
           break;
-        case "colors":
+        }
+        case "colors": {
           let colors = pokemon[property];
-          card.innerHTML =
-            colors[1] == null
-              ? `<div class="color-square" style="background-color: ${getColorHex(
-                  colors[0],
-                )}"></div>`
-              : `<div class="color-square" style="background-color: ${getColorHex(
-                  colors[0],
-                )}"></div><div class="color-square" style="background-color: ${getColorHex(
-                  colors[1],
-                )}"></div>`;
+          const colorCount = colors[1] == null ? 1 : 2;
+          for (let i = 0; i < colorCount; i++) {
+            const square = document.createElement("div");
+            square.className = "color-square";
+            square.style.backgroundColor = getColorHex(colors[i]);
+            card.appendChild(square);
+          }
           break;
-        case "types":
+        }
+        case "types": {
           let types = pokemon[property];
-          card.innerHTML =
-            types[1] == null
-              ? `<img alt="" aria-label="${types[0]}" class="types" src="/public/images/classic/types/${types[0]}.webp"/>`
-              : `<img alt="" aria-label="${types[0]}" class="types" src="/public/images/classic/types/${types[0]}.webp"/><img alt="" aria-label="${types[1]}" class="types" src="/public/images/classic/types/${types[1]}.webp"/>`;
+          const typeCount = types[1] == null ? 1 : 2;
+          for (let i = 0; i < typeCount; i++) {
+            const typeImage = document.createElement("img");
+            typeImage.alt = "";
+            typeImage.setAttribute("aria-label", types[i]);
+            typeImage.className = "types";
+            typeImage.src = `/public/images/classic/types/${encodeURIComponent(
+              types[i],
+            )}.webp`;
+            card.appendChild(typeImage);
+          }
           break;
+        }
         case "fullyEvolved":
-          card.innerHTML = `<p class="answers-text">${
-            pokemon[property] ? "Yes" : "No"
-          }</p>`;
+          text = pokemon[property] ? "Yes" : "No";
           break;
         default:
-          card.innerHTML = `<p class="answers-text">${pokemon[property]}</p>`;
+          text = pokemon[property];
+      }
+      if (!["habitat", "colors", "types"].includes(property)) {
+        const answerText = document.createElement("p");
+        answerText.className = "answers-text";
+        answerText.textContent = text;
+        card.appendChild(answerText);
       }
       menuoption.appendChild(card);
     }

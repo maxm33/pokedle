@@ -3,16 +3,16 @@ import { auth } from "./auth.js";
 
 const wallet = document.getElementById("shop-wallet");
 const walletLoader = document.getElementById("shop-wallet-loader");
-const status = document.getElementById("shop-status");
 const items = document.getElementById("shop-items");
 const emptyState = document.getElementById("shop-empty-state");
 const inventoryCount = document.getElementById("shop-inventory-count");
-const marketplaceTab = document.getElementById("shop-marketplace-tab");
-const inventoryTab = document.getElementById("shop-inventory-tab");
+const sectionTabs = document.querySelectorAll("[data-shop-section]");
+const searchInput = document.getElementById("shop-search");
+const inventoryButton = document.getElementById("inventory-button");
 let currentUser = null;
 let shopState = null;
 let requestPending = false;
-let activeTab = "marketplace";
+let activeSection = "background";
 
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
@@ -21,65 +21,84 @@ onAuthStateChanged(auth, async (user) => {
   if (!user) {
     setWalletLoading(false);
     wallet.textContent = "0";
-    status.textContent = "";
     renderShop();
     return;
   }
 
-  renderShop();
   await loadShopState(user);
 });
 
-marketplaceTab.addEventListener("click", () => {
-  activeTab = "marketplace";
-  renderShop();
+sectionTabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    activeSection = tab.dataset.shopSection;
+    renderShop();
+  });
 });
 
-inventoryTab.addEventListener("click", () => {
-  activeTab = "inventory";
-  renderShop();
-});
+if (inventoryButton) {
+  inventoryButton.addEventListener("click", () => {
+    activeSection = "inventory";
+    renderShop();
+  });
+}
+
+if (searchInput) {
+  searchInput.addEventListener("input", () => {
+    renderShop();
+  });
+}
 
 items.addEventListener("click", async (event) => {
   const button = event.target.closest("button[data-action]");
   const user = currentUser;
   if (!button || !user || !shopState || requestPending) return;
 
-  const backgroundId = button.dataset.backgroundId;
+  const itemId = button.dataset.itemId;
+  const type = button.dataset.itemType;
   const action = button.dataset.action;
-  if (
-    action === "purchase" &&
-    getPokedollars() < Number(button.dataset.price)
-  )
+  if (action === "purchase" && getPokedollars() < Number(button.dataset.price))
     return;
   requestPending = true;
   renderShop();
-  status.textContent = "";
 
   try {
     const token = await user.getIdToken();
     const headers = { Authorization: `Bearer ${token}` };
-    if (action === "purchase") {
-      await axios.post("/shop/purchase", { backgroundId }, { headers });
-      status.textContent = "Background added to your inventory.";
-    } else {
-      const nextBackground = action === "unequip" ? null : backgroundId;
-      await axios.patch(
-        "/shop/equipped-background",
-        { backgroundId: nextBackground },
+    if (type === "background") {
+      if (action === "purchase") {
+        await axios.post(
+          "/shop/purchase",
+          { backgroundId: itemId },
+          { headers },
+        );
+      } else {
+        const nextBackground = action === "unequip" ? null : itemId;
+        await axios.patch(
+          "/shop/equipped-background",
+          { backgroundId: nextBackground },
+          { headers },
+        );
+      }
+    } else if (type === "boost") {
+      await axios.post("/shop/boost/purchase", { itemId }, { headers });
+    } else if (action === "purchase") {
+      await axios.post(
+        "/shop/collectibles/purchase",
+        { type, itemId },
         { headers },
       );
-      status.textContent = nextBackground
-        ? "Profile background updated."
-        : "Profile background reset.";
+    } else {
+      const nextItem = action === "unequip" ? null : itemId;
+      await axios.patch(
+        "/shop/collectibles/equipped",
+        { type, itemId: nextItem },
+        { headers },
+      );
     }
     await loadShopState(user);
   } catch (error) {
     console.error(error);
     if (currentUser?.uid !== user.uid) return;
-    status.textContent =
-      error.response?.data?.error ||
-      "Unable to update the shop. Please try again.";
   } finally {
     requestPending = false;
     renderShop();
@@ -101,10 +120,7 @@ async function loadShopState(user) {
     if (currentUser?.uid !== user.uid) return;
     shopState = null;
     setWalletLoading(false);
-    wallet.textContent = "Unavailable";
-    status.textContent =
-      error.response?.data?.error ||
-      "Unable to load the shop. Please try again.";
+    wallet.textContent = "???";
   } finally {
     renderShop();
   }
@@ -123,48 +139,159 @@ function setWalletLoading(loading) {
   wallet.parentElement.classList.toggle("is-loading", loading);
 }
 
-function renderShop() {
-  const ownedBackgrounds = shopState?.ownedBackgrounds ?? [];
-  inventoryCount.textContent = String(ownedBackgrounds.length);
-  marketplaceTab.classList.toggle("is-active", activeTab === "marketplace");
-  inventoryTab.classList.toggle("is-active", activeTab === "inventory");
-  marketplaceTab.setAttribute(
-    "aria-pressed",
-    String(activeTab === "marketplace"),
+function getOwnedItems(type) {
+  if (!shopState) return [];
+  return (
+    shopState[
+      type === "background"
+        ? "ownedBackgrounds"
+        : type === "overlay"
+          ? "ownedOverlays"
+          : "ownedCompanions"
+    ] ?? []
   );
-  inventoryTab.setAttribute("aria-pressed", String(activeTab === "inventory"));
+}
 
+function getEquippedItem(type) {
+  return shopState?.[
+    type === "background"
+      ? "equippedBackground"
+      : type === "overlay"
+        ? "equippedOverlay"
+        : "equippedCompanion"
+  ];
+}
+
+function isBoostActive(itemId) {
+  if (!shopState) return false;
+  if (itemId === "boost-master-ball") {
+    return Boolean(shopState.masterBallBoostActive);
+  }
+  if (itemId === "boost-double-earnings") {
+    return (shopState.doubleEarningsRemainingDays || 0) > 0;
+  }
+  return false;
+}
+
+function renderShop() {
+  const activeBoostsCount =
+    (isBoostActive("boost-master-ball") ? 1 : 0) +
+    (isBoostActive("boost-double-earnings") ? 1 : 0);
+  const totalOwned =
+    getOwnedItems("background").length +
+    getOwnedItems("overlay").length +
+    getOwnedItems("companion").length +
+    activeBoostsCount;
+  inventoryCount.textContent = String(totalOwned);
+  if (inventoryButton) {
+    const isInventoryActive = activeSection === "inventory";
+    inventoryButton.classList.toggle("is-active", isInventoryActive);
+    inventoryButton.setAttribute("aria-pressed", String(isInventoryActive));
+  }
+  sectionTabs.forEach((tab) => {
+    const selected = tab.dataset.shopSection === activeSection;
+    tab.classList.toggle("is-active", selected);
+    tab.setAttribute("aria-pressed", String(selected));
+  });
+
+  const searchQuery = searchInput ? searchInput.value.trim().toLowerCase() : "";
   let visibleCount = 0;
   items.querySelectorAll(".shop-item").forEach((item) => {
-    const backgroundId = item.dataset.backgroundId;
+    const itemId = item.dataset.itemId;
+    const type = item.dataset.itemType;
     const button = item.querySelector(".shop-item-action");
-    const owned = ownedBackgrounds.includes(backgroundId);
-    const equipped = shopState?.equippedBackground === backgroundId;
+    const priceDisplay = item.querySelector(".shop-price");
+    const titleElement = item.querySelector("h2");
+    const itemName = titleElement ? titleElement.textContent.toLowerCase() : "";
+    const matchesSearch = itemName.includes(searchQuery);
+
+    if (type === "boost") {
+      const active = isBoostActive(itemId);
+      const visible =
+        (activeSection === "inventory" ? active : activeSection === "boost") &&
+        matchesSearch;
+
+      item.hidden = !visible;
+      if (!visible) return;
+      visibleCount++;
+
+      if (priceDisplay) {
+        priceDisplay.style.display =
+          activeSection === "inventory" ? "none" : "";
+      }
+
+      if (itemId === "boost-double-earnings" && titleElement) {
+        if (activeSection === "inventory") {
+          const daysLeft = shopState.doubleEarningsRemainingDays || 0;
+          titleElement.textContent = `2x Earnings (${daysLeft} ${
+            daysLeft === 1 ? "day" : "days"
+          } left)`;
+        } else {
+          titleElement.textContent = "2x Earnings (7 Days)";
+        }
+      }
+
+      button.dataset.action =
+        activeSection === "inventory" ? "active" : "purchase";
+      button.textContent = active ? "Active" : "Buy";
+
+      const price = Number(button.dataset.price);
+      const cannotAfford =
+        button.dataset.action === "purchase" && getPokedollars() < price;
+
+      button.disabled =
+        !currentUser || !shopState || requestPending || cannotAfford || active;
+      return;
+    }
+
+    const owned = getOwnedItems(type).includes(itemId);
+    const equipped = getEquippedItem(type) === itemId;
     const purchasable = item.dataset.purchasable === "true";
-    const visible = activeTab === "marketplace" ? purchasable && !owned : owned;
+    const visible =
+      (activeSection === "inventory"
+        ? owned
+        : type === activeSection && purchasable && !owned) && matchesSearch;
     item.hidden = !visible;
     if (!visible) return;
     visibleCount++;
 
-    if (owned) {
-      button.dataset.action = equipped ? "unequip" : "equip";
-      button.textContent = equipped
-        ? "Using on profile (Reset)"
-        : "Set as profile background";
-    } else {
-      button.dataset.action = "purchase";
-      button.textContent = `Buy`;
+    if (priceDisplay) {
+      priceDisplay.style.display = activeSection === "inventory" ? "none" : "";
     }
+
+    button.dataset.action = owned
+      ? equipped
+        ? "unequip"
+        : "equip"
+      : "purchase";
+    button.textContent = owned ? (equipped ? "Remove" : "Use") : "Buy";
     const price = Number(button.dataset.price);
     const cannotAfford =
       button.dataset.action === "purchase" && getPokedollars() < price;
-    button.disabled = !currentUser || !shopState || requestPending || cannotAfford;
+    button.disabled =
+      !currentUser || !shopState || requestPending || cannotAfford;
   });
 
+  if (activeSection === "inventory") {
+    const boostElements = Array.from(
+      items.querySelectorAll('.shop-item[data-item-type="boost"]'),
+    );
+    boostElements.reverse().forEach((boostEl) => {
+      if (!boostEl.hidden) {
+        items.prepend(boostEl);
+      }
+    });
+  }
+
   emptyState.hidden = visibleCount > 0;
-  if (visibleCount === 0)
-    emptyState.textContent =
-      activeTab === "marketplace"
-        ? "The marketplace is completely sold out!"
-        : "Your inventory is empty. Go buy some backgrounds!";
+  if (visibleCount === 0) {
+    if (searchQuery) {
+      emptyState.textContent = "No items match your search.";
+    } else {
+      emptyState.textContent =
+        activeSection === "inventory"
+          ? "Your inventory is empty."
+          : `No ${activeSection} items are available.`;
+    }
+  }
 }
