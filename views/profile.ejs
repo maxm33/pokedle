@@ -11,7 +11,11 @@
     <meta name="viewport" content="initial-scale=1, width=device-width" />
     <title>Profile</title>
   </head>
-  <body style="--page-background-image: url(&quot;<%= bg %>&quot;)">
+  <body
+    class="profile-page<%= hasCustomBackground ? ' profile-has-custom-background' : ''%>"
+    style="--page-background-image: url(&quot;<%= bg%>&quot;); --profile-default-background-image: url(&quot;<%= defaultBg%>&quot;); --profile-overlay-image: <%= overlay ? 'url(' + overlay + ')' : 'none'%>"
+    data-rate-limit-toast="<%= typeof rateLimitToast === 'string' ? rateLimitToast : '' %>"
+  >
     <div id="topnav" role="banner">
       <div id="credits">
         <p id="author">
@@ -19,10 +23,19 @@
         </p>
         <img
           alt=""
-          src="/public/images/icons/github-mark.webp"
+          src="/public/images/misc/github-mark.webp"
           width="20px"
           height="20px"
         />
+      </div>
+      <div
+        id="auth-loading"
+        class="auth-loading"
+        role="status"
+        aria-live="polite"
+      >
+        <span class="profile-loader" aria-hidden="true"></span>
+        <span>Checking authentication...</span>
       </div>
       <div id="buttons-container">
         <button id="login-button" class="topnav-buttons">
@@ -30,6 +43,20 @@
             id="login-img"
             alt=""
             src="/public/images/misc/login.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button
+          id="shop-button"
+          class="topnav-buttons"
+          type="button"
+          aria-label="Shop"
+          title="Shop"
+        >
+          <img
+            alt=""
+            src="/public/images/misc/shop.webp"
             width="35px"
             height="35px"
           />
@@ -60,13 +87,83 @@
         </button>
       </div>
     </div>
+    <button
+      id="profile-background-toggle"
+      type="button"
+      aria-label="Show only the profile background"
+      aria-pressed="false"
+      title="Show only the profile background"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path
+          class="profile-eye-open"
+          d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Zm10 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
+        />
+        <path
+          class="profile-eye-slash"
+          d="m3 3 18 18M10.6 5.2A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a15.7 15.7 0 0 1-3.1 3.8M6.2 6.2C3.5 8.1 2 12 2 12s3.6 7 10 7a10.8 10.8 0 0 0 4.1-.8"
+        />
+      </svg>
+    </button>
+    <aside
+      id="profile-presets"
+      class="profile-presets is-collapsed fadeIn"
+      data-profile-id="<%= profileId %>"
+      aria-label="Saved profile configurations"
+      hidden
+    >
+      <div id="profile-presets-panel" class="profile-presets-panel">
+        <h2>Looks</h2>
+        <div class="profile-presets-slots">
+          <% for (let slot = 0; slot < 5; slot++) { %>
+          <div class="profile-preset-slot">
+            <button
+              class="profile-preset-button"
+              type="button"
+              data-slot="<%= slot %>"
+              aria-label="Save configuration in slot <%= slot + 1 %>"
+            >
+              <span class="profile-preset-add" aria-hidden="true">+</span>
+              <img
+                class="profile-preset-companion"
+                alt=""
+                aria-hidden="true"
+                hidden
+              />
+            </button>
+            <button
+              class="profile-preset-delete"
+              type="button"
+              data-slot="<%= slot %>"
+              aria-label="Delete configuration from slot <%= slot + 1 %>"
+              title="Delete saved configuration"
+              hidden
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M4 7h16M9 7V4h6v3m-9 0 1 13h10l1-13M10 11v5m4-5v5" />
+              </svg>
+            </button>
+          </div>
+          <% } %>
+        </div>
+      </div>
+      <button
+        id="profile-presets-toggle"
+        class="profile-presets-toggle"
+        type="button"
+        aria-controls="profile-presets-panel"
+        aria-expanded="false"
+        aria-label="Expand saved configurations"
+        title="Expand saved configurations"
+      ><span aria-hidden="true">‹</span></button>
+    </aside>
     <div id="container" role="main">
       <div id="logo" class="fadeIn">
         <a aria-label="Go to Home" href="/"
           ><img
             fetchpriority="high"
             alt=""
-            src="/public/images/icons/pokedle-logo.webp"
+            src="/public/images/misc/pokedle-logo.webp"
         /></a>
       </div>
       <div id="profile-name-container">
@@ -110,21 +207,34 @@
           <button id="cancel-profile-name-button" type="button">Cancel</button>
         </div>
       </form>
-      <div>
-        <div id="mode-title">Classic</div>
+      <div class="profile-stat-card">
+        <% if (companion) { %>
+        <div class="profile-companion-container">
+          <img
+            class="profile-companion"
+            src="<%= companion %>"
+            alt="<%= username %>'s Pokémon companion"
+          />
+        </div>
+        <% } %>
+        <div id="mode-title">
+          <span class="mode-line">Classic</span>
+        </div>
         <div id="mode-data">
-          Wins: <%= classicWins %><br />
-          Average Tries: <%= classicAvgTries %><br /><br />
+          <span class="mode-line">Wins: <%= classicWins %></span><br />
+          <span class="mode-line">Average Tries: <%= classicAvgTries %></span><br /><br />
           <button id="onprofile-dex-button">View Pokédex</button>
         </div>
       </div>
-      <div>
-        <div style="margin-top: 0.75em" id="mode-title">Sentry Duty</div>
+      <div class="profile-stat-card">
+        <div style="margin-top: 0.75em" id="mode-title">
+          <span class="mode-line">Sentry Duty</span>
+        </div>
         <div id="mode-data">
-          Best Score: <%= sentryBestScore %><br />
-          Longest Session: <%= sentryBestSession %> rounds<br />
-          Footprints Seen: <%= sentrySessionsCompleted %><br />
-          Accuracy: <%= sentryAccuracy %>%<br />
+          <span class="mode-line">Best Score: <%= sentryBestScore %></span><br />
+          <span class="mode-line">Best Session: <%= sentryBestSession %> rounds</span><br />
+          <span class="mode-line">Recognized: <%= sentrySessionsCompleted %></span><br />
+          <span class="mode-line">Accuracy: <%= sentryAccuracy %>%</span><br />
         </div>
       </div>
     </div>
@@ -138,6 +248,24 @@
           let url_cut = url.substring(0, url.length - 8); // removing "/profile"
           window.location.href = url_cut + "/pokedex";
         });
+
+      const backgroundToggle = document.getElementById(
+        "profile-background-toggle",
+      );
+      const eyeOpen = backgroundToggle.querySelector(".profile-eye-open");
+      const eyeSlash = backgroundToggle.querySelector(".profile-eye-slash");
+      backgroundToggle.addEventListener("click", () => {
+        const isActive = document.body.classList.toggle(
+          "profile-background-focus",
+        );
+        const label = isActive
+          ? "Show the full profile"
+          : "Show only the profile background";
+        backgroundToggle.setAttribute("aria-pressed", String(isActive));
+        backgroundToggle.setAttribute("aria-label", label);
+        backgroundToggle.title = label;
+      });
     </script>
+    <script type="module" src="/public/js/profilePresets.js"></script>
   </body>
 </html>

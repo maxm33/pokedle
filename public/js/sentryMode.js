@@ -1,6 +1,5 @@
 import { auth } from "./auth.js";
 
-let timer = document.getElementById("sentry-timer");
 let feedback = document.getElementById("sentry-feedback");
 let optionsContainer = document.getElementById("sentry-options");
 let audio = document.getElementById("sentry-audio");
@@ -9,7 +8,7 @@ let muteButton = document.getElementById("sentry-mute");
 
 let totalScore = 0;
 let sessionFailed = 0;
-let sessionRounds = 0;
+let sentrySessionID = null;
 let currentChallenge = null;
 let countdownInterval = null;
 
@@ -41,12 +40,21 @@ if (muteButton && audio) {
 
 async function loadChallenge(resetSession = false) {
   try {
-    const res = await axios.get("/sentry/state");
+    if (resetSession) sentrySessionID = null;
+    const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
+    const url = sentrySessionID
+      ? `/sentry/state?sessionID=${encodeURIComponent(sentrySessionID)}`
+      : "/sentry/state";
+    const res = await axios.get(url, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
     currentChallenge = res.data;
+    sentrySessionID = currentChallenge.sessionID;
+    totalScore = currentChallenge.totalScore;
+    sessionFailed = currentChallenge.failures;
     if (resetSession) {
       totalScore = 0;
       sessionFailed = 0;
-      sessionRounds = 0;
     }
     renderChallenge();
     startCountdown(currentChallenge.durationMs);
@@ -56,7 +64,9 @@ async function loadChallenge(resetSession = false) {
 }
 
 function renderChallenge() {
-  if (totalScore !== 0) feedback.innerHTML = `Total score: ${totalScore}`;
+  const scoreEl = document.getElementById("sentry-score-count");
+  if (scoreEl) scoreEl.textContent = totalScore;
+  if (feedback) feedback.textContent = "Whose foot is this?";
   const footprintElement = document.getElementById("sentry-footprint");
   const overlay = document.getElementById("sentry-overlay");
   if (overlay) {
@@ -66,9 +76,9 @@ function renderChallenge() {
   if (currentChallenge.footprintUrl) {
     footprintElement.src = currentChallenge.footprintUrl;
   }
-  const failuresEl = document.getElementById("sentry-failures");
-  if (failuresEl) failuresEl.textContent = `Failures: ${sessionFailed}/3`;
-  optionsContainer.innerHTML = "";
+  const failuresEl = document.getElementById("sentry-failures-count");
+  if (failuresEl) failuresEl.textContent = `X: ${sessionFailed}/3`;
+  optionsContainer.textContent = "";
   currentChallenge.options.forEach((option) => {
     let pokemonDisplayName = getPokemonDisplayName(option);
     const button = document.createElement("button");
@@ -76,13 +86,19 @@ function renderChallenge() {
     button.dataset.option = option;
     button.disabled = false;
     button.classList.remove("sentry-correct", "sentry-wrong");
-    const imgSrc = `/public/images/sprites/${option}.webp`;
-    button.innerHTML = `
-      <div class="sentry-option-left">
-        <div class="sentry-name">${pokemonDisplayName}</div>
-      </div>
-      <img class="sentry-mini" src="${imgSrc}" alt="${pokemonDisplayName}" />
-    `;
+    const optionLeft = document.createElement("div");
+    optionLeft.className = "sentry-option-left";
+    const name = document.createElement("div");
+    name.className = "sentry-name";
+    name.textContent = pokemonDisplayName;
+    optionLeft.appendChild(name);
+    button.appendChild(optionLeft);
+
+    const image = document.createElement("img");
+    image.className = "sentry-mini";
+    image.src = `/public/images/sprites/${encodeURIComponent(option)}.webp`;
+    image.alt = pokemonDisplayName;
+    button.appendChild(image);
     button.addEventListener("click", () => submitGuess(option));
     optionsContainer.appendChild(button);
   });
@@ -98,15 +114,28 @@ function renderChallenge() {
 function startCountdown(duration) {
   clearInterval(countdownInterval);
   let remaining = duration;
-  timer.textContent = `Time left: ${Math.ceil(remaining / 1000)}s`;
+  const timerBar = document.getElementById("sentry-timer-bar");
+
+  if (timerBar) {
+    timerBar.style.width = "100%";
+    timerBar.style.backgroundColor = "#8cff66";
+  }
+
   countdownInterval = setInterval(() => {
     remaining -= 100;
+
+    if (timerBar) {
+      const percentage = Math.max(0, (remaining / duration) * 100);
+      timerBar.style.width = `${percentage}%`;
+
+      if (percentage < 25) {
+        timerBar.style.backgroundColor = "#ff6666";
+      }
+    }
+
     if (remaining <= 0) {
       clearInterval(countdownInterval);
-      timer.textContent = "Time left: 0s";
-      handleFailure();
-    } else {
-      timer.textContent = `Time left: ${Math.ceil(remaining / 1000)}s`;
+      submitGuess(null);
     }
   }, 100);
 }
@@ -115,18 +144,19 @@ async function submitGuess(option) {
   if (!currentChallenge || currentChallenge.submitted) return;
   currentChallenge.submitted = true;
   clearInterval(countdownInterval);
-  const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
   try {
-    sessionRounds++;
+    const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
     const res = await axios.post("/sentry", {
       token: token,
       challengeID: currentChallenge.challengeID,
       selected: option,
-      sessionTotalScore: totalScore,
-      sessionRounds: sessionRounds,
-      gameOver: sessionFailed + 1 >= 3 && !currentChallenge.timeout,
     });
     const result = res.data;
+    totalScore = result.totalScore;
+    sessionFailed = result.failures;
+
+    const scoreEl = document.getElementById("sentry-score-count");
+    if (scoreEl) scoreEl.textContent = totalScore;
 
     const buttons = optionsContainer.querySelectorAll(".sentry-option");
     let selectedBtn = null;
@@ -137,26 +167,26 @@ async function submitGuess(option) {
     });
     if (result.correct) {
       if (selectedBtn) selectedBtn.classList.add("sentry-correct");
-      totalScore += result.score;
       playFeedbackSound("correct");
-      feedback.innerHTML = `Correct! +${result.score} points. Total: ${totalScore}`;
+      if (feedback) feedback.textContent = `Correct! +${result.score} points.`;
       disableOptions();
       setTimeout(() => loadChallenge(false), 1500);
     } else {
       if (selectedBtn) selectedBtn.classList.add("sentry-wrong");
       if (correctBtn) correctBtn.classList.add("sentry-correct");
       playFeedbackSound("wrong");
-      handleFailure();
+      if (feedback) feedback.textContent = "Wrong!";
+      handleFailure(result.failures);
     }
   } catch (err) {
     console.error(err);
   }
 }
 
-function handleFailure() {
-  sessionFailed++;
-  const failuresEl = document.getElementById("sentry-failures");
-  if (failuresEl) failuresEl.textContent = `Failures: ${sessionFailed}/3`;
+function handleFailure(failures = sessionFailed + 1) {
+  sessionFailed = failures;
+  const failuresEl = document.getElementById("sentry-failures-count");
+  if (failuresEl) failuresEl.textContent = `X: ${sessionFailed}/3`;
   disableOptions();
   if (sessionFailed >= 3) {
     // show overlay centered on the footprint

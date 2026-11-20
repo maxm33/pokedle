@@ -1,0 +1,100 @@
+[
+  {
+    "id": "overlay-1",
+    "name": "Bibarel Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Bibarel.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "overlay-2",
+    "name": "Deoxys Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Deoxys.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "overlay-3",
+    "name": "Komala Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Komala.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "overlay-4",
+    "name": "XY Showdown Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/XY-Showdown.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "overlay-5",
+    "name": "XY Showdown 2 Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/XY-Showdown-2.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "overlay-6",
+    "name": "Nosepass Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Nosepass.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "overlay-7",
+    "name": "Oricorio Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Oricorio.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "overlay-8",
+    "name": "Pheromosa Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Pheromosa.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "overlay-9",
+    "name": "Sentret Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Sentret.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "overlay-10",
+    "name": "Vaporeon Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Vaporeon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "overlay-11",
+    "name": "Magmatic Tsunami Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Magmatic-Tsunami.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "overlay-12",
+    "name": "Emerald Storm Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Emerald-Storm.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "overlay-13",
+    "name": "Eeveelutions Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Eeveelutions.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "overlay-14",
+    "name": "Dual Galaxies Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Dual-Galaxies.webp",
+    "publishedAt": "2026-11-18"
+  }
+]

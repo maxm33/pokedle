@@ -32,10 +32,19 @@
         </p>
         <img
           alt=""
-          src="/public/images/icons/github-mark.webp"
+          src="/public/images/misc/github-mark.webp"
           width="20px"
           height="20px"
         />
+      </div>
+      <div
+        id="auth-loading"
+        class="auth-loading"
+        role="status"
+        aria-live="polite"
+      >
+        <span class="profile-loader" aria-hidden="true"></span>
+        <span>Checking authentication...</span>
       </div>
       <div id="buttons-container">
         <button id="login-button" class="topnav-buttons">
@@ -43,6 +52,20 @@
             id="login-img"
             alt=""
             src="/public/images/misc/login.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button
+          id="shop-button"
+          class="topnav-buttons"
+          type="button"
+          aria-label="Shop"
+          title="Shop"
+        >
+          <img
+            alt=""
+            src="/public/images/misc/shop.webp"
             width="35px"
             height="35px"
           />
@@ -80,7 +103,7 @@
             <img
               fetchpriority="high"
               alt=""
-              src="/public/images/icons/pokedle-logo.webp"
+              src="/public/images/misc/pokedle-logo.webp"
             />
           </a>
         </div>
@@ -91,21 +114,34 @@
       </div>
       <div id="sentry-status" class="fadeIn">
         <h2 id="sentry-title" class="fadeIn">Guess the footprint quickly!</h2>
-        <div id="sentry-meta" class="fadeIn">
-          <div id="sentry-timer" class="fadeIn">Time left: --</div>
-          <div id="sentry-failures" class="fadeIn">Failures: 0/3</div>
-          <button
-            id="sentry-mute"
-            class="fadeIn"
-            aria-pressed="false"
-            title="Mute / Unmute"
-          >
-            🔊
-          </button>
-        </div>
-        <div id="sentry-feedback" class="fadeIn">Total score: 0</div>
+        <div id="sentry-feedback" class="fadeIn">Whose foot is this?</div>
       </div>
       <div id="sentry-footprint-container" class="fadeIn">
+        <div
+          id="sentry-failures-count"
+          class="sentry-grate-stat sentry-top-left"
+          title="Failures"
+        >
+          X: 0/3
+        </div>
+        <button
+          id="sentry-mute"
+          class="sentry-grate-stat sentry-top-mid fadeIn"
+          aria-pressed="false"
+          title="Mute / Unmute"
+        >
+          🔊
+        </button>
+        <div
+          id="sentry-score-count"
+          class="sentry-grate-stat sentry-top-right"
+          title="Score"
+        >
+          0
+        </div>
+        <div id="sentry-timer-bar-container">
+          <div id="sentry-timer-bar"></div>
+        </div>
         <img id="sentry-footprint" alt="" />
         <div id="sentry-overlay" aria-hidden="true"></div>
       </div>
@@ -117,6 +153,9 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script type="module" src="/public/js/sentryMode.js"></script>
+    <script
+      type="module"
+      src="/public/js/sentryMode.js?v=<%= encodeURIComponent(appVersion) %>"
+    ></script>
   </body>
 </html>

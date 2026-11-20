@@ -1,0 +1,3626 @@
+[
+  {
+    "id": "pokeforge-accelgor",
+    "name": "Accelgor Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/accelgor.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/accelgor.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-aerodactyl-ex",
+    "name": "Aerodactyl ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/aerodactyl-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/aerodactyl-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-aipom",
+    "name": "Aipom Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/aipom.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/aipom.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-alakazam",
+    "name": "Alakazam Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/alakazam.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/alakazam.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-alolan-dugtrio-ex",
+    "name": "Alolan Dugtrio ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/alolan-dugtrio-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/alolan-dugtrio-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-alolan-exeggutor",
+    "name": "Alolan Exeggutor Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/alolan-exeggutor.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/alolan-exeggutor.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-alolan-exeggutor-ex",
+    "name": "Alolan Exeggutor ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/alolan-exeggutor-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/alolan-exeggutor-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-alolan-marowak",
+    "name": "Alolan Marowak Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/alolan-marowak.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/alolan-marowak.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-alolan-meowth",
+    "name": "Alolan Meowth Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/alolan-meowth.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/alolan-meowth.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-alolan-muk",
+    "name": "Alolan Muk Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/alolan-muk.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/alolan-muk.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-alolan-muk-ex",
+    "name": "Alolan Muk ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/alolan-muk-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/alolan-muk-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-alolan-ninetales-ex",
+    "name": "Alolan Ninetales ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/alolan-ninetales-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/alolan-ninetales-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-alolan-raichu-ex",
+    "name": "Alolan Raichu ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/alolan-raichu-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/alolan-raichu-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-alolan-vulpix",
+    "name": "Alolan Vulpix Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/alolan-vulpix.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/alolan-vulpix.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-ampharos",
+    "name": "Ampharos Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/ampharos.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/ampharos.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-anorith",
+    "name": "Anorith Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/anorith.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/anorith.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-arceus-ex",
+    "name": "Arceus ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/arceus-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/arceus-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-archeops",
+    "name": "Archeops Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/archeops.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/archeops.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-ariados",
+    "name": "Ariados Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/ariados.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/ariados.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-armarouge-ex",
+    "name": "Armarouge ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/armarouge-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/armarouge-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-articuno-ex",
+    "name": "Articuno ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/articuno-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/articuno-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-aurorus",
+    "name": "Aurorus Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/aurorus.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/aurorus.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-azurill",
+    "name": "Azurill Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/azurill.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/azurill.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-baxcalibur",
+    "name": "Baxcalibur Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/baxcalibur.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/baxcalibur.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-beautifly",
+    "name": "Beautifly Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/beautifly.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/beautifly.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-bellibolt-ex",
+    "name": "Bellibolt ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/bellibolt-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/bellibolt-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-bellossom",
+    "name": "Bellossom Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/bellossom.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/bellossom.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-bewear",
+    "name": "Bewear Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/bewear.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/bewear.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-bewear-ex",
+    "name": "Bewear ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/bewear-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/bewear-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-bibarel-ex",
+    "name": "Bibarel ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/bibarel-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/bibarel-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-bidoof",
+    "name": "Bidoof Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/bidoof.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/bidoof.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-bisharp",
+    "name": "Bisharp Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/bisharp.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/bisharp.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-blacephalon",
+    "name": "Blacephalon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/blacephalon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/blacephalon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-blacephalon-ex",
+    "name": "Blacephalon ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/blacephalon-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/blacephalon-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-blastoise",
+    "name": "Blastoise Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/blastoise.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/blastoise.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-blissey",
+    "name": "Blissey Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/blissey.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/blissey.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-bonsly",
+    "name": "Bonsly Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/bonsly.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/bonsly.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-brambleghast",
+    "name": "Brambleghast Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/brambleghast.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/brambleghast.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-budew",
+    "name": "Budew Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/budew.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/budew.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-buizel",
+    "name": "Buizel Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/buizel.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/buizel.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-bulbasaur",
+    "name": "Bulbasaur Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/bulbasaur.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/bulbasaur.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-buneary",
+    "name": "Buneary Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/buneary.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/buneary.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-buzzwole",
+    "name": "Buzzwole Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/buzzwole.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/buzzwole.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-buzzwole-ex",
+    "name": "Buzzwole ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/buzzwole-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/buzzwole-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-cacnea",
+    "name": "Cacnea Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/cacnea.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/cacnea.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-carkol",
+    "name": "Carkol Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/carkol.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/carkol.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-carnivine",
+    "name": "Carnivine Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/carnivine.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/carnivine.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-castform",
+    "name": "Castform Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/castform.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/castform.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-celebi-ex",
+    "name": "Celebi ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/celebi-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/celebi-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-celesteela",
+    "name": "Celesteela Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/celesteela.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/celesteela.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-ceruledge",
+    "name": "Ceruledge Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/ceruledge.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/ceruledge.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-chandelure",
+    "name": "Chandelure Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/chandelure.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/chandelure.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-charizard",
+    "name": "Charizard Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/charizard.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/charizard.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-charizard-ex",
+    "name": "Charizard ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/charizard-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/charizard-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-charmander",
+    "name": "Charmander Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/charmander.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/charmander.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-charmeleon",
+    "name": "Charmeleon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/charmeleon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/charmeleon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-chespin",
+    "name": "Chespin Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/chespin.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/chespin.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-chien-pao-ex",
+    "name": "Chien Pao ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/chien-pao-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/chien-pao-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-chikorita",
+    "name": "Chikorita Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/chikorita.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/chikorita.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-chimchar",
+    "name": "Chimchar Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/chimchar.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/chimchar.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-cinccino",
+    "name": "Cinccino Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/cinccino.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/cinccino.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-clefairy",
+    "name": "Clefairy Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/clefairy.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/clefairy.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-cofagrigus",
+    "name": "Cofagrigus Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/cofagrigus.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/cofagrigus.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-combee",
+    "name": "Combee Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/combee.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/combee.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-comfey",
+    "name": "Comfey Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/comfey.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/comfey.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-corviknight",
+    "name": "Corviknight Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/corviknight.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/corviknight.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-corviknight-ex",
+    "name": "Corviknight ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/corviknight-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/corviknight-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-cosmoem",
+    "name": "Cosmoem Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/cosmoem.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/cosmoem.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-cosmog",
+    "name": "Cosmog Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/cosmog.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/cosmog.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-crabominable-ex",
+    "name": "Crabominable ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/crabominable-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/crabominable-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-cramorant",
+    "name": "Cramorant Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/cramorant.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/cramorant.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-crawdaunt",
+    "name": "Crawdaunt Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/crawdaunt.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/crawdaunt.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-cresselia",
+    "name": "Cresselia Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/cresselia.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/cresselia.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-croagunk",
+    "name": "Croagunk Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/croagunk.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/croagunk.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-crobat-ex",
+    "name": "Crobat ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/crobat-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/crobat-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-crustle-ex",
+    "name": "Crustle ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/crustle-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/crustle-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-cubone",
+    "name": "Cubone Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/cubone.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/cubone.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-cutiefly",
+    "name": "Cutiefly Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/cutiefly.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/cutiefly.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-cyclizar",
+    "name": "Cyclizar Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/cyclizar.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/cyclizar.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-cyndaquil",
+    "name": "Cyndaquil Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/cyndaquil.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/cyndaquil.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-darkrai-ex",
+    "name": "Darkrai ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/darkrai-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/darkrai-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-decidueye-ex",
+    "name": "Decidueye ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/decidueye-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/decidueye-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-dedenne",
+    "name": "Dedenne Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/dedenne.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/dedenne.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-dedenne-ex",
+    "name": "Dedenne ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/dedenne-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/dedenne-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-deerling",
+    "name": "Deerling Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/deerling.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/deerling.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-delcatty",
+    "name": "Delcatty Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/delcatty.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/delcatty.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-delibird",
+    "name": "Delibird Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/delibird.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/delibird.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-delphox",
+    "name": "Delphox Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/delphox.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/delphox.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-dhelmise-ex",
+    "name": "Dhelmise ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/dhelmise-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/dhelmise-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-dialga",
+    "name": "Dialga Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/dialga.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/dialga.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-dialga-ex",
+    "name": "Dialga ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/dialga-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/dialga-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-diglett",
+    "name": "Diglett Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/diglett.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/diglett.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-ditto",
+    "name": "Ditto Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/ditto.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/ditto.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-donphan-ex",
+    "name": "Donphan ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/donphan-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/donphan-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-dragalge-ex",
+    "name": "Dragalge ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/dragalge-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/dragalge-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-dragonair",
+    "name": "Dragonair Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/dragonair.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/dragonair.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-dragonite",
+    "name": "Dragonite Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/dragonite.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/dragonite.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-dragonite-ex",
+    "name": "Dragonite ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/dragonite-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/dragonite-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-drampa",
+    "name": "Drampa Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/drampa.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/drampa.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-dratini",
+    "name": "Dratini Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/dratini.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/dratini.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-drifloon",
+    "name": "Drifloon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/drifloon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/drifloon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-eevee",
+    "name": "Eevee Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/eevee.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/eevee.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-eevee-ex",
+    "name": "Eevee ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/eevee-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/eevee-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-eiscue",
+    "name": "Eiscue Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/eiscue.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/eiscue.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-electrode",
+    "name": "Electrode Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/electrode.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/electrode.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-empoleon",
+    "name": "Empoleon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/empoleon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/empoleon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-entei-ex",
+    "name": "Entei ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/entei-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/entei-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-espeon",
+    "name": "Espeon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/espeon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/espeon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-espeon-ex",
+    "name": "Espeon ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/espeon-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/espeon-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-exeggcute",
+    "name": "Exeggcute Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/exeggcute.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/exeggcute.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-exeggutor",
+    "name": "Exeggutor Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/exeggutor.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/exeggutor.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-falinks",
+    "name": "Falinks Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/falinks.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/falinks.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-farfetchd",
+    "name": "Farfetchd Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/farfetchd.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/farfetchd.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-fennekin",
+    "name": "Fennekin Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/fennekin.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/fennekin.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-fidough",
+    "name": "Fidough Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/fidough.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/fidough.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-flapple",
+    "name": "Flapple Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/flapple.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/flapple.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-flareon",
+    "name": "Flareon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/flareon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/flareon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-flareon-ex",
+    "name": "Flareon ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/flareon-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/flareon-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-flittle",
+    "name": "Flittle Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/flittle.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/flittle.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-floragato",
+    "name": "Floragato Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/floragato.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/floragato.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-flutter-mane-ex",
+    "name": "Flutter Mane ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/flutter-mane-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/flutter-mane-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-flygon-ex",
+    "name": "Flygon ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/flygon-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/flygon-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-froakie",
+    "name": "Froakie Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/froakie.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/froakie.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-frogadier",
+    "name": "Frogadier Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/frogadier.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/frogadier.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-fuecoco",
+    "name": "Fuecoco Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/fuecoco.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/fuecoco.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-fuecoco-ex",
+    "name": "Fuecoco ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/fuecoco-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/fuecoco-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-galarian-obstagoon",
+    "name": "Galarian Obstagoon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/galarian-obstagoon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/galarian-obstagoon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-galarian-perrserker",
+    "name": "Galarian Perrserker Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/galarian-perrserker.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/galarian-perrserker.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-galarian-ponyta",
+    "name": "Galarian Ponyta Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/galarian-ponyta.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/galarian-ponyta.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-gallade-ex",
+    "name": "Gallade ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/gallade-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/gallade-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-garchomp",
+    "name": "Garchomp Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/garchomp.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/garchomp.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-garchomp-ex",
+    "name": "Garchomp ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/garchomp-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/garchomp-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-gardevoir",
+    "name": "Gardevoir Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/gardevoir.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/gardevoir.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-gastrodon",
+    "name": "Gastrodon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/gastrodon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/gastrodon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-genesect",
+    "name": "Genesect Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/genesect.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/genesect.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-gengar",
+    "name": "Gengar Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/gengar.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/gengar.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-gengar-ex",
+    "name": "Gengar ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/gengar-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/gengar-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-gholdengo",
+    "name": "Gholdengo Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/gholdengo.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/gholdengo.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-gholdengo-ex",
+    "name": "Gholdengo ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/gholdengo-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/gholdengo-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-gigalith-ex",
+    "name": "Gigalith ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/gigalith-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/gigalith-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-gimmighoul",
+    "name": "Gimmighoul Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/gimmighoul.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/gimmighoul.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-giratina",
+    "name": "Giratina Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/giratina.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/giratina.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-giratina-ex",
+    "name": "Giratina ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/giratina-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/giratina-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-glaceon",
+    "name": "Glaceon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/glaceon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/glaceon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-glaceon-ex",
+    "name": "Glaceon ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/glaceon-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/glaceon-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-glameow",
+    "name": "Glameow Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/glameow.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/glameow.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-gligar",
+    "name": "Gligar Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/gligar.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/gligar.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-glimmora",
+    "name": "Glimmora Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/glimmora.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/glimmora.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-gloom",
+    "name": "Gloom Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/gloom.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/gloom.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-golbat",
+    "name": "Golbat Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/golbat.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/golbat.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-goomy",
+    "name": "Goomy Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/goomy.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/goomy.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-gothita",
+    "name": "Gothita Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/gothita.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/gothita.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-grafaiai",
+    "name": "Grafaiai Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/grafaiai.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/grafaiai.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-greavard",
+    "name": "Greavard Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/greavard.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/greavard.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-greedent",
+    "name": "Greedent Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/greedent.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/greedent.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-greninja",
+    "name": "Greninja Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/greninja.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/greninja.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-greninja-ex",
+    "name": "Greninja ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/greninja-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/greninja-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-grookey",
+    "name": "Grookey Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/grookey.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/grookey.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-groudon",
+    "name": "Groudon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/groudon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/groudon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-grovyle",
+    "name": "Grovyle Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/grovyle.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/grovyle.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-growlithe",
+    "name": "Growlithe Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/growlithe.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/growlithe.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-gulpin",
+    "name": "Gulpin Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/gulpin.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/gulpin.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-guzzlord-ex",
+    "name": "Guzzlord ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/guzzlord-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/guzzlord-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-gyarados",
+    "name": "Gyarados Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/gyarados.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/gyarados.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-happiny",
+    "name": "Happiny Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/happiny.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/happiny.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-hawlucha",
+    "name": "Hawlucha Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/hawlucha.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/hawlucha.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-heatran",
+    "name": "Heatran Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/heatran.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/heatran.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-heracross",
+    "name": "Heracross Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/heracross.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/heracross.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-hippopotas",
+    "name": "Hippopotas Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/hippopotas.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/hippopotas.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-hippowdon",
+    "name": "Hippowdon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/hippowdon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/hippowdon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-hisuian-zoroark-ex",
+    "name": "Hisuian Zoroark ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/hisuian-zoroark-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/hisuian-zoroark-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-hitmonchan-ex",
+    "name": "Hitmonchan ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/hitmonchan-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/hitmonchan-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-ho-oh-ex",
+    "name": "Ho Oh ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/ho-oh-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/ho-oh-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-honchkrow",
+    "name": "Honchkrow Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/honchkrow.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/honchkrow.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-hoopa-ex",
+    "name": "Hoopa ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/hoopa-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/hoopa-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-hoothoot",
+    "name": "Hoothoot Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/hoothoot.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/hoothoot.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-houndoom",
+    "name": "Houndoom Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/houndoom.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/houndoom.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-hydreigon",
+    "name": "Hydreigon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/hydreigon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/hydreigon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-incineroar-ex",
+    "name": "Incineroar ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/incineroar-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/incineroar-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-indeedee",
+    "name": "Indeedee Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/indeedee.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/indeedee.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-indeedee-ex",
+    "name": "Indeedee ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/indeedee-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/indeedee-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-infernape-ex",
+    "name": "Infernape ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/infernape-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/infernape-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-iron-boulder",
+    "name": "Iron Boulder Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/iron-boulder.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/iron-boulder.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-iron-bundle-ex",
+    "name": "Iron Bundle ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/iron-bundle-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/iron-bundle-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-jellicent",
+    "name": "Jellicent Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/jellicent.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/jellicent.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-jigglypuff",
+    "name": "Jigglypuff Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/jigglypuff.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/jigglypuff.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-jolteon",
+    "name": "Jolteon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/jolteon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/jolteon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-jolteon-ex",
+    "name": "Jolteon ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/jolteon-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/jolteon-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-jumpluff-ex",
+    "name": "Jumpluff ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/jumpluff-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/jumpluff-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-keldeo",
+    "name": "Keldeo Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/keldeo.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/keldeo.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-kingdra-ex",
+    "name": "Kingdra ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/kingdra-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/kingdra-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-komala",
+    "name": "Komala Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/komala.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/komala.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-koraidon-ex",
+    "name": "Koraidon ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/koraidon-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/koraidon-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-kricketune",
+    "name": "Kricketune Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/kricketune.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/kricketune.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-kubfu",
+    "name": "Kubfu Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/kubfu.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/kubfu.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-kyogre",
+    "name": "Kyogre Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/kyogre.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/kyogre.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-lanturn-ex",
+    "name": "Lanturn ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/lanturn-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/lanturn-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-lapras",
+    "name": "Lapras Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/lapras.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/lapras.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-larvitar",
+    "name": "Larvitar Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/larvitar.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/larvitar.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-latios",
+    "name": "Latios Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/latios.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/latios.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-leafeon",
+    "name": "Leafeon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/leafeon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/leafeon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-leafeon-ex",
+    "name": "Leafeon ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/leafeon-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/leafeon-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-lechonk",
+    "name": "Lechonk Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/lechonk.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/lechonk.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-lickilicky-ex",
+    "name": "Lickilicky ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/lickilicky-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/lickilicky-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-lileep",
+    "name": "Lileep Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/lileep.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/lileep.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-litten",
+    "name": "Litten Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/litten.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/litten.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-lucario",
+    "name": "Lucario Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/lucario.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/lucario.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-ludicolo",
+    "name": "Ludicolo Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/ludicolo.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/ludicolo.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-lugia-ex",
+    "name": "Lugia ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/lugia-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/lugia-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-lunala-ex",
+    "name": "Lunala ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/lunala-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/lunala-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-luxray",
+    "name": "Luxray Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/luxray.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/luxray.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-lycanroc-ex",
+    "name": "Lycanroc ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/lycanroc-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/lycanroc-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-machamp-ex",
+    "name": "Machamp ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/machamp-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/machamp-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-magby",
+    "name": "Magby Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/magby.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/magby.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-magearna",
+    "name": "Magearna Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/magearna.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/magearna.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-magikarp",
+    "name": "Magikarp Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/magikarp.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/magikarp.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-magnemite",
+    "name": "Magnemite Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/magnemite.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/magnemite.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-magnezone-ex",
+    "name": "Magnezone ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/magnezone-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/magnezone-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-makuhita",
+    "name": "Makuhita Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/makuhita.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/makuhita.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-malamar",
+    "name": "Malamar Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/malamar.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/malamar.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mamoswine",
+    "name": "Mamoswine Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mamoswine.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mamoswine.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-manaphy",
+    "name": "Manaphy Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/manaphy.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/manaphy.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mareanie",
+    "name": "Mareanie Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mareanie.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mareanie.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-marill",
+    "name": "Marill Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/marill.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/marill.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-marshadow",
+    "name": "Marshadow Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/marshadow.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/marshadow.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-maushold",
+    "name": "Maushold Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/maushold.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/maushold.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-absol-ex",
+    "name": "Mega Absol ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-absol-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-absol-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-altaria-ex",
+    "name": "Mega Altaria ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-altaria-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-altaria-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-ampharos-ex",
+    "name": "Mega Ampharos ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-ampharos-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-ampharos-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-audino-ex",
+    "name": "Mega Audino ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-audino-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-audino-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-blastoise-ex",
+    "name": "Mega Blastoise ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-blastoise-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-blastoise-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-blaziken-ex",
+    "name": "Mega Blaziken ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-blaziken-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-blaziken-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-camerupt-ex",
+    "name": "Mega Camerupt ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-camerupt-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-camerupt-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-charizard-x-ex",
+    "name": "Mega Charizard X ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-charizard-x-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-charizard-x-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-charizard-y-ex",
+    "name": "Mega Charizard Y ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-charizard-y-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-charizard-y-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-diancie-ex",
+    "name": "Mega Diancie ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-diancie-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-diancie-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-dragonite-ex",
+    "name": "Mega Dragonite ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-dragonite-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-dragonite-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-gallade-ex",
+    "name": "Mega Gallade ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-gallade-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-gallade-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-gardevoir-ex",
+    "name": "Mega Gardevoir ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-gardevoir-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-gardevoir-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-greninja-ex",
+    "name": "Mega Greninja ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-greninja-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-greninja-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-gyarados-ex",
+    "name": "Mega Gyarados ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-gyarados-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-gyarados-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-kangaskhan-ex",
+    "name": "Mega Kangaskhan ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-kangaskhan-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-kangaskhan-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-lopunny-ex",
+    "name": "Mega Lopunny ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-lopunny-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-lopunny-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-lucario-ex",
+    "name": "Mega Lucario ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-lucario-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-lucario-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-manectric-ex",
+    "name": "Mega Manectric ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-manectric-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-manectric-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-mawile-ex",
+    "name": "Mega Mawile ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-mawile-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-mawile-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-metagross-ex",
+    "name": "Mega Metagross ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-metagross-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-metagross-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-mewtwo-x-ex",
+    "name": "Mega Mewtwo X ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-mewtwo-x-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-mewtwo-x-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-pinsir-ex",
+    "name": "Mega Pinsir ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-pinsir-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-pinsir-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-rayquaza-ex",
+    "name": "Mega Rayquaza ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-rayquaza-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-rayquaza-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-sableye-ex",
+    "name": "Mega Sableye ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-sableye-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-sableye-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-sceptile-ex",
+    "name": "Mega Sceptile ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-sceptile-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-sceptile-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-sharpedo-ex",
+    "name": "Mega Sharpedo ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-sharpedo-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-sharpedo-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-skarmory-ex",
+    "name": "Mega Skarmory ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-skarmory-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-skarmory-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-slowbro-ex",
+    "name": "Mega Slowbro ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-slowbro-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-slowbro-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-steelix-ex",
+    "name": "Mega Steelix ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-steelix-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-steelix-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-swampert-ex",
+    "name": "Mega Swampert ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-swampert-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-swampert-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-tyranitar-ex",
+    "name": "Mega Tyranitar ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-tyranitar-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-tyranitar-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mega-venusaur-ex",
+    "name": "Mega Venusaur ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-venusaur-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-venusaur-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-melmetal",
+    "name": "Melmetal Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/melmetal.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/melmetal.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-melmetal-ex",
+    "name": "Melmetal ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/melmetal-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/melmetal-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-meloetta",
+    "name": "Meloetta Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/meloetta.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/meloetta.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-meltan",
+    "name": "Meltan Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/meltan.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/meltan.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-meowscarada",
+    "name": "Meowscarada Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/meowscarada.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/meowscarada.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-meowscarada-ex",
+    "name": "Meowscarada ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/meowscarada-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/meowscarada-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-meowstic",
+    "name": "Meowstic Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/meowstic.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/meowstic.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-meowth",
+    "name": "Meowth Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/meowth.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/meowth.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mesprit",
+    "name": "Mesprit Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mesprit.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mesprit.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mew",
+    "name": "Mew Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mew.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mew.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mew-ex",
+    "name": "Mew ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mew-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mew-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mewtwo-ex",
+    "name": "Mewtwo ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mewtwo-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mewtwo-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-milotic",
+    "name": "Milotic Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/milotic.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/milotic.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-milotic-ex",
+    "name": "Milotic ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/milotic-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/milotic-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-miltank",
+    "name": "Miltank Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/miltank.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/miltank.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mimikyu",
+    "name": "Mimikyu Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mimikyu.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mimikyu.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mimikyu-ex",
+    "name": "Mimikyu ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mimikyu-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mimikyu-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-minior",
+    "name": "Minior Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/minior.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/minior.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-minun",
+    "name": "Minun Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/minun.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/minun.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-miraidon-ex",
+    "name": "Miraidon ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/miraidon-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/miraidon-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mismagius-ex",
+    "name": "Mismagius ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mismagius-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mismagius-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-moltres-ex",
+    "name": "Moltres ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/moltres-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/moltres-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-morelull",
+    "name": "Morelull Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/morelull.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/morelull.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-morpeko",
+    "name": "Morpeko Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/morpeko.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/morpeko.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mudkip",
+    "name": "Mudkip Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mudkip.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mudkip.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-mudsdale",
+    "name": "Mudsdale Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mudsdale.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mudsdale.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-murkrow",
+    "name": "Murkrow Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/murkrow.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/murkrow.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-nidoking",
+    "name": "Nidoking Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/nidoking.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/nidoking.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-nidoqueen",
+    "name": "Nidoqueen Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/nidoqueen.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/nidoqueen.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-noivern",
+    "name": "Noivern Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/noivern.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/noivern.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-octillery",
+    "name": "Octillery Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/octillery.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/octillery.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-oricorio",
+    "name": "Oricorio Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/oricorio.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/oricorio.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-orthworm",
+    "name": "Orthworm Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/orthworm.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/orthworm.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-oshawott",
+    "name": "Oshawott Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/oshawott.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/oshawott.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-pachirisu-ex",
+    "name": "Pachirisu ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/pachirisu-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/pachirisu-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-paldean-clodsire",
+    "name": "Paldean Clodsire Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/paldean-clodsire.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/paldean-clodsire.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-paldean-clodsire-ex",
+    "name": "Paldean Clodsire ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/paldean-clodsire-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/paldean-clodsire-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-paldean-wooper",
+    "name": "Paldean Wooper Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/paldean-wooper.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/paldean-wooper.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-palkia",
+    "name": "Palkia Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/palkia.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/palkia.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-palkia-ex",
+    "name": "Palkia ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/palkia-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/palkia-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-pancham",
+    "name": "Pancham Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/pancham.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/pancham.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-passimian-ex",
+    "name": "Passimian ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/passimian-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/passimian-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-pawmot",
+    "name": "Pawmot Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/pawmot.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/pawmot.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-phanpy",
+    "name": "Phanpy Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/phanpy.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/phanpy.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-pheromosa",
+    "name": "Pheromosa Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/pheromosa.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/pheromosa.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-pichu",
+    "name": "Pichu Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/pichu.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/pichu.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-pidgeot",
+    "name": "Pidgeot Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/pidgeot.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/pidgeot.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-pikachu",
+    "name": "Pikachu Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/pikachu.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/pikachu.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-pikachu-ex",
+    "name": "Pikachu ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/pikachu-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/pikachu-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-pikipek",
+    "name": "Pikipek Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/pikipek.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/pikipek.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-pinsir",
+    "name": "Pinsir Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/pinsir.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/pinsir.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-piplup",
+    "name": "Piplup Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/piplup.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/piplup.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-poliwrath-ex",
+    "name": "Poliwrath ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/poliwrath-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/poliwrath-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-ponyta",
+    "name": "Ponyta Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/ponyta.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/ponyta.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-poochyena",
+    "name": "Poochyena Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/poochyena.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/poochyena.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-popplio",
+    "name": "Popplio Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/popplio.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/popplio.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-porygon",
+    "name": "Porygon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/porygon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/porygon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-primarina-ex",
+    "name": "Primarina ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/primarina-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/primarina-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-probopass-ex",
+    "name": "Probopass ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/probopass-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/probopass-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-pupitar",
+    "name": "Pupitar Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/pupitar.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/pupitar.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-purrloin",
+    "name": "Purrloin Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/purrloin.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/purrloin.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-pyukumuku",
+    "name": "Pyukumuku Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/pyukumuku.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/pyukumuku.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-quagsire",
+    "name": "Quagsire Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/quagsire.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/quagsire.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-quaxly",
+    "name": "Quaxly Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/quaxly.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/quaxly.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-quilava",
+    "name": "Quilava Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/quilava.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/quilava.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-qwilfish",
+    "name": "Qwilfish Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/qwilfish.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/qwilfish.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-raboot",
+    "name": "Raboot Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/raboot.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/raboot.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-raging-bolt",
+    "name": "Raging Bolt Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/raging-bolt.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/raging-bolt.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-raichu",
+    "name": "Raichu Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/raichu.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/raichu.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-raikou-ex",
+    "name": "Raikou ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/raikou-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/raikou-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-ralts",
+    "name": "Ralts Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/ralts.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/ralts.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-rapidash",
+    "name": "Rapidash Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/rapidash.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/rapidash.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-rapidash-ex",
+    "name": "Rapidash ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/rapidash-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/rapidash-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-raticate",
+    "name": "Raticate Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/raticate.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/raticate.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-regigigas",
+    "name": "Regigigas Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/regigigas.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/regigigas.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-reshiram",
+    "name": "Reshiram Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/reshiram.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/reshiram.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-reuniclus",
+    "name": "Reuniclus Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/reuniclus.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/reuniclus.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-revavroom",
+    "name": "Revavroom Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/revavroom.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/revavroom.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-rhyperior",
+    "name": "Rhyperior Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/rhyperior.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/rhyperior.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-ribombee",
+    "name": "Ribombee Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/ribombee.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/ribombee.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-rillaboom",
+    "name": "Rillaboom Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/rillaboom.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/rillaboom.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-riolu",
+    "name": "Riolu Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/riolu.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/riolu.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-rockruff",
+    "name": "Rockruff Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/rockruff.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/rockruff.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-roserade",
+    "name": "Roserade Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/roserade.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/roserade.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-rotom",
+    "name": "Rotom Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/rotom.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/rotom.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-rotom-ex",
+    "name": "Rotom ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/rotom-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/rotom-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-rowlet",
+    "name": "Rowlet Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/rowlet.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/rowlet.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-rufflet",
+    "name": "Rufflet Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/rufflet.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/rufflet.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-salamence",
+    "name": "Salamence Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/salamence.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/salamence.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-salandit",
+    "name": "Salandit Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/salandit.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/salandit.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-samurott",
+    "name": "Samurott Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/samurott.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/samurott.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-sandshrew",
+    "name": "Sandshrew Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/sandshrew.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/sandshrew.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-sandygast",
+    "name": "Sandygast Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/sandygast.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/sandygast.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-scizor",
+    "name": "Scizor Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/scizor.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/scizor.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-scorbunny",
+    "name": "Scorbunny Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/scorbunny.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/scorbunny.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-sentret",
+    "name": "Sentret Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/sentret.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/sentret.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-serperior",
+    "name": "Serperior Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/serperior.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/serperior.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-seviper",
+    "name": "Seviper Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/seviper.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/seviper.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-shaymin",
+    "name": "Shaymin Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/shaymin.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/shaymin.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-shinx",
+    "name": "Shinx Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/shinx.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/shinx.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-shroomish",
+    "name": "Shroomish Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/shroomish.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/shroomish.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-shuckle-ex",
+    "name": "Shuckle ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/shuckle-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/shuckle-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-silvally",
+    "name": "Silvally Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/silvally.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/silvally.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-skarmory-ex",
+    "name": "Skarmory ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/skarmory-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/skarmory-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-skiddo",
+    "name": "Skiddo Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/skiddo.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/skiddo.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-slakoth",
+    "name": "Slakoth Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/slakoth.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/slakoth.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-slowpoke",
+    "name": "Slowpoke Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/slowpoke.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/slowpoke.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-slurpuff",
+    "name": "Slurpuff Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/slurpuff.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/slurpuff.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-smeargle",
+    "name": "Smeargle Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/smeargle.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/smeargle.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-snivy",
+    "name": "Snivy Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/snivy.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/snivy.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-snom",
+    "name": "Snom Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/snom.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/snom.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-snorlax",
+    "name": "Snorlax Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/snorlax.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/snorlax.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-snorlax-ex",
+    "name": "Snorlax ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/snorlax-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/snorlax-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-snubbull",
+    "name": "Snubbull Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/snubbull.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/snubbull.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-sobble",
+    "name": "Sobble Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/sobble.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/sobble.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-solgaleo-ex",
+    "name": "Solgaleo ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/solgaleo-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/solgaleo-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-spinarak",
+    "name": "Spinarak Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/spinarak.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/spinarak.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-spiritomb",
+    "name": "Spiritomb Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/spiritomb.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/spiritomb.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-sprigatito",
+    "name": "Sprigatito Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/sprigatito.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/sprigatito.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-squirtle",
+    "name": "Squirtle Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/squirtle.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/squirtle.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-stantler",
+    "name": "Stantler Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/stantler.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/stantler.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-staraptor",
+    "name": "Staraptor Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/staraptor.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/staraptor.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-stoutland",
+    "name": "Stoutland Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/stoutland.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/stoutland.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-stunfisk",
+    "name": "Stunfisk Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/stunfisk.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/stunfisk.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-sudowoodo",
+    "name": "Sudowoodo Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/sudowoodo.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/sudowoodo.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-suicune-ex",
+    "name": "Suicune ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/suicune-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/suicune-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-sunflora",
+    "name": "Sunflora Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/sunflora.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/sunflora.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-swanna-ex",
+    "name": "Swanna ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/swanna-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/swanna-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-sylveon",
+    "name": "Sylveon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/sylveon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/sylveon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-sylveon-ex",
+    "name": "Sylveon ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/sylveon-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/sylveon-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-tangrowth",
+    "name": "Tangrowth Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/tangrowth.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/tangrowth.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-tapu-bulu",
+    "name": "Tapu Bulu Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/tapu-bulu.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/tapu-bulu.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-tapu-fini",
+    "name": "Tapu Fini Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/tapu-fini.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/tapu-fini.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-tapu-koko",
+    "name": "Tapu Koko Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/tapu-koko.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/tapu-koko.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-tapu-koko-ex",
+    "name": "Tapu Koko ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/tapu-koko-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/tapu-koko-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-tapu-lele",
+    "name": "Tapu Lele Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/tapu-lele.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/tapu-lele.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-tatsugiri",
+    "name": "Tatsugiri Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/tatsugiri.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/tatsugiri.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-tauros-ex",
+    "name": "Tauros ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/tauros-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/tauros-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-teal-mask-ogerpon-ex",
+    "name": "Teal Mask Ogerpon ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/teal-mask-ogerpon-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/teal-mask-ogerpon-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-team-rockets-articuno-ex",
+    "name": "Team Rockets Articuno ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/team-rockets-articuno-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/team-rockets-articuno-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-team-rockets-hypno",
+    "name": "Team Rockets Hypno Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/team-rockets-hypno.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/team-rockets-hypno.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-team-rockets-kecleon",
+    "name": "Team Rockets Kecleon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/team-rockets-kecleon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/team-rockets-kecleon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-team-rockets-moltres-ex",
+    "name": "Team Rockets Moltres ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/team-rockets-moltres-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/team-rockets-moltres-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-team-rockets-raticate-ex",
+    "name": "Team Rockets Raticate ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/team-rockets-raticate-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/team-rockets-raticate-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-team-rockets-slowking-ex",
+    "name": "Team Rockets Slowking ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/team-rockets-slowking-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/team-rockets-slowking-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-team-rockets-tinkaton",
+    "name": "Team Rockets Tinkaton Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/team-rockets-tinkaton.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/team-rockets-tinkaton.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-team-rockets-weezing-ex",
+    "name": "Team Rockets Weezing ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/team-rockets-weezing-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/team-rockets-weezing-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-team-rockets-zapdos-ex",
+    "name": "Team Rockets Zapdos ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/team-rockets-zapdos-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/team-rockets-zapdos-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-tepig",
+    "name": "Tepig Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/tepig.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/tepig.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-terapagos-ex",
+    "name": "Terapagos ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/terapagos-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/terapagos-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-tinkaton-ex",
+    "name": "Tinkaton ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/tinkaton-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/tinkaton-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-togepi",
+    "name": "Togepi Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/togepi.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/togepi.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-torchic",
+    "name": "Torchic Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/torchic.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/torchic.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-totodile",
+    "name": "Totodile Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/totodile.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/totodile.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-toxel",
+    "name": "Toxel Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/toxel.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/toxel.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-toxtricity-ex",
+    "name": "Toxtricity ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/toxtricity-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/toxtricity-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-treecko",
+    "name": "Treecko Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/treecko.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/treecko.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-trubbish",
+    "name": "Trubbish Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/trubbish.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/trubbish.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-tsareena",
+    "name": "Tsareena Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/tsareena.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/tsareena.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-turtonator",
+    "name": "Turtonator Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/turtonator.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/turtonator.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-turtwig",
+    "name": "Turtwig Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/turtwig.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/turtwig.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-typhlosion-ex",
+    "name": "Typhlosion ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/typhlosion-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/typhlosion-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-tyranitar",
+    "name": "Tyranitar Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/tyranitar.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/tyranitar.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-tyrantrum",
+    "name": "Tyrantrum Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/tyrantrum.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/tyrantrum.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-umbreon",
+    "name": "Umbreon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/umbreon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/umbreon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-umbreon-ex",
+    "name": "Umbreon ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/umbreon-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/umbreon-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-unown",
+    "name": "Unown Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/unown.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/unown.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-vaporeon",
+    "name": "Vaporeon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/vaporeon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/vaporeon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-vaporeon-ex",
+    "name": "Vaporeon ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/vaporeon-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/vaporeon-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-venusaur",
+    "name": "Venusaur Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/venusaur.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/venusaur.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-vespiquen-ex",
+    "name": "Vespiquen ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/vespiquen-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/vespiquen-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-vivillon",
+    "name": "Vivillon Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/vivillon.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/vivillon.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-vullaby",
+    "name": "Vullaby Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/vullaby.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/vullaby.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-vulpix",
+    "name": "Vulpix Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/vulpix.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/vulpix.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-wailord-ex",
+    "name": "Wailord ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/wailord-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/wailord-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-wattrel",
+    "name": "Wattrel Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/wattrel.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/wattrel.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-weavile-ex",
+    "name": "Weavile ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/weavile-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/weavile-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-weezing",
+    "name": "Weezing Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/weezing.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/weezing.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-whimsicott-ex",
+    "name": "Whimsicott ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/whimsicott-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/whimsicott-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-wigglytuff",
+    "name": "Wigglytuff Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/wigglytuff.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/wigglytuff.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-wigglytuff-ex",
+    "name": "Wigglytuff ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/wigglytuff-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/wigglytuff-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-wishiwashi-ex",
+    "name": "Wishiwashi ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/wishiwashi-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/wishiwashi-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-wobbuffet",
+    "name": "Wobbuffet Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/wobbuffet.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/wobbuffet.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-wurmple",
+    "name": "Wurmple Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/wurmple.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/wurmple.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-wynaut",
+    "name": "Wynaut Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/wynaut.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/wynaut.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-xatu",
+    "name": "Xatu Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/xatu.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/xatu.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-xerneas",
+    "name": "Xerneas Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/xerneas.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/xerneas.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-yamper",
+    "name": "Yamper Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/yamper.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/yamper.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-yanmega-ex",
+    "name": "Yanmega ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/yanmega-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/yanmega-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-yveltal",
+    "name": "Yveltal Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/yveltal.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/yveltal.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-zapdos-ex",
+    "name": "Zapdos ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/zapdos-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/zapdos-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-zekrom",
+    "name": "Zekrom Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/zekrom.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/zekrom.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-zoroark-ex",
+    "name": "Zoroark ex Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/zoroark-ex.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/zoroark-ex.webp",
+    "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-zorua",
+    "name": "Zorua Background",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/zorua.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/zorua.webp",
+    "publishedAt": "2026-11-18"
+  }
+]

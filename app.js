@@ -2,6 +2,9 @@ const fs = require("fs");
 const { randomUUID } = require("crypto");
 const express = require("express");
 const device = require("express-device");
+const { rateLimit } = require("express-rate-limit");
+const { RedisStore } = require("rate-limit-redis");
+const { createClient } = require("redis");
 const { initializeApp, cert } = require("firebase-admin/app");
 const { getAuth } = require("firebase-admin/auth");
 const { getFirestore } = require("firebase-admin/firestore");
@@ -9,6 +12,7 @@ const logger = require("morgan");
 const createError = require("http-errors");
 const packageJson = require("./package.json");
 const badFootprints = require("./data/badFootprints.json");
+const eventPokemonPool = require("./data/legendaryPokemon.json");
 const serviceAccount = require("/etc/secrets/service_account_admin_sdk");
 
 // initialize Firebase with admin privileges
@@ -29,14 +33,73 @@ const firebaseConfig = {
 
 // --- CLASSIC MODE VARIABLES ---
 let classicWinners = []; // to store uuid of players who have won the current game
+const classicPlayerStates = new Map();
 let classicGameID; // to store uuid of current game
 let classicPreviousPokemon; // to store the previous generated pokemon
 let classicCurrentPokemon; // to store the current generated pokemon
+let classicEventActive = false;
+let classicDoubleEarningsEventActive = false;
+let classicShinyEventActive = false;
+let shopDiscounts = {};
 
 // --- SENTRY DUTY MODE VARIABLES ---
 let sentryChallenges = {}; // store active sentry duty challenges
+const sentrySessions = new Map();
 const sentryDurationMs = 30 * 1000; // duration for each sentry guess
-const sentryFailureLimit = 3; // maximum session failures before game over
+const sentryFailureLimit = 3;
+const sentrySessionTtlMs = 60 * 60 * 1000;
+const pokemonCache = new Map();
+let validSentryIds = [];
+
+const rankingCacheTtlMs = 1 * 60 * 60 * 1000;
+const classicRankingCache = { data: null, expiresAt: 0, pending: null };
+const sentryRankingCache = { data: null, expiresAt: 0, pending: null };
+const shopBackgrounds = require("./data/shopBackgrounds.json");
+const shopOverlays = require("./data/shopOverlays.json");
+const companionDirectory = "./public/images/animations";
+const companionPrice = 2400;
+const overlayItems = shopOverlays.map((overlay) => ({
+  ...overlay,
+  type: "overlay",
+}));
+const companionItems = fs
+  .readdirSync(companionDirectory)
+  .filter((file) => file.toLowerCase().endsWith(".gif"))
+  .sort((a, b) => a.localeCompare(b))
+  .map((file) => ({
+    id: `companion-${file.slice(0, -4).toLowerCase()}`,
+    name: file
+      .slice(0, -4)
+      .replace(/[-_]/g, " ")
+      .replace(/\b\w/g, (letter) => letter.toUpperCase()),
+    imageUrl: `/public/images/animations/${encodeURIComponent(file)}`,
+    type: "companion",
+    price: file.toLowerCase().endsWith("_shiny.gif")
+      ? companionPrice * 2
+      : companionPrice,
+  }));
+const boostItems = [
+  {
+    id: "boost-master-ball",
+    name: "Master Ball Upgrade",
+    type: "boost",
+    price: 2500,
+    imageUrl: "/public/images/shop/boosts/masterball.webp",
+    description: "Upgrades to Master Ball tier for the next catch.",
+  },
+  {
+    id: "boost-double-earnings",
+    name: "2x Earnings (7 Days)",
+    type: "boost",
+    price: 3000,
+    imageUrl: "/public/images/shop/boosts/2x_multiplier.webp",
+    description: "Doubles Pokédollars earned for the next 7 days.",
+  },
+];
+const collectibleCatalog = {
+  overlay: overlayItems,
+  companion: companionItems,
+};
 
 // Background images per device type
 let bg_desktop_option; // to store current background option for rendering desktop views
@@ -51,25 +114,203 @@ const bg_mobile_number = fs.readdirSync(
 const app = express(); // new express app
 const auth = getAuth(); // reference to auth service
 const firestore = getFirestore(); // reference to firestore cloud storage service
+const rateLimitRedis = createClient({ url: process.env.REDIS_URL });
 const appVersion = packageJson.version;
 
-async function initializeClassicGame() {
-  const initialPokemon = await firestore
-    .collection("pokemons")
-    .doc("132")
-    .get();
-  if (!initialPokemon.exists || !initialPokemon.data())
-    throw new Error("Initial Pokémon 132 was not found");
+rateLimitRedis.on("error", (err) => {
+  console.error("Shared rate-limit Redis connection error:", err);
+});
 
-  classicCurrentPokemon = initialPokemon.data();
+let rateLimitRedisConnection;
+async function initializeRateLimitStore() {
+  if (!process.env.REDIS_URL)
+    throw new Error("REDIS_URL must be configured for shared rate limiting");
+  if (!rateLimitRedisConnection)
+    rateLimitRedisConnection = rateLimitRedis.connect();
+  await rateLimitRedisConnection;
+}
+
+const sendRateLimitRedisCommand = async (...args) => {
+  await initializeRateLimitStore();
+  return rateLimitRedis.sendCommand(args);
+};
+
+async function cachePokemonData() {
+  const snapshot = await firestore.collection("pokemons").get();
+
+  for (const doc of snapshot.docs) {
+    const pokemon = doc.data();
+    pokemonCache.set(doc.id, pokemon);
+    if (pokemon.name && !badFootprints.includes(pokemon.name))
+      validSentryIds.push(doc.id);
+  }
+
+  if (pokemonCache.size === 0) throw new Error("Pokémon collection is empty");
+  if (validSentryIds.length === 0)
+    throw new Error("No Pokémon are available for Sentry challenges");
+}
+
+async function getCachedRanking(cache, orderField, mapUser) {
+  if (cache.data !== null && Date.now() < cache.expiresAt) return cache.data;
+
+  if (!cache.pending) {
+    cache.pending = firestore
+      .collection("users")
+      .orderBy(orderField, "desc")
+      .limit(10)
+      .get()
+      .then((queryResult) => {
+        cache.data = queryResult.docs.map(mapUser);
+        cache.expiresAt = Date.now() + rankingCacheTtlMs;
+        return cache.data;
+      })
+      .finally(() => {
+        cache.pending = null;
+      });
+  }
+
+  return cache.pending;
+}
+
+async function mergeClassicGuestState(uid, guestId) {
+  const userKey = `user:${uid}`;
+  let userState = classicPlayerStates.get(userKey);
+  if (!userState) {
+    userState = { guesses: new Map(), winner: false, pendingWinner: null };
+    classicPlayerStates.set(userKey, userState);
+  }
+
+  const guestState = classicPlayerStates.get(`guest:${guestId}`);
+  if (!guestState || guestState === userState || userState.winner)
+    return userState;
+
+  for (const [name, entry] of guestState.guesses) {
+    if (entry.pending) await entry.pending;
+    if (!userState.guesses.has(name)) userState.guesses.set(name, entry);
+  }
+
+  if (guestState.winner) {
+    const winningEntry = [...guestState.guesses.values()].find(
+      (entry) => entry.result?.[2],
+    );
+    if (winningEntry) {
+      await updateStatsOnClassicWin(
+        uid,
+        winningEntry.result[0].name,
+        userState.guesses.size,
+        Math.random(),
+        winningEntry.guaranteedShiny,
+      );
+    }
+    userState.winner = true;
+    if (!classicWinners.includes(userKey)) classicWinners.push(userKey);
+  }
+
+  return userState;
+}
+
+async function initializeClassicGame() {
+  if (pokemonCache.size === 0) await cachePokemonData();
+
+  const initialPokemon = pokemonCache.get("132");
+  if (!initialPokemon) throw new Error("Initial Pokémon 132 was not found");
+
+  classicCurrentPokemon = initialPokemon;
   await classicGeneratePokemon();
 }
 
+app.locals.initializeRateLimitStore = initializeRateLimitStore;
 app.locals.initializeClassicGame = initializeClassicGame;
 
 // EJS view engine setup
 app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
+
+app.set("trust proxy", 3);
+
+function handleRateLimit(req, res, next, options) {
+  const message =
+    typeof options.message === "string"
+      ? options.message
+      : options.message?.error || "Too many requests. Please try again later.";
+
+  if (req.get("sec-fetch-dest") === "document") {
+    const referer = req.get("referer");
+    if (referer) {
+      let refererUrl;
+      try {
+        refererUrl = new URL(referer);
+      } catch (_) {
+        refererUrl = null;
+      }
+      const appOrigin = `${req.protocol}://${req.get("host")}`;
+      if (refererUrl?.origin === appOrigin) {
+        const sourceUrl = `${refererUrl.pathname}${refererUrl.search}`;
+        if (sourceUrl !== req.originalUrl) {
+          refererUrl.searchParams.set("rateLimitToast", message);
+          return res.redirect(
+            303,
+            `${refererUrl.pathname}${refererUrl.search}${refererUrl.hash}`,
+          );
+        }
+      }
+    }
+
+    res.locals.rateLimitToast = message;
+    return next();
+  }
+
+  return res.status(options.statusCode).send(options.message);
+}
+
+const firestoreReadLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 15,
+  message: { error: "Too many data requests, please slow down." },
+  handler: handleRateLimit,
+  standardHeaders: true,
+  legacyHeaders: false,
+  store: new RedisStore({
+    sendCommand: sendRateLimitRedisCommand,
+    prefix: "pokedle:rate-limit:firestore-read:",
+  }),
+});
+const shopLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 20,
+  message: { error: "Too many shop requests. Please try again later." },
+  handler: handleRateLimit,
+  standardHeaders: true,
+  legacyHeaders: false,
+  store: new RedisStore({
+    sendCommand: sendRateLimitRedisCommand,
+    prefix: "pokedle:rate-limit:shop:",
+  }),
+});
+const sentryStatsLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 30,
+  message: { error: "Too many game requests, please slow down." },
+  handler: handleRateLimit,
+  standardHeaders: true,
+  legacyHeaders: false,
+  store: new RedisStore({
+    sendCommand: sendRateLimitRedisCommand,
+    prefix: "pokedle:rate-limit:sentry-stats:",
+  }),
+});
+const authLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 5,
+  message: { error: "Too many account modification requests." },
+  handler: handleRateLimit,
+  standardHeaders: true,
+  legacyHeaders: false,
+  store: new RedisStore({
+    sendCommand: sendRateLimitRedisCommand,
+    prefix: "pokedle:rate-limit:account:",
+  }),
+});
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -122,6 +363,20 @@ app.use(
   }),
 );
 
+app.get("/data/shopBackgrounds.json", (_, res, next) => {
+  applyAssetCacheHeaders(res, 24 * 3600);
+  res.sendFile(require.resolve("./data/shopBackgrounds.json"), (err) => {
+    if (err) next(err);
+  });
+});
+
+app.get("/data/shopOverlays.json", (_, res, next) => {
+  applyAssetCacheHeaders(res, 24 * 3600);
+  res.sendFile(require.resolve("./data/shopOverlays.json"), (err) => {
+    if (err) next(err);
+  });
+});
+
 app.get("/app/version", (_, res) => {
   res.status(200);
   res.setHeader("X-App-Version", appVersion);
@@ -144,54 +399,125 @@ app.get("/classic", (req, res) => {
   res.render("classicMode", {
     bg: bgPathSelector(req.device.type),
     prev: classicPreviousPokemon,
+    appVersion: appVersion,
   });
 });
 
 // generate hints based on user's guess, check if user has won and, if so, call an update to his stats
 app.post("/classic", async (req, res, next) => {
-  firestore
-    .collection("pokemons")
-    .where("name", "==", req.body.guess)
-    .get()
-    .then(async (queryResult) => {
-      if (queryResult.docs.length != 1)
-        return next(createError(404, "Pokémon not found"));
-      let guess = queryResult.docs[0].data();
-      // confront guess with answer, return the hints to help user's guesses
-      let result = classicVerifyGuess(guess, classicCurrentPokemon);
-      // if player has won
-      if (result[2]) {
-        const shinyRoll = Math.random();
-        result[3] = {
-          ball: null,
-          shiny: shinyRoll < classicGetShinyChance(null),
-        };
-        if (!classicWinners.includes(req.body.uid))
-          classicWinners[classicWinners.length] = req.body.uid;
-        if (req.body.token != null) {
-          try {
-            const decodedToken = await auth.verifyIdToken(req.body.token);
-            if (!classicWinners.includes(decodedToken.uid)) {
-              result[3] = await updateStatsOnClassicWin(
-                decodedToken.uid,
-                req.body.guess,
-                req.body.tries,
-                shinyRoll,
-              );
-              classicWinners[classicWinners.length] = decodedToken.uid;
-            }
-          } catch (err) {
-            console.error(err);
-          }
-        }
+  try {
+    let authenticatedUid = null;
+    if (req.body.token != null) {
+      try {
+        authenticatedUid = (await auth.verifyIdToken(req.body.token)).uid;
+      } catch (_) {
+        return res.status(401).send({ error: "Invalid authentication token" });
       }
-      res.status(200);
-      res.send(result);
-    })
-    .catch((err) => {
-      console.error(err);
-      next(createError(500));
-    });
+    }
+
+    const guestId =
+      typeof req.body.uid === "string" &&
+      req.body.uid.trim().length > 0 &&
+      req.body.uid.length <= 128
+        ? req.body.uid
+        : null;
+    const playerId = authenticatedUid
+      ? `user:${authenticatedUid}`
+      : guestId
+        ? `guest:${guestId}`
+        : null;
+    if (!playerId)
+      return res.status(400).send({ error: "Player ID is required" });
+
+    // Search the local cache instead of querying Firestore
+    const guess = Array.from(pokemonCache.values()).find(
+      (p) => p.name === req.body.guess,
+    );
+
+    if (!guess) {
+      return next(createError(404, "Pokémon not found"));
+    }
+
+    let state;
+    if (authenticatedUid) {
+      state = await mergeClassicGuestState(authenticatedUid, guestId);
+    } else {
+      state = classicPlayerStates.get(playerId);
+      if (!state) {
+        state = { guesses: new Map(), winner: false, pendingWinner: null };
+        classicPlayerStates.set(playerId, state);
+      }
+    }
+
+    const existingGuess = state.guesses.get(guess.name);
+    if (existingGuess) {
+      try {
+        const previousResult = existingGuess.pending
+          ? await existingGuess.pending
+          : existingGuess.result;
+        const duplicateResult = [...previousResult];
+        duplicateResult[4] = {
+          tries: state.guesses.size,
+          duplicate: true,
+        };
+        return res.status(200).send(duplicateResult);
+      } catch (err) {
+        console.error(err);
+        return next(createError(500));
+      }
+    }
+
+    if (state.pendingWinner) await state.pendingWinner;
+    if (state.winner)
+      return res.status(409).send({ error: "Already won this game" });
+
+    const tries = state.guesses.size + 1;
+    const guaranteedShiny = classicShinyEventActive;
+    let result = classicVerifyGuess(guess, classicCurrentPokemon);
+    result[4] = { tries, duplicate: false };
+
+    if (result[2]) {
+      const shinyRoll = Math.random();
+      result[3] = {
+        ball: null,
+        shiny: guaranteedShiny || shinyRoll < classicGetShinyChance(null),
+        pokedollarsEarned: 0,
+      };
+      const entry = { tries, result: null, pending: null, guaranteedShiny };
+      state.guesses.set(guess.name, entry);
+      state.pendingWinner = (async () => {
+        try {
+          if (authenticatedUid) {
+            result[3] =
+              (await updateStatsOnClassicWin(
+                authenticatedUid,
+                guess.name,
+                tries,
+                shinyRoll,
+                guaranteedShiny,
+              )) || result[3];
+          }
+          entry.result = result;
+          state.winner = true;
+          if (!classicWinners.includes(playerId)) classicWinners.push(playerId);
+          return result;
+        } catch (err) {
+          state.guesses.delete(guess.name);
+          throw err;
+        } finally {
+          state.pendingWinner = null;
+        }
+      })();
+      entry.pending = state.pendingWinner;
+      result = await state.pendingWinner;
+    } else {
+      state.guesses.set(guess.name, { tries, result, pending: null });
+    }
+    res.status(200).send(result);
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
 });
 
 // send game ID and remaining time before next generation
@@ -203,10 +529,48 @@ app.get("/classic/state", (_, res) => {
     classicPreviousPokemon == null
       ? null
       : { ID: classicPreviousPokemon.ID, name: classicPreviousPokemon.name },
+    classicEventActive,
+    classicDoubleEarningsEventActive,
+    classicShinyEventActive,
   ]);
 });
 
-app.get("/classic/ball", async (req, res, next) => {
+app.get("/classic/today", async (req, res, next) => {
+  try {
+    const token = req.get("authorization")?.match(/^Bearer\s+(.+)$/i)?.[1];
+    let authenticatedUid = null;
+
+    if (token) {
+      try {
+        authenticatedUid = (await auth.verifyIdToken(token)).uid;
+      } catch (_) {}
+    }
+
+    const guestId =
+      typeof req.query.guestId === "string" ? req.query.guestId : null;
+    const playerId = authenticatedUid
+      ? `user:${authenticatedUid}`
+      : guestId
+        ? `guest:${guestId}`
+        : null;
+
+    // If the requesting player has won today, reveal the Pokémon
+    if (
+      playerId &&
+      classicWinners.includes(playerId) &&
+      classicCurrentPokemon
+    ) {
+      res.status(200).send({ pokemon: classicCurrentPokemon.name });
+    } else {
+      res.status(403).send({ error: "User has not won today's game" });
+    }
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
+});
+
+app.get("/classic/ball", firestoreReadLimiter, async (req, res, next) => {
   const token = req.get("authorization")?.match(/^Bearer\s+(.+)$/i)?.[1];
   if (!token) return res.status(401).send({ error: "Authentication required" });
 
@@ -225,10 +589,6 @@ app.get("/classic/ball", async (req, res, next) => {
       if (!user) return null;
 
       const currentDate = classicGetCurrentDate();
-      const daysSinceLastWin = classicGetDaysBetween(
-        user.classicLastWinDate,
-        currentDate,
-      );
       if (classicShouldResetStreak(user, currentDate)) {
         transaction.update(userRef, { classicWinStreak: 0 });
         user.classicWinStreak = 0;
@@ -243,66 +603,127 @@ app.get("/classic/ball", async (req, res, next) => {
   }
 });
 
-// render top 10 classic mode users page
-app.get("/classic/ranking", async (req, res) => {
-  firestore
-    .collection("users")
-    .orderBy("classicWins", "desc")
-    .limit(10)
-    .get()
-    .then((queryResult) => {
-      let topTen = [];
-      queryResult.forEach((user) => {
-        topTen[topTen.length] = {
-          id: user.id,
-          username: user.data().username,
-          classicWins: user.data().classicWins,
-        };
-      });
-      res.status(200);
-      res.render("classicRanking", {
-        rankingData: topTen,
-        bg: bgPathSelector(req.device.type),
-      });
-    })
-    .catch((err) => {
-      console.error(err);
-      next(createError(500));
+function redirectToRanking(res, mode) {
+  res.redirect(302, `/ranking?mode=${mode}`);
+}
+
+app.get("/classic/ranking", (_, res) =>
+  redirectToRanking(res, "classic"),
+);
+app.get("/sentry/ranking", (_, res) =>
+  redirectToRanking(res, "sentry"),
+);
+
+app.get("/ranking", async (req, res, next) => {
+  const mode = req.query.mode === "sentry" ? "sentry" : "classic";
+  try {
+    const [classicRankingData, sentryRankingData] = await Promise.all([
+      getCachedRanking(classicRankingCache, "classicWins", (user) => ({
+        id: user.id,
+        username: user.data().username,
+        classicWins: user.data().classicWins,
+      })),
+      getCachedRanking(sentryRankingCache, "sentryBestScore", (user) => ({
+        id: user.id,
+        username: user.data().username,
+        score: user.data().sentryBestScore || 0,
+      })),
+    ]);
+
+    res.status(200).render("ranking", {
+      activeMode: mode,
+      classicRankingData,
+      sentryRankingData,
+      bg: bgPathSelector(req.device.type),
     });
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
 });
 
 // send a boolean stating if user can play the current game
-app.get("/classic/canPlay/uid=:uid&gid=:gid", (req, res) => {
-  let canPlay = !classicWinners.includes(req.params.uid);
-  if (canPlay && req.params.gid != null)
-    canPlay = !classicWinners.includes(req.params.gid);
-  res.status(200);
-  res.send(canPlay);
+app.get("/classic/canPlay/uid=:uid&gid=:gid", async (req, res, next) => {
+  try {
+    const token = req.get("authorization")?.match(/^Bearer\s+(.+)$/i)?.[1];
+    let authenticatedUid = null;
+    if (token) {
+      try {
+        authenticatedUid = (await auth.verifyIdToken(token)).uid;
+      } catch (_) {
+        return res.status(401).send({ error: "Invalid authentication token" });
+      }
+      if (authenticatedUid !== req.params.gid)
+        return res.status(403).send({ error: "User ID does not match token" });
+      await mergeClassicGuestState(authenticatedUid, req.params.uid);
+    }
+
+    const canPlay =
+      !classicWinners.includes(`guest:${req.params.uid}`) &&
+      (!authenticatedUid ||
+        !classicWinners.includes(`user:${authenticatedUid}`));
+    res.status(200).send(canPlay);
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
 });
 
 // render sentry duty mode page
 app.get("/sentry", (req, res) => {
   res.render("sentryMode", {
     bg: bgPathSelector(req.device.type),
+    appVersion: appVersion,
   });
 });
 
 // verify the player's sentry duty guess
-app.post("/sentry", async (req, res, next) => {
+app.post("/sentry", sentryStatsLimiter, async (req, res, next) => {
   try {
     const challengeID = req.body.challengeID;
     const selected = req.body.selected;
     const challenge = sentryChallenges[challengeID];
 
-    if (!challenge || Date.now() > challenge.expiration) {
+    if (!challenge || challenge.processing) {
       res.status(410);
       res.send({ correct: false, timeout: true });
       return;
     }
 
+    const session = sentrySessions.get(challenge.sessionID);
+    if (
+      !session ||
+      session.currentChallengeID !== challengeID ||
+      session.gameOver ||
+      session.expiresAt <= Date.now()
+    )
+      return res.status(410).send({ correct: false, timeout: true });
+
+    let authenticatedUid = null;
+    const token = typeof req.body.token === "string" ? req.body.token : null;
+    if (token) {
+      try {
+        authenticatedUid = (await auth.verifyIdToken(token)).uid;
+      } catch (_) {
+        return res.status(401).send({ error: "Invalid authentication token" });
+      }
+    }
+    if (session.uid && authenticatedUid !== session.uid)
+      return res.status(401).send({ error: "Authentication required" });
+    if (!session.uid && authenticatedUid) {
+      session.uid = authenticatedUid;
+      session.totalScore = 0;
+      session.failures = 0;
+      session.rounds = 0;
+    }
+
+    challenge.processing = true;
     const elapsedMs = Date.now() - challenge.startTime;
     const timedOut = elapsedMs > sentryDurationMs;
-    const correct = selected === challenge.answer && !timedOut;
+    const correct =
+      selected === challenge.answer &&
+      challenge.options.includes(selected) &&
+      !timedOut;
     const baseScore = 1000;
     const decayFactor = 0.92;
     const score = correct
@@ -311,24 +732,32 @@ app.post("/sentry", async (req, res, next) => {
           Math.ceil(baseScore * Math.pow(decayFactor, elapsedMs / 1000)),
         )
       : 0;
+    const totalScore = session.totalScore + score;
+    const rounds = session.rounds + 1;
+    const failures = session.failures + (correct ? 0 : 1);
+    const gameOver = failures >= sentryFailureLimit;
 
-    if (req.body.token != null) {
-      auth
-        .verifyIdToken(req.body.token)
-        .then((decodedToken) => {
-          updateStatsOnSentryRound(
-            decodedToken.uid,
-            score,
-            !correct,
-            req.body.sessionTotalScore + (correct ? score : 0),
-            req.body.sessionRounds || 0,
-            req.body.gameOver || false,
-          );
-        })
-        .catch((err) => console.error(err));
+    try {
+      if (session.uid)
+        await updateStatsOnSentryRound(
+          session.uid,
+          totalScore,
+          !correct,
+          rounds,
+          gameOver,
+        );
+    } catch (err) {
+      challenge.processing = false;
+      throw err;
     }
 
     delete sentryChallenges[challengeID];
+    session.currentChallengeID = null;
+    session.totalScore = totalScore;
+    session.rounds = rounds;
+    session.failures = failures;
+    session.gameOver = gameOver;
+    session.expiresAt = Date.now() + sentrySessionTtlMs;
     res.status(200);
     res.send({
       correct: correct,
@@ -336,6 +765,10 @@ app.post("/sentry", async (req, res, next) => {
       answer: challenge.answer,
       timeout: timedOut,
       elapsedMs: elapsedMs,
+      totalScore: totalScore,
+      rounds: rounds,
+      failures: failures,
+      gameOver: gameOver,
     });
   } catch (err) {
     console.error(err);
@@ -344,43 +777,103 @@ app.post("/sentry", async (req, res, next) => {
 });
 
 // send current sentry duty challenge to the user
-app.get("/sentry/state", async (_, res, next) => {
+app.get("/sentry/state", async (req, res, next) => {
   try {
-    const challenge = await generateSentryChallenge();
-    res.status(200);
-    res.send(challenge);
+    const token = req.get("authorization")?.match(/^Bearer\s+(.+)$/i)?.[1];
+    let authenticatedUid = null;
+    if (token) {
+      try {
+        authenticatedUid = (await auth.verifyIdToken(token)).uid;
+      } catch (_) {
+        return res.status(401).send({ error: "Invalid authentication token" });
+      }
+    }
+
+    const now = Date.now();
+    for (const [id, activeSession] of sentrySessions) {
+      if (activeSession.expiresAt <= now) {
+        if (activeSession.currentChallengeID)
+          delete sentryChallenges[activeSession.currentChallengeID];
+        sentrySessions.delete(id);
+      }
+    }
+
+    let sessionID = req.query.sessionID;
+    let session;
+    if (sessionID == null) {
+      sessionID = randomUUID();
+      session = {
+        uid: authenticatedUid,
+        totalScore: 0,
+        failures: 0,
+        rounds: 0,
+        gameOver: false,
+        currentChallengeID: null,
+        expiresAt: now + sentrySessionTtlMs,
+      };
+      sentrySessions.set(sessionID, session);
+    } else {
+      session = sentrySessions.get(sessionID);
+      if (!session) return res.status(410).send({ error: "Session expired" });
+      if (session.uid && session.uid !== authenticatedUid)
+        return res.status(401).send({ error: "Authentication required" });
+      if (!session.uid && authenticatedUid) {
+        session.uid = authenticatedUid;
+        session.totalScore = 0;
+        session.failures = 0;
+        session.rounds = 0;
+      }
+    }
+
+    if (session.gameOver)
+      return res.status(410).send({ error: "Game over; start a new session" });
+
+    if (session.currentChallengeID) {
+      const previousChallenge = sentryChallenges[session.currentChallengeID];
+      if (!previousChallenge || previousChallenge.processing)
+        return res.status(409).send({ error: "Challenge is being processed" });
+
+      previousChallenge.processing = true;
+      const rounds = session.rounds + 1;
+      const failures = session.failures + 1;
+      const gameOver = failures >= sentryFailureLimit;
+      try {
+        if (session.uid)
+          await updateStatsOnSentryRound(
+            session.uid,
+            session.totalScore,
+            true,
+            rounds,
+            gameOver,
+          );
+      } catch (err) {
+        previousChallenge.processing = false;
+        throw err;
+      }
+
+      delete sentryChallenges[session.currentChallengeID];
+      session.currentChallengeID = null;
+      session.rounds = rounds;
+      session.failures = failures;
+      session.gameOver = gameOver;
+    }
+
+    if (session.gameOver)
+      return res.status(410).send({ error: "Game over; start a new session" });
+
+    session.expiresAt = Date.now() + sentrySessionTtlMs;
+    const challenge = await generateSentryChallenge(sessionID, session);
+    res.status(200).send({
+      ...challenge,
+      sessionID: sessionID,
+      totalScore: session.totalScore,
+      rounds: session.rounds,
+      failures: session.failures,
+    });
   } catch (err) {
     console.error(err);
     next(createError(500));
   }
-});
-
-// render top 10 sentry duty users page
-app.get("/sentry/ranking", async (req, res) => {
-  firestore
-    .collection("users")
-    .orderBy("sentryBestScore", "desc")
-    .limit(10)
-    .get()
-    .then((queryResult) => {
-      let topTen = [];
-      queryResult.forEach((user) => {
-        topTen[topTen.length] = {
-          id: user.id,
-          username: user.data().username,
-          score: user.data().sentryBestScore || 0,
-        };
-      });
-      res.status(200);
-      res.render("sentryRanking", {
-        rankingData: topTen,
-        bg: bgPathSelector(req.device.type),
-      });
-    })
-    .catch((err) => {
-      console.error(err);
-      next(createError(500));
-    });
 });
 
 // generate new unique id (uuid) on request
@@ -389,7 +882,7 @@ app.get("/user/id", (_, res) => {
   res.send(randomUUID());
 });
 
-app.put("/user/:gid", async (req, res, next) => {
+app.put("/user/:gid", authLimiter, async (req, res, next) => {
   let decodedToken;
   try {
     decodedToken = await auth.verifyIdToken(req.body.token);
@@ -411,6 +904,13 @@ app.put("/user/:gid", async (req, res, next) => {
         classicWinStreak: 0,
         classicLastWinDate: null,
         classicHistory: [],
+        pokedollars: 0,
+        ownedBackgrounds: [],
+        equippedBackground: null,
+        ownedOverlays: [],
+        equippedOverlay: null,
+        ownedCompanions: [],
+        equippedCompanion: null,
         sentryBestScore: 0,
         sentrySessionsCompleted: 0,
         sentryFailures: 0,
@@ -425,7 +925,7 @@ app.put("/user/:gid", async (req, res, next) => {
   }
 });
 
-app.patch("/user/:gid/username", async (req, res, next) => {
+app.patch("/user/:gid/username", authLimiter, async (req, res, next) => {
   const token = req.get("authorization")?.match(/^Bearer\s+(.+)$/i)?.[1];
   if (!token) return res.status(401).send({ error: "Authentication required" });
 
@@ -450,19 +950,18 @@ app.patch("/user/:gid/username", async (req, res, next) => {
 
   try {
     const userRef = firestore.collection("users").doc(decodedToken.uid);
-    const doc = await userRef.get();
-    if (!doc.exists) return res.status(404).send({ error: "User not found" });
-
     await userRef.update({ username });
     return res.status(204).end();
   } catch (err) {
+    if (err.code === 5 || err.code === "not-found")
+      return res.status(404).send({ error: "User not found" });
     console.error(err);
     next(createError(500));
   }
 });
 
 // render requested user's profile page
-app.get("/user/:gid/profile", async (req, res, next) => {
+app.get("/user/:gid/profile", firestoreReadLimiter, async (req, res, next) => {
   firestore
     .collection("users")
     .doc(req.params.gid)
@@ -478,16 +977,28 @@ app.get("/user/:gid/profile", async (req, res, next) => {
           sessions > 0
             ? Math.round(((sessions - failures) / sessions) * 1000) / 10
             : 0;
+        const hasCustomBackground = Boolean(
+          getShopBackground(user.equippedBackground),
+        );
         res.render("profile", {
           profileId: req.params.gid,
-          username: user.username,
-          classicWins: user.classicWins,
-          classicAvgTries: Math.round(user.classicAvgTries * 100) / 100,
+          username: user.username || "???",
+          classicWins: Number(user.classicWins) || 0,
+          classicAvgTries: Number(user.classicAvgTries)
+            ? Math.round(user.classicAvgTries * 100) / 100
+            : 0,
           sentryBestScore: user.sentryBestScore || 0,
           sentrySessionsCompleted: sessions,
           sentryAccuracy: accuracy,
           sentryBestSession: user.sentryBestSession || 0,
-          bg: bgPathSelector(req.device.type),
+          hasCustomBackground,
+          bg: profileBgPathSelector(user.equippedBackground, req.device.type),
+          defaultBg: bgPathSelector(req.device.type),
+          overlay:
+            getCollectible("overlay", user.equippedOverlay)?.imageUrl || null,
+          companion:
+            getCollectible("companion", user.equippedCompanion)?.imageUrl ||
+            null,
         });
       }
     })
@@ -497,8 +1008,401 @@ app.get("/user/:gid/profile", async (req, res, next) => {
     });
 });
 
+app.get("/shop", (req, res) => {
+  const discountedItems = [
+    ...shopBackgrounds.map((item) => ({ ...item, type: "background" })),
+    ...overlayItems,
+    ...companionItems,
+    ...boostItems,
+  ].map((item, index) => {
+    const discount = shopDiscounts[item.id];
+    if (discount) {
+      return {
+        ...item,
+        originalPrice: item.price,
+        price: Math.round(item.price * (1 - discount / 100)),
+        discountPercent: discount,
+        publishedOrder: item.publishedAt ? undefined : index,
+      };
+    }
+    return item.publishedAt
+      ? item
+      : {
+          ...item,
+          publishedOrder: index,
+        };
+  });
+
+  res.render("shop", {
+    bg: bgPathSelector(req.device.type),
+    shopItems: discountedItems,
+  });
+});
+
+app.get("/shop/state", firestoreReadLimiter, async (req, res, next) => {
+  const decodedToken = await verifyShopUserToken(req, res);
+  if (!decodedToken) return;
+
+  try {
+    const doc = await firestore.collection("users").doc(decodedToken.uid).get();
+    const user = doc.data();
+    if (!user) return res.status(404).send({ error: "User not found" });
+
+    const now = Date.now();
+    const currentDate = classicGetCurrentDate();
+    const tomorrow = new Date(now + 24 * 60 * 60 * 1000);
+    const { year, month, day } = classicGetDateTimeParts(tomorrow);
+    const tomorrowDate = `${String(day).padStart(2, "0")}-${String(
+      month,
+    ).padStart(2, "0")}-${year}`;
+
+    const masterBallBoostActive =
+      user.masterBallBoostDate === currentDate ||
+      user.masterBallBoostDate === tomorrowDate;
+
+    const doubleEarningsUntilDate = user.doubleEarningsUntilDate || null;
+    const remainingDays = doubleEarningsUntilDate
+      ? classicGetDaysBetween(currentDate, doubleEarningsUntilDate)
+      : null;
+    const doubleEarningsActive = remainingDays !== null && remainingDays >= 0;
+
+    res.set("Cache-Control", "no-store");
+    res.status(200).send({
+      pokedollars:
+        Number.isSafeInteger(user.pokedollars) && user.pokedollars >= 0
+          ? user.pokedollars
+          : 0,
+      ownedBackgrounds: getOwnedShopBackgrounds(user),
+      equippedBackground:
+        getShopBackground(user.equippedBackground)?.id || null,
+      ownedOverlays: getOwnedCollectibles(user, "overlay"),
+      equippedOverlay:
+        getCollectible("overlay", user.equippedOverlay)?.id || null,
+      ownedCompanions: getOwnedCollectibles(user, "companion"),
+      equippedCompanion:
+        getCollectible("companion", user.equippedCompanion)?.id || null,
+      masterBallBoostActive,
+      doubleEarningsUntilDate,
+      doubleEarningsRemainingDays: doubleEarningsActive ? remainingDays + 1 : 0,
+    });
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
+});
+
+app.post("/shop/purchase", shopLimiter, async (req, res, next) => {
+  const decodedToken = await verifyShopUserToken(req, res);
+  if (!decodedToken) return;
+
+  const background = getShopBackground(req.body?.backgroundId);
+  if (!background || background.purchasable === false)
+    return res.status(400).send({ error: "Unknown background" });
+
+  const discount = shopDiscounts[background.id];
+  const actualPrice = discount
+    ? Math.round(background.price * (1 - discount / 100))
+    : background.price;
+
+  try {
+    const userRef = firestore.collection("users").doc(decodedToken.uid);
+    const result = await firestore.runTransaction(async (transaction) => {
+      const doc = await transaction.get(userRef);
+      const user = doc.data();
+      if (!user) return { error: "User not found", status: 404 };
+
+      const ownedBackgrounds = getOwnedShopBackgrounds(user);
+      if (ownedBackgrounds.includes(background.id))
+        return { error: "You already own this background", status: 409 };
+
+      const pokedollars =
+        Number.isSafeInteger(user.pokedollars) && user.pokedollars >= 0
+          ? user.pokedollars
+          : 0;
+      if (pokedollars < actualPrice)
+        return { error: "Not enough Pokédollars", status: 400 };
+
+      ownedBackgrounds.push(background.id);
+      transaction.update(userRef, {
+        pokedollars: pokedollars - actualPrice,
+        ownedBackgrounds,
+      });
+      return { pokedollars: pokedollars - actualPrice, ownedBackgrounds };
+    });
+
+    if (result.error)
+      return res.status(result.status).send({ error: result.error });
+    res.status(200).send(result);
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
+});
+
+app.patch("/shop/equipped-background", shopLimiter, async (req, res, next) => {
+  const decodedToken = await verifyShopUserToken(req, res);
+  if (!decodedToken) return;
+
+  const backgroundId = req.body?.backgroundId;
+  if (
+    backgroundId !== null &&
+    (typeof backgroundId !== "string" || !getShopBackground(backgroundId))
+  )
+    return res.status(400).send({ error: "Unknown background" });
+
+  try {
+    const userRef = firestore.collection("users").doc(decodedToken.uid);
+    const result = await firestore.runTransaction(async (transaction) => {
+      const doc = await transaction.get(userRef);
+      const user = doc.data();
+      if (!user) return { error: "User not found", status: 404 };
+
+      if (
+        backgroundId !== null &&
+        !getOwnedShopBackgrounds(user).includes(backgroundId)
+      )
+        return { error: "You do not own this background", status: 403 };
+
+      transaction.update(userRef, { equippedBackground: backgroundId });
+      return { equippedBackground: backgroundId };
+    });
+
+    if (result.error)
+      return res.status(result.status).send({ error: result.error });
+    res.status(200).send(result);
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
+});
+
+app.post("/shop/collectibles/purchase", shopLimiter, async (req, res, next) => {
+  const decodedToken = await verifyShopUserToken(req, res);
+  if (!decodedToken) return;
+
+  const { type, itemId } = req.body || {};
+  const item = getCollectible(type, itemId);
+  if (!item) return res.status(400).send({ error: "Unknown shop item" });
+
+  const discount = shopDiscounts[item.id];
+  const actualPrice = discount
+    ? Math.round(item.price * (1 - discount / 100))
+    : item.price;
+
+  try {
+    const userRef = firestore.collection("users").doc(decodedToken.uid);
+    const result = await firestore.runTransaction(async (transaction) => {
+      const doc = await transaction.get(userRef);
+      const user = doc.data();
+      if (!user) return { error: "User not found", status: 404 };
+
+      const ownedItems = getOwnedCollectibles(user, type);
+      if (ownedItems.includes(item.id))
+        return { error: "You already own this item", status: 409 };
+
+      const pokedollars =
+        Number.isSafeInteger(user.pokedollars) && user.pokedollars >= 0
+          ? user.pokedollars
+          : 0;
+      if (pokedollars < actualPrice)
+        return { error: "Not enough Pokédollars", status: 400 };
+
+      ownedItems.push(item.id);
+      transaction.update(userRef, {
+        pokedollars: pokedollars - actualPrice,
+        [getOwnedCollectiblesField(type)]: ownedItems,
+      });
+      return { pokedollars: pokedollars - actualPrice, ownedItems };
+    });
+
+    if (result.error)
+      return res.status(result.status).send({ error: result.error });
+    res.status(200).send(result);
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
+});
+
+app.post("/shop/boost/purchase", shopLimiter, async (req, res, next) => {
+  const decodedToken = await verifyShopUserToken(req, res);
+  if (!decodedToken) return;
+
+  const { itemId } = req.body || {};
+  const boost = boostItems.find((b) => b.id === itemId);
+  if (!boost) return res.status(400).send({ error: "Unknown boost item" });
+
+  const discount = shopDiscounts[boost.id];
+  const actualPrice = discount
+    ? Math.round(boost.price * (1 - discount / 100))
+    : boost.price;
+
+  try {
+    const userRef = firestore.collection("users").doc(decodedToken.uid);
+    const result = await firestore.runTransaction(async (transaction) => {
+      const doc = await transaction.get(userRef);
+      const user = doc.data();
+      if (!user) return { error: "User not found", status: 404 };
+
+      const pokedollars =
+        Number.isSafeInteger(user.pokedollars) && user.pokedollars >= 0
+          ? user.pokedollars
+          : 0;
+
+      if (pokedollars < actualPrice)
+        return { error: "Not enough Pokédollars", status: 400 };
+
+      const updates = {
+        pokedollars: pokedollars - actualPrice,
+      };
+
+      const now = Date.now();
+      const currentDate = classicGetCurrentDate();
+      const alreadyWonToday = user.classicLastWinDate === currentDate;
+
+      if (boost.id === "boost-master-ball") {
+        if (alreadyWonToday) {
+          const tomorrow = new Date(now + 24 * 60 * 60 * 1000);
+          const { year, month, day } = classicGetDateTimeParts(tomorrow);
+          updates.masterBallBoostDate = `${String(day).padStart(
+            2,
+            "0",
+          )}-${String(month).padStart(2, "0")}-${year}`;
+        } else {
+          updates.masterBallBoostDate = currentDate;
+        }
+      } else if (boost.id === "boost-double-earnings") {
+        const currentDate = classicGetCurrentDate();
+        const currentUntil = user.doubleEarningsUntilDate;
+        let baseDate = currentDate;
+
+        if (typeof currentUntil === "string") {
+          const daysRemaining = classicGetDaysBetween(
+            currentDate,
+            currentUntil,
+          );
+          if (daysRemaining !== null && daysRemaining > 0) {
+            baseDate = currentUntil;
+          }
+        }
+
+        const [day, month, year] = baseDate.split("-").map(Number);
+        const targetUtc = Date.UTC(year, month - 1, day + 7);
+        const targetDateObj = new Date(targetUtc);
+        const {
+          year: y,
+          month: m,
+          day: d,
+        } = classicGetDateTimeParts(targetDateObj);
+
+        updates.doubleEarningsUntilDate = `${String(d).padStart(2, "0")}-${String(m).padStart(2, "0")}-${y}`;
+      }
+
+      transaction.update(userRef, updates);
+      return { pokedollars: updates.pokedollars, updates };
+    });
+
+    if (result.error)
+      return res.status(result.status).send({ error: result.error });
+    res.status(200).send(result);
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
+});
+
+app.patch(
+  "/shop/collectibles/equipped",
+  shopLimiter,
+  async (req, res, next) => {
+    const decodedToken = await verifyShopUserToken(req, res);
+    if (!decodedToken) return;
+
+    const { type, itemId } = req.body || {};
+    if (
+      !Object.prototype.hasOwnProperty.call(collectibleCatalog, type) ||
+      (itemId !== null &&
+        (typeof itemId !== "string" || !getCollectible(type, itemId)))
+    )
+      return res.status(400).send({ error: "Unknown shop item" });
+
+    try {
+      const userRef = firestore.collection("users").doc(decodedToken.uid);
+      const result = await firestore.runTransaction(async (transaction) => {
+        const doc = await transaction.get(userRef);
+        const user = doc.data();
+        if (!user) return { error: "User not found", status: 404 };
+
+        if (
+          itemId !== null &&
+          !getOwnedCollectibles(user, type).includes(itemId)
+        )
+          return { error: "You do not own this item", status: 403 };
+
+        transaction.update(userRef, {
+          [getEquippedCollectibleField(type)]: itemId,
+        });
+        return { itemId };
+      });
+
+      if (result.error)
+        return res.status(result.status).send({ error: result.error });
+      res.status(200).send(result);
+    } catch (err) {
+      console.error(err);
+      next(createError(500));
+    }
+  },
+);
+
+app.patch("/shop/equipped-loadout", shopLimiter, async (req, res, next) => {
+  const decodedToken = await verifyShopUserToken(req, res);
+  if (!decodedToken) return;
+
+  const { backgroundId, overlayId, companionId } = req.body || {};
+  if (
+    typeof backgroundId !== "string" ||
+    !getShopBackground(backgroundId) ||
+    typeof overlayId !== "string" ||
+    !getCollectible("overlay", overlayId) ||
+    typeof companionId !== "string" ||
+    !getCollectible("companion", companionId)
+  )
+    return res.status(400).send({ error: "Invalid profile configuration" });
+
+  try {
+    const userRef = firestore.collection("users").doc(decodedToken.uid);
+    const result = await firestore.runTransaction(async (transaction) => {
+      const doc = await transaction.get(userRef);
+      const user = doc.data();
+      if (!user) return { error: "User not found", status: 404 };
+
+      if (!getOwnedShopBackgrounds(user).includes(backgroundId))
+        return { error: "You do not own this background", status: 403 };
+      if (!getOwnedCollectibles(user, "overlay").includes(overlayId))
+        return { error: "You do not own this overlay", status: 403 };
+      if (!getOwnedCollectibles(user, "companion").includes(companionId))
+        return { error: "You do not own this companion", status: 403 };
+
+      transaction.update(userRef, {
+        equippedBackground: backgroundId,
+        equippedOverlay: overlayId,
+        equippedCompanion: companionId,
+      });
+      return { backgroundId, overlayId, companionId };
+    });
+
+    if (result.error)
+      return res.status(result.status).send({ error: result.error });
+    res.status(200).send(result);
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
+});
+
 // render requested user's pokedex page
-app.get("/user/:gid/pokedex", async (req, res, next) => {
+app.get("/user/:gid/pokedex", firestoreReadLimiter, async (req, res, next) => {
   firestore
     .collection("users")
     .doc(req.params.gid)
@@ -507,10 +1411,29 @@ app.get("/user/:gid/pokedex", async (req, res, next) => {
       let user = doc.data();
       if (user == undefined) next(createError(404, "User does not exist"));
       else {
+        const currentDate = classicGetCurrentDate();
+        const currentPokemonName = classicCurrentPokemon
+          ? classicCurrentPokemon.name
+          : null;
+
+        let history = Array.isArray(user.classicHistory)
+          ? user.classicHistory
+          : [];
+        history = history.map((entry) => {
+          // If the entry is today's active game, hide its identity
+          if (
+            entry.date === currentDate &&
+            entry.pokemon === currentPokemonName
+          ) {
+            return { ...entry, pokemon: "SECRET_TODAY" };
+          }
+          return entry;
+        });
+
         res.status(200);
         res.render("pokedex", {
-          username: user.username,
-          history: user.classicHistory,
+          username: user.username || "???",
+          history: history,
           bg: bgPathSelector(req.device.type),
         });
       }
@@ -538,22 +1461,44 @@ async function classicGeneratePokemon() {
     throw new Error("Cannot generate a game before the initial Pokémon loads");
 
   const previousPokemon = classicCurrentPokemon;
-  let pokemonID = previousPokemon.ID;
-  while (pokemonID == previousPokemon.ID)
-    pokemonID = Math.floor(Math.random() * 649 + 1);
+  const eligibleEventPokemon = eventPokemonPool.filter(
+    (pokemonName) => pokemonName !== previousPokemon.name,
+  );
+  const useEventPool = eligibleEventPokemon.length > 0 && Math.random() < 0.1;
+  const useDoubleEarnings = Math.random() < 0.2;
+  const useShinyEvent = Math.random() < 0.1;
 
-  const pokemonSnapshot = await firestore
-    .collection("pokemons")
-    .doc(pokemonID.toString())
-    .get();
-  const nextPokemon = pokemonSnapshot.data();
-  if (!pokemonSnapshot.exists || !nextPokemon)
-    throw new Error(`Pokémon ${pokemonID} was not found`);
+  let nextPokemon;
+  if (useEventPool) {
+    const pokemonName =
+      eligibleEventPokemon[
+        Math.floor(Math.random() * eligibleEventPokemon.length)
+      ];
+    nextPokemon = Array.from(pokemonCache.values()).find(
+      (pokemon) => pokemon.name === pokemonName,
+    );
+    if (!nextPokemon)
+      throw new Error(`Event Pokémon "${pokemonName}" was not found`);
+  } else {
+    const availablePokemon = Array.from(pokemonCache.entries())
+      .filter(
+        ([id, pokemon]) =>
+          Number(id) >= 1 &&
+          Number(id) <= 649 &&
+          id !== String(previousPokemon.ID) &&
+          pokemon,
+      )
+      .map(([, pokemon]) => pokemon);
+    if (availablePokemon.length === 0)
+      throw new Error("No Pokémon available for the next Classic game");
+    nextPokemon =
+      availablePokemon[Math.floor(Math.random() * availablePokemon.length)];
+  }
+  if (!nextPokemon) throw new Error("Generated Pokémon was not found");
 
   let nextDesktopBackground = bg_desktop_option;
   while (nextDesktopBackground == bg_desktop_option)
-    nextDesktopBackground =
-      Math.floor(Math.random() * bg_desktop_number) + 1;
+    nextDesktopBackground = Math.floor(Math.random() * bg_desktop_number) + 1;
   let nextMobileBackground = bg_mobile_option;
   while (nextMobileBackground == bg_mobile_option)
     nextMobileBackground = Math.floor(Math.random() * bg_mobile_number) + 1;
@@ -562,9 +1507,15 @@ async function classicGeneratePokemon() {
   classicCurrentPokemon = nextPokemon;
   classicGameID = randomUUID();
   classicWinners = [];
+  classicPlayerStates.clear();
+  classicEventActive = useEventPool;
+  classicDoubleEarningsEventActive = useDoubleEarnings;
+  classicShinyEventActive = useShinyEvent;
   bg_desktop_option = nextDesktopBackground;
   bg_mobile_option = nextMobileBackground;
-  console.log("#DEV Solution: " + classicCurrentPokemon.name);
+
+  generateShopDiscounts();
+
   scheduleClassicGeneration();
 }
 
@@ -610,59 +1561,44 @@ function classicVerifyGuess(guess, answer) {
     else if (answer.types.length != count || guess.types.length != count)
       response.types = "partial";
 
-    let guessColors = guess.colors || [];
-    let answerColors = answer.colors || [];
-    const COLOR_MATCH_THRESHOLD = 8;
+    const getColorName = (color) => {
+      let name;
+      if (Array.isArray(color)) name = color[0];
+      else if (color && typeof color === "object") name = color.name;
+      else if (
+        typeof color === "string" &&
+        !/^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color)
+      )
+        name = color;
+
+      return typeof name === "string" && name.trim()
+        ? name.trim().toLowerCase()
+        : null;
+    };
+    const guessColors = (guess.colors || []).map(getColorName);
+    const answerColors = (answer.colors || []).map(getColorName);
+    const remainingAnswerColors = new Map();
+    for (const colorName of answerColors)
+      if (colorName)
+        remainingAnswerColors.set(
+          colorName,
+          (remainingAnswerColors.get(colorName) || 0) + 1,
+        );
     let matchedColors = 0;
-
-    // --------------------------------------------------------
-    // Find the optimal one-to-one color matching.
-    //
-    // A pair of colors is considered a match if:
-    //     ΔE94 < 8
-    //
-    // Each guess color can match at most one answer color.
-    // Each answer color can match at most one guess color.
-    //
-    // The order of the colors in either array has no influence
-    // on the result.
-    // --------------------------------------------------------
-
-    function findBestColorMatching(guessIndex, usedAnswerColors, matchCount) {
-      // All guess colors have been considered.
-      if (guessIndex >= guessColors.length) {
-        matchedColors = Math.max(matchedColors, matchCount);
-        return;
-      }
-
-      // Option 1: do not match this guess color.
-      findBestColorMatching(guessIndex + 1, usedAnswerColors, matchCount);
-
-      const guessColor = guessColors[guessIndex].toLowerCase();
-
-      // Try matching this guess color with every unused
-      // answer color whose ΔE94 is below the threshold.
-      for (
-        let answerIndex = 0;
-        answerIndex < answerColors.length;
-        answerIndex++
-      ) {
-        if (usedAnswerColors.has(answerIndex)) continue;
-
-        const answerColor = answerColors[answerIndex].toLowerCase();
-        const distance = colorDistance(guessColor, answerColor);
-        if (distance > COLOR_MATCH_THRESHOLD) continue;
-
-        usedAnswerColors.add(answerIndex);
-        findBestColorMatching(guessIndex + 1, usedAnswerColors, matchCount + 1);
-        usedAnswerColors.delete(answerIndex);
+    for (const colorName of guessColors) {
+      const remaining = colorName
+        ? remainingAnswerColors.get(colorName) || 0
+        : 0;
+      if (remaining > 0) {
+        matchedColors++;
+        remainingAnswerColors.set(colorName, remaining - 1);
       }
     }
 
-    findBestColorMatching(0, new Set(), 0);
-
     if (
       guessColors.length === answerColors.length &&
+      guessColors.every(Boolean) &&
+      answerColors.every(Boolean) &&
       matchedColors === answerColors.length
     )
       response.colors = "correct";
@@ -793,6 +1729,10 @@ function classicShouldResetStreak(user, currentDate) {
 function classicGetActiveBall(user, currentDate = classicGetCurrentDate()) {
   if (!user) return null;
 
+  if (user.masterBallBoostDate === currentDate) {
+    return "master-ball";
+  }
+
   const streak = Number.isInteger(user.classicWinStreak)
     ? user.classicWinStreak
     : 0;
@@ -806,8 +1746,22 @@ function classicGetActiveBall(user, currentDate = classicGetCurrentDate()) {
   return null;
 }
 
+function classicGetPokedollarReward(tries) {
+  if (tries <= 3) return 500;
+  if (tries <= 6) return 400;
+  if (tries <= 10) return 300;
+  if (tries <= 20) return 200;
+  return 100;
+}
+
 // update a logged user's document on winning
-async function updateStatsOnClassicWin(id, pokemon, tries, shinyRoll) {
+async function updateStatsOnClassicWin(
+  id,
+  pokemon,
+  tries,
+  shinyRoll,
+  guaranteedShiny,
+) {
   const now = new Date();
   const { year, month, day } = classicGetDateTimeParts(now);
   const streakDate = classicGetCurrentDate();
@@ -832,7 +1786,8 @@ async function updateStatsOnClassicWin(id, pokemon, tries, shinyRoll) {
     if (daysSinceLastWin === 0)
       return {
         ball: classicGetBallForStreak(previousStreak),
-        shiny: false,
+        shiny: guaranteedShiny,
+        pokedollarsEarned: 0,
       };
 
     const ball = classicGetActiveBall(user, streakDate);
@@ -848,8 +1803,32 @@ async function updateStatsOnClassicWin(id, pokemon, tries, shinyRoll) {
     user.classicAvgTries =
       (classicWins * classicAvgTries + tries) / (classicWins + 1);
     user.classicWins = classicWins + 1;
+    let pokedollarsEarned = classicGetPokedollarReward(tries);
+    const doubleEarningsUntilDate = user.doubleEarningsUntilDate;
+    const remainingDays = doubleEarningsUntilDate
+      ? classicGetDaysBetween(streakDate, doubleEarningsUntilDate)
+      : null;
+    const hasDoubleEarningsBoost = remainingDays !== null && remainingDays >= 0;
+    const earningsMultiplier =
+      (classicDoubleEarningsEventActive ? 2 : 1) *
+      (hasDoubleEarningsBoost ? 2 : 1);
+    pokedollarsEarned *= earningsMultiplier;
+    const currentPokedollars =
+      Number.isSafeInteger(user.pokedollars) && user.pokedollars >= 0
+        ? user.pokedollars
+        : 0;
+    user.pokedollars = currentPokedollars + pokedollarsEarned;
+
+    if (
+      user.masterBallBoostDate &&
+      classicGetDaysBetween(streakDate, user.masterBallBoostDate) <= 0
+    )
+      user.masterBallBoostDate = null;
+    if (remainingDays !== null && remainingDays <= 0)
+      user.doubleEarningsUntilDate = null;
+
     if (!Array.isArray(user.classicHistory)) user.classicHistory = [];
-    const shiny = shinyRoll < classicGetShinyChance(ball);
+    const shiny = guaranteedShiny || shinyRoll < classicGetShinyChance(ball);
     let found = false;
     for (let i = 0; i < user.classicHistory.length; i++) {
       if (user.classicHistory[i].pokemon == pokemon) {
@@ -869,46 +1848,30 @@ async function updateStatsOnClassicWin(id, pokemon, tries, shinyRoll) {
       });
 
     transaction.set(userRef, user);
-    return { ball, shiny };
+    return { ball, shiny, pokedollarsEarned };
   });
 }
 
-async function generateSentryChallenge() {
+async function generateSentryChallenge(sessionID, session) {
   const challengeID = randomUUID();
-  let answer, answerDoc, answerID;
-
-  // pick a random pokemon that is not in the bad footprints list
-  for (let tries = 0; tries < 100; tries++) {
-    answerID = Math.floor(Math.random() * 649 + 1);
-    answerDoc = await firestore
-      .collection("pokemons")
-      .doc(answerID.toString())
-      .get();
-    if (!answerDoc.exists) continue;
-
-    const candidate = answerDoc.data();
-    if (badFootprints.includes(candidate.name)) continue;
-
-    answer = candidate;
-    break;
-  }
-
+  const answerID =
+    validSentryIds[Math.floor(Math.random() * validSentryIds.length)];
+  const answer = pokemonCache.get(answerID);
   if (!answer) throw new Error("Pokémon not found for sentry challenge");
 
   const options = [answer.name];
-
+  const wrongOptions = [
+    ...new Set(
+      Array.from(pokemonCache.values(), (pokemon) => pokemon.name).filter(
+        (name) => typeof name === "string" && name !== answer.name,
+      ),
+    ),
+  ];
+  if (wrongOptions.length < 3)
+    throw new Error("Not enough Pokémon for Sentry challenge options");
   while (options.length < 4) {
-    const optionID = Math.floor(Math.random() * 649 + 1);
-    if (optionID == answerID) continue;
-
-    const optionDoc = await firestore
-      .collection("pokemons")
-      .doc(optionID.toString())
-      .get();
-    if (!optionDoc.exists) continue;
-
-    const optionName = optionDoc.data().name;
-    if (!options.includes(optionName)) options.push(optionName);
+    const optionIndex = Math.floor(Math.random() * wrongOptions.length);
+    options.push(wrongOptions.splice(optionIndex, 1)[0]);
   }
 
   for (let i = options.length - 1; i > 0; i--) {
@@ -922,12 +1885,10 @@ async function generateSentryChallenge() {
     answer: answer.name,
     options: options,
     startTime: startTime,
-    expiration: startTime + sentryDurationMs,
+    sessionID: sessionID,
+    processing: false,
   };
-
-  setTimeout(() => {
-    delete sentryChallenges[challengeID];
-  }, sentryDurationMs * 2);
+  session.currentChallengeID = challengeID;
 
   return {
     challengeID: challengeID,
@@ -941,107 +1902,122 @@ async function generateSentryChallenge() {
 // update a logged user's sentry duty stats
 async function updateStatsOnSentryRound(
   id,
-  _,
-  failed,
   sessionTotal,
+  failed,
   sessionRounds,
   gameOver,
 ) {
-  firestore
-    .collection("users")
-    .doc(id)
-    .get()
-    .then((doc) => {
-      let user = doc.data();
-      if (user != undefined) {
-        user.sentryBestScore = user.sentryBestScore || 0;
-        if (sessionTotal > user.sentryBestScore)
-          user.sentryBestScore = sessionTotal;
-        user.sentrySessionsCompleted = (user.sentrySessionsCompleted || 0) + 1;
-        user.sentryFailures = user.sentryFailures || 0;
-        if (failed) user.sentryFailures++;
-        user.sentryBestSession = user.sentryBestSession || 0;
-        if (gameOver && sessionRounds > user.sentryBestSession)
-          user.sentryBestSession = sessionRounds;
-        firestore.collection("users").doc(id).set(user);
-      }
-    })
-    .catch((err) => console.error(err));
-}
+  const userRef = firestore.collection("users").doc(id);
+  await firestore.runTransaction(async (transaction) => {
+    const doc = await transaction.get(userRef);
+    const user = doc.data();
+    if (!user) return;
 
-function hexToRgb(hex) {
-  hex = hex.replace("#", "");
-  return {
-    r: parseInt(hex.substring(0, 2), 16),
-    g: parseInt(hex.substring(2, 4), 16),
-    b: parseInt(hex.substring(4, 6), 16),
-  };
-}
+    const sentryBestScore = Math.max(user.sentryBestScore || 0, sessionTotal);
+    const sentrySessionsCompleted = (user.sentrySessionsCompleted || 0) + 1;
+    const sentryFailures = (user.sentryFailures || 0) + (failed ? 1 : 0);
+    const sentryBestSession =
+      gameOver && sessionRounds > (user.sentryBestSession || 0)
+        ? sessionRounds
+        : user.sentryBestSession || 0;
 
-function rgbToLab({ r, g, b }) {
-  r /= 255;
-  g /= 255;
-  b /= 255;
-
-  r = r > 0.04045 ? Math.pow((r + 0.055) / 1.055, 2.4) : r / 12.92;
-  g = g > 0.04045 ? Math.pow((g + 0.055) / 1.055, 2.4) : g / 12.92;
-  b = b > 0.04045 ? Math.pow((b + 0.055) / 1.055, 2.4) : b / 12.92;
-
-  const x = (r * 0.4124 + g * 0.3576 + b * 0.1805) / 0.95047;
-  const y = (r * 0.2126 + g * 0.7152 + b * 0.0722) / 1.0;
-  const z = (r * 0.0193 + g * 0.1192 + b * 0.9505) / 1.08883;
-
-  const transform = (value) =>
-    value > 0.008856 ? Math.pow(value, 1 / 3) : 7.787 * value + 16 / 116;
-
-  const fx = transform(x);
-  const fy = transform(y);
-  const fz = transform(z);
-
-  return {
-    l: 116 * fy - 16,
-    a: 500 * (fx - fy),
-    b: 200 * (fy - fz),
-  };
-}
-
-function colorDistance(hex1, hex2) {
-  const lab1 = rgbToLab(hexToRgb(hex1));
-  const lab2 = rgbToLab(hexToRgb(hex2));
-  const deltaL = lab1.l - lab2.l;
-
-  const C1 = Math.sqrt(lab1.a * lab1.a + lab1.b * lab1.b);
-  const C2 = Math.sqrt(lab2.a * lab2.a + lab2.b * lab2.b);
-  const deltaC = C1 - C2;
-
-  const deltaA = lab1.a - lab2.a;
-  const deltaB = lab1.b - lab2.b;
-  let deltaH2 = deltaA * deltaA + deltaB * deltaB - deltaC * deltaC;
-  deltaH2 = Math.max(0, deltaH2);
-
-  const K1 = 0.045;
-  const K2 = 0.015;
-  const SL = 1;
-  const SC = 1 + K1 * C1;
-  const SH = 1 + K2 * C1;
-
-  return Math.sqrt(
-    Math.pow(deltaL / SL, 2) +
-      Math.pow(deltaC / SC, 2) +
-      deltaH2 / Math.pow(SH, 2),
-  );
+    transaction.update(userRef, {
+      sentryBestScore,
+      sentrySessionsCompleted,
+      sentryFailures,
+      sentryBestSession,
+    });
+  });
 }
 
 const getFootprintUrl = (pokemonName) =>
-  `/public/images/footprints/${encodeURIComponent(pokemonName)}.png`;
+  `/public/images/sentry/footprints/${encodeURIComponent(pokemonName)}.png`;
 
 const bgPathSelector = (device) =>
   device === "phone"
     ? `/public/images/backgrounds_mobile/${bg_mobile_option}.webp`
     : `/public/images/backgrounds_desktop/${bg_desktop_option}.webp`;
 
+function getShopBackground(backgroundId) {
+  return shopBackgrounds.find((background) => background.id === backgroundId);
+}
+
+function getCollectible(type, itemId) {
+  if (
+    typeof type !== "string" ||
+    !Object.prototype.hasOwnProperty.call(collectibleCatalog, type) ||
+    typeof itemId !== "string"
+  )
+    return null;
+  return collectibleCatalog[type]?.find((item) => item.id === itemId) || null;
+}
+
+function getOwnedCollectiblesField(type) {
+  return type === "overlay" ? "ownedOverlays" : "ownedCompanions";
+}
+
+function getEquippedCollectibleField(type) {
+  return type === "overlay" ? "equippedOverlay" : "equippedCompanion";
+}
+
+function getOwnedCollectibles(user, type) {
+  const field = getOwnedCollectiblesField(type);
+  if (!Array.isArray(user[field])) return [];
+  return [
+    ...new Set(user[field].filter((itemId) => getCollectible(type, itemId))),
+  ];
+}
+
+function getOwnedShopBackgrounds(user) {
+  if (!Array.isArray(user.ownedBackgrounds)) return [];
+  return [
+    ...new Set(
+      user.ownedBackgrounds.filter((backgroundId) =>
+        getShopBackground(backgroundId),
+      ),
+    ),
+  ];
+}
+
+function profileBgPathSelector(backgroundId, device) {
+  const background = getShopBackground(backgroundId);
+  if (!background) return bgPathSelector(device);
+  return device === "phone" ? background.mobileUrl : background.desktopUrl;
+}
+
+async function verifyShopUserToken(req, res) {
+  const token = req.get("authorization")?.match(/^Bearer\s+(.+)$/i)?.[1];
+  if (!token) {
+    res.status(401).send({ error: "Authentication required" });
+    return null;
+  }
+
+  try {
+    return await auth.verifyIdToken(token);
+  } catch (_) {
+    res.status(401).send({ error: "Invalid authentication token" });
+    return null;
+  }
+}
+
 const applyAssetCacheHeaders = (res, maxAge) => {
   res.setHeader("Cache-Control", `public, max-age=${maxAge}, must-revalidate`);
 };
+
+function generateShopDiscounts() {
+  shopDiscounts = {};
+  const allItems = [
+    ...shopBackgrounds,
+    ...overlayItems,
+    ...companionItems,
+    ...boostItems,
+  ];
+  for (const item of allItems) {
+    if (item.purchasable !== false && Math.random() < 0.25) {
+      const discountPercent = Math.floor(Math.random() * 31) + 20; // tra 20% e 50%
+      shopDiscounts[item.id] = discountPercent;
+    }
+  }
+}
 
 module.exports = app;

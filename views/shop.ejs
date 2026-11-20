@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" href="/public/images/icons/favicon.ico" />
+    <link rel="stylesheet" href="/public/stylesheets/style.css" />
+    <link
+      rel="manifest"
+      type="application/manifest+json"
+      href="/public/app.webmanifest"
+    />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <title>PokéShop</title>
+  </head>
+  <body
+    style="--page-background-image: url(&quot;<%= bg %>&quot;)"
+    data-rate-limit-toast="<%= typeof rateLimitToast === 'string' ? rateLimitToast : '' %>"
+  >
+    <div id="topnav" role="banner">
+      <div id="credits">
+        <p id="author">
+          Created by <a href="https://github.com/maxm33">maxm33</a>
+        </p>
+        <img
+          alt=""
+          src="/public/images/misc/github-mark.webp"
+          width="20px"
+          height="20px"
+        />
+      </div>
+      <div
+        id="auth-loading"
+        class="auth-loading"
+        role="status"
+        aria-live="polite"
+      >
+        <span class="profile-loader" aria-hidden="true"></span>
+        <span>Checking authentication...</span>
+      </div>
+      <div id="buttons-container">
+        <button id="login-button" class="topnav-buttons">
+          <img
+            id="login-img"
+            alt=""
+            src="/public/images/misc/login.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button
+          id="shop-button"
+          class="topnav-buttons"
+          type="button"
+          aria-label="Shop"
+          title="Shop"
+        >
+          <img
+            alt=""
+            src="/public/images/misc/shop.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="ranking-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/ranking.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="pokedex-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/pokedex.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+        <button id="profile-button" class="topnav-buttons">
+          <img
+            alt=""
+            src="/public/images/misc/profile.webp"
+            width="35px"
+            height="35px"
+          />
+        </button>
+      </div>
+    </div>
+    <header class="shop-header">
+      <div class="shop-brand">
+        <a
+          class="shop-back"
+          href="/classic"
+          aria-label="Return to Classic"
+          title="Return to Classic"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path
+              d="M15.5 4.5 8 12l7.5 7.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2.5"
+            />
+          </svg>
+        </a>
+        <span class="shop-brand-ball" aria-hidden="true"></span>
+        <span>PokéShop</span>
+      </div>
+      <div class="shop-inventory-container">
+        <button
+          id="inventory-button"
+          class="shop-inventory-btn"
+          type="button"
+          aria-label="Inventory"
+          title="Inventory"
+        >
+          <img
+            src="/public/images/misc/backpack.webp"
+            alt=""
+            width="28"
+            height="28"
+          />
+          <span class="shop-inventory-text">Inventory</span>
+        </button>
+        <span class="shop-inventory-label">(<span id="shop-inventory-count">0</span>)</span>
+      </div>
+      <div class="shop-wallet is-loading">
+        <span
+          id="shop-wallet-loader"
+          class="profile-loader"
+          role="status"
+          aria-label="Loading balance"
+        ></span>
+        <span class="shop-currency" aria-hidden="true">₽</span>
+        <span id="shop-wallet" aria-live="polite" hidden></span>
+      </div>
+    </header>
+    <main class="shop-page">
+      <p class="shop-rewards">
+        Customize your profile with backgrounds, overlays and Pokémon companions!
+      </p>
+      <nav class="shop-tabs" aria-label="Shop sections">
+        <button
+          class="shop-tab is-active"
+          data-shop-section="background"
+          type="button"
+          aria-pressed="true"
+        >
+          Background
+        </button>
+        <button
+          class="shop-tab"
+          data-shop-section="overlay"
+          type="button"
+          aria-pressed="false"
+        >
+          Overlay
+        </button>
+        <button
+          class="shop-tab"
+          data-shop-section="companion"
+          type="button"
+          aria-pressed="false"
+        >
+          Companion
+        </button>
+        <button
+          class="shop-tab"
+          data-shop-section="boost"
+          type="button"
+          aria-pressed="false"
+        >
+          Boost
+        </button>
+      </nav>
+      <div class="shop-search-container">
+        <input type="text" id="shop-search" class="shop-search-input" placeholder="Search items..." aria-label="Search items" />
+        <button
+          id="shop-filter-button"
+          class="shop-filter-button"
+          type="button"
+          aria-label="Open shop filters"
+          aria-haspopup="dialog"
+          aria-expanded="false"
+        >
+          <img
+            src="/public/images/misc/filter.webp"
+            alt=""
+            width="18"
+            height="18"
+          />
+        </button>
+      </div>
+      <dialog id="shop-filter-dialog" class="shop-filter-dialog" aria-labelledby="shop-filter-title">
+        <form id="shop-filter-form" method="dialog">
+          <div class="shop-filter-header">
+            <h2 id="shop-filter-title">Filter &amp; sort</h2>
+            <button id="shop-filter-close" class="shop-filter-close" type="button" aria-label="Close filters">&times;</button>
+          </div>
+          <label class="shop-filter-field" for="shop-sort">
+            <span id="shop-sort-label">Sort items</span>
+            <select id="shop-sort" name="sort">
+              <option value="default">Default order</option>
+              <option value="price-asc">Price: lowest to highest</option>
+              <option value="price-desc">Price: highest to lowest</option>
+              <option value="date-asc">Date: oldest first</option>
+              <option value="date-desc">Date: newest first</option>
+            </select>
+          </label>
+          <label id="shop-discount-filter" class="shop-filter-discount">
+            <input id="shop-discount-only" name="discountOnly" type="checkbox" />
+            <span>Show only discounts</span>
+          </label>
+          <div class="shop-filter-actions">
+            <button id="shop-filter-reset" class="shop-filter-reset" type="button">Reset</button>
+            <button class="shop-filter-apply" type="submit">Apply</button>
+          </div>
+        </form>
+      </dialog>
+      <div id="shop-items" class="shop-grid">
+        <% shopItems.forEach((item) => { %>
+        <article
+          class="shop-item fadeIn"
+          data-item-id="<%= item.id %>"
+          data-item-type="<%= item.type %>"
+          data-purchasable="<%= item.purchasable !== false %>"
+          data-discounted="<%= item.discountPercent ? 'true' : 'false' %>"
+          data-published-at="<%= item.publishedAt || '' %>"
+          data-published-order="<%= item.publishedOrder ?? '' %>"
+          hidden
+        >
+          <picture class="shop-image-frame">
+            <% if (item.type === "background") { %>
+            <source
+              media="(max-width: 670px)"
+              srcset="<%= item.mobileUrl %>"
+            />
+            <% } %>
+            <img
+              class="shop-preview"
+              src="<%= item.type === "background" ? item.desktopUrl : item.imageUrl %>"
+              alt="<%= item.name %>"
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
+          <div class="shop-item-content">
+            <h2><%= item.name.replace("Farfetchd", "Farfetch'd").replace("Nidoranf", "Nidoran♀").replace("Nidoranm", "Nidoran♂").replace("Ho Oh", "Ho-Oh") %></h2>
+            <div class="shop-price" style="flex-direction: column; gap: 0.3em;">
+              <% if (item.discountPercent) { %>
+                <div style="display: flex; align-items: center; gap: 0.5em;">
+                  <span style="color: #ef4444; text-decoration: line-through; font-size: 0.9em;">
+                    ₽ <%= item.originalPrice.toLocaleString("en-US") %>
+                  </span>
+                  <span style="background-color: #ef4444; color: white !important; font-size: 0.75em; padding: 0.1em 0.4em; border-radius: 0.5em;">
+                    -<%= item.discountPercent %>%
+                  </span>
+                </div>
+              <% } %>
+              <div style="display: flex; align-items: center; gap: 0.35em;">
+                <span class="shop-currency" aria-hidden="true">₽</span>
+                <span><%= item.price.toLocaleString("en-US") %></span>
+              </div>
+            </div>
+            <button
+              class="shop-item-action"
+              type="button"
+              data-action="purchase"
+              data-item-id="<%= item.id %>"
+              data-item-type="<%= item.type %>"
+              data-price="<%= item.price %>"
+              disabled
+            >
+              Buy
+            </button>
+          </div>
+        </article>
+        <% }); %>
+      </div>
+      <p id="shop-empty-state" class="shop-empty-state" hidden></p>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="/public/js/auth.js"></script>
+    <script type="module" src="/public/js/shop.js"></script>
+  </body>
+</html>
