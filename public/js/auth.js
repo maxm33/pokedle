@@ -29,7 +29,9 @@ let profileNameError = document.getElementById("profile-name-error");
 let rateLimitToast;
 let rateLimitToastTimeout;
 let rateLimitToastRemovalTimeout;
-// This cached value only paints the navigation; Firebase still resolves auth.
+const accountRateLimitStorageKey = "pokedleAccountRateLimitUntil";
+const accountRateLimitWindowMs = 60 * 60 * 1000;
+let accountRateLimitTimeout;
 let displayedAuthState = document.documentElement.dataset.authState;
 
 function showAuthError(message) {
@@ -62,6 +64,47 @@ function showRateLimitToast(message) {
       rateLimitToast.hidden = true;
     }, 250);
   }, 3000);
+}
+
+function applyAccountRateLimit(until) {
+  const remainingMs = until - Date.now();
+  if (accountRateLimitTimeout) window.clearTimeout(accountRateLimitTimeout);
+
+  if (remainingMs <= 0) {
+    loginButton.disabled = false;
+    try {
+      sessionStorage.removeItem(accountRateLimitStorageKey);
+    } catch (err) {
+      console.error("Failed to clear account rate limit state:", err);
+    }
+    return;
+  }
+
+  loginButton.disabled = true;
+  accountRateLimitTimeout = window.setTimeout(() => {
+    loginButton.disabled = false;
+    try {
+      sessionStorage.removeItem(accountRateLimitStorageKey);
+    } catch (err) {
+      console.error("Failed to clear account rate limit state:", err);
+    }
+  }, remainingMs);
+}
+
+function isAccountModificationRateLimit(error) {
+  return (
+    error.response?.status === 429 &&
+    error.response.data?.error === "Too many account modification requests."
+  );
+}
+
+try {
+  const accountRateLimitUntil = Number(
+    sessionStorage.getItem(accountRateLimitStorageKey),
+  );
+  applyAccountRateLimit(accountRateLimitUntil);
+} catch (err) {
+  console.error("Failed to restore account rate limit state:", err);
 }
 
 axios.interceptors.response.use(
@@ -105,58 +148,62 @@ try {
 }
 export const auth = getAuth(initializeApp(config.data));
 
-const unsubscribe = onAuthStateChanged(auth, (user) => {
-  const authState = user ? "signed-in" : "signed-out";
-  const shouldAnimate = displayedAuthState !== authState;
-  displayedAuthState = authState;
-  document.documentElement.dataset.authState = authState;
-  try {
-    sessionStorage.setItem("pokedleAuthState", authState);
-  } catch (err) {
-    console.error("Failed to cache navigation state:", err);
-  }
-
-  if (user) {
-    // user is signed in
-    loginButton.style.backgroundColor = "#ff6666";
-    logimg.src = "/public/images/misc/logout.webp";
-    rankingButton.style.borderRadius = "0";
-    if (shouldAnimate) {
-      animateFadeIn(loginButton, "1s");
-      animateFadeIn(rankingButton, "1s");
-      animateFadeIn(shopButton, "1s");
-      animateFadeIn(pokedexButton, "1s");
-      animateFadeIn(profileButton, "1s");
+const unsubscribe = onAuthStateChanged(
+  auth,
+  (user) => {
+    const authState = user ? "signed-in" : "signed-out";
+    const shouldAnimate = displayedAuthState !== authState;
+    displayedAuthState = authState;
+    document.documentElement.dataset.authState = authState;
+    try {
+      sessionStorage.setItem("pokedleAuthState", authState);
+    } catch (err) {
+      console.error("Failed to cache navigation state:", err);
     }
-  } else {
-    // user is not signed in
-    loginButton.style.backgroundColor = "#8cff66";
-    logimg.src = "/public/images/misc/login.webp";
-    rankingButton.style.borderRadius = "1.5em 0 0 1.5em";
-    if (shouldAnimate) {
-      animateFadeIn(loginButton, "1s");
-      animateFadeIn(rankingButton, "1s");
-      animateFadeIn(shopButton, "1s");
-      animateFadeOut(pokedexButton, "1s");
-      animateFadeOut(profileButton, "1s");
-    }
-  }
 
-  if (profileNameEditButton && profileName) {
-    const canEditProfileName =
-      user && user.uid === profileName.dataset.profileUid;
-    profileNameEditButton.hidden = !canEditProfileName;
-    if (!canEditProfileName && profileNameForm) {
-      profileNameForm.hidden = true;
-      profileName.hidden = false;
+    if (user) {
+      // user is signed in
+      loginButton.style.backgroundColor = "#ff6666";
+      logimg.src = "/public/images/misc/logout.webp";
+      rankingButton.style.borderRadius = "0";
+      if (shouldAnimate) {
+        animateFadeIn(loginButton, "1s");
+        animateFadeIn(rankingButton, "1s");
+        animateFadeIn(shopButton, "1s");
+        animateFadeIn(pokedexButton, "1s");
+        animateFadeIn(profileButton, "1s");
+      }
+    } else {
+      // user is not signed in
+      loginButton.style.backgroundColor = "#8cff66";
+      logimg.src = "/public/images/misc/login.webp";
+      rankingButton.style.borderRadius = "1.5em 0 0 1.5em";
+      if (shouldAnimate) {
+        animateFadeIn(loginButton, "1s");
+        animateFadeIn(rankingButton, "1s");
+        animateFadeIn(shopButton, "1s");
+        animateFadeOut(pokedexButton, "1s");
+        animateFadeOut(profileButton, "1s");
+      }
     }
-  }
 
-  if (authLoading) authLoading.hidden = true;
-}, (error) => {
-  console.error("Authentication check failed:", error);
-  showAuthError("Unable to check authentication.");
-});
+    if (profileNameEditButton && profileName) {
+      const canEditProfileName =
+        user && user.uid === profileName.dataset.profileUid;
+      profileNameEditButton.hidden = !canEditProfileName;
+      if (!canEditProfileName && profileNameForm) {
+        profileNameForm.hidden = true;
+        profileName.hidden = false;
+      }
+    }
+
+    if (authLoading) authLoading.hidden = true;
+  },
+  (error) => {
+    console.error("Authentication check failed:", error);
+    showAuthError("Unable to check authentication.");
+  },
+);
 
 loginButton.addEventListener("click", async () => {
   await auth.authStateReady();
@@ -171,14 +218,56 @@ loginButton.addEventListener("click", async () => {
         });
         window.location.reload();
       })
-      .catch((err) => console.error(err));
+      .catch(async (err) => {
+        console.error(err);
+        if (isAccountModificationRateLimit(err)) {
+          const retryAfterSeconds = Number(err.response.headers["retry-after"]);
+          const retryAfterMs =
+            Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
+              ? retryAfterSeconds * 1000
+              : accountRateLimitWindowMs;
+          const accountRateLimitUntil = Date.now() + retryAfterMs;
+
+          try {
+            sessionStorage.setItem(
+              accountRateLimitStorageKey,
+              String(accountRateLimitUntil),
+            );
+          } catch (storageError) {
+            console.error(
+              "Failed to save account rate limit state:",
+              storageError,
+            );
+          }
+          applyAccountRateLimit(accountRateLimitUntil);
+
+          try {
+            await signOut(auth);
+          } catch (signOutError) {
+            console.error(
+              "Failed to sign out after account rate limit:",
+              signOutError,
+            );
+          }
+        }
+      });
   else {
     if (profileNameEditButton) profileNameEditButton.hidden = true;
     if (profileNameForm) profileNameForm.hidden = true;
     if (profileName) profileName.hidden = false;
-    signOut(auth).then(() => {
+    const fadeOutButtons = Promise.all([
+      animateFadeOut(pokedexButton, "1s"),
+      animateFadeOut(profileButton, "1s"),
+    ]);
+    try {
+      await signOut(auth);
+      await fadeOutButtons;
       window.location.reload();
-    });
+    } catch (err) {
+      console.error("Failed to sign out:", err);
+      animateFadeIn(pokedexButton, "1s");
+      animateFadeIn(profileButton, "1s");
+    }
   }
 });
 
@@ -285,8 +374,18 @@ export function animateFadeIn(element, duration) {
 }
 
 function animateFadeOut(element, duration) {
-  element.style.animation = "fadeOut " + duration;
-  setTimeout(() => (element.style.visibility = "hidden"), 750);
+  return new Promise((resolve) => {
+    element.addEventListener(
+      "animationend",
+      () => {
+        element.style.visibility = "hidden";
+        resolve();
+      },
+      { once: true },
+    );
+    element.style.visibility = "visible";
+    element.style.animation = "fadeOut " + duration;
+  });
 }
 
 function getStoredAppVersion() {
