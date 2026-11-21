@@ -9,7 +9,7 @@
           document.documentElement.dataset.authState = authState;
         }
         const accountRateLimitUntil = Number(
-          sessionStorage.getItem("pokedleAccountRateLimitUntil"),
+          localStorage.getItem("pokedleAccountRateLimitUntil"),
         );
         if (
           Number.isFinite(accountRateLimitUntil) &&
@@ -17,7 +17,7 @@
         ) {
           document.documentElement.dataset.accountRateLimited = "true";
         } else {
-          sessionStorage.removeItem("pokedleAccountRateLimitUntil");
+          localStorage.removeItem("pokedleAccountRateLimitUntil");
         }
       } catch (err) {
         console.error("Failed to restore navigation state:", err);

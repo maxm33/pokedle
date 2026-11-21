@@ -74,7 +74,7 @@ function applyAccountRateLimit(until) {
     loginButton.disabled = false;
     document.documentElement.removeAttribute("data-account-rate-limited");
     try {
-      sessionStorage.removeItem(accountRateLimitStorageKey);
+      localStorage.removeItem(accountRateLimitStorageKey);
     } catch (err) {
       console.error("Failed to clear account rate limit state:", err);
     }
@@ -87,7 +87,7 @@ function applyAccountRateLimit(until) {
     loginButton.disabled = false;
     document.documentElement.removeAttribute("data-account-rate-limited");
     try {
-      sessionStorage.removeItem(accountRateLimitStorageKey);
+      localStorage.removeItem(accountRateLimitStorageKey);
     } catch (err) {
       console.error("Failed to clear account rate limit state:", err);
     }
@@ -103,7 +103,7 @@ function isAccountModificationRateLimit(error) {
 
 try {
   const accountRateLimitUntil = Number(
-    sessionStorage.getItem(accountRateLimitStorageKey),
+    localStorage.getItem(accountRateLimitStorageKey),
   );
   applyAccountRateLimit(accountRateLimitUntil);
 } catch (err) {
@@ -230,7 +230,7 @@ loginButton.addEventListener("click", async () => {
           const accountRateLimitUntil = Date.now() + retryAfterMs;
 
           try {
-            sessionStorage.setItem(
+            localStorage.setItem(
               accountRateLimitStorageKey,
               String(accountRateLimitUntil),
             );
