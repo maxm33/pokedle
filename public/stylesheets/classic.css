@@ -1,0 +1,146 @@
+#titles-container {
+  align-items: center;
+  display: grid;
+  gap: 0.4em;
+  grid-template-columns: repeat(7, 5.5em);
+  justify-content: center;
+  justify-items: center;
+  margin: 0.6em 0 0.8em;
+  visibility: hidden;
+  width: calc(7 * 5.5em + 6 * 0.4em);
+  max-width: 100%;
+}
+.titles {
+  align-items: center;
+  align-self: center;
+  display: grid;
+  font-size: 0.7em;
+  justify-content: center;
+  justify-self: center;
+  margin: 0;
+  min-height: 2.2em;
+  place-items: center;
+  text-align: center;
+  width: 5.5em;
+}
+.titles:first-child {
+  visibility: hidden;
+}
+#titles-container > :last-child {
+  margin-left: 0;
+}
+#answers-container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+#state-container {
+  display: grid;
+  gap: 0.4em;
+  grid-template-columns: repeat(7, 5.5em);
+  justify-content: center;
+  max-width: calc(7 * 5.5em + 6 * 0.4em);
+  width: 100%;
+}
+.answers {
+  animation: fadeIn 1.5s;
+  align-items: center;
+  display: flex;
+  height: 5em;
+  padding-top: 0.6em;
+  width: 100%;
+}
+.wrong,
+.correct,
+.partial,
+.wrong-higher,
+.wrong-lower {
+  border-radius: 0.8em;
+  height: 4.5em;
+  margin: 0 0.2em;
+  padding: 0.2em;
+  position: relative;
+  width: 5.5em;
+}
+.wrong,
+.wrong-higher,
+.wrong-lower {
+  background-color: #ff6666;
+}
+.wrong-higher {
+  background-image: url("../images/classic/wrong-higher.webp");
+  background-size: cover;
+}
+.wrong-lower {
+  background-image: url("../images/classic/wrong-lower.webp");
+  background-size: cover;
+}
+.correct {
+  background-color: #8cff66;
+}
+.partial {
+  background-color: #ffdb4d;
+}
+.habitat {
+  height: 36px;
+  margin-top: 0.9em;
+  width: 48px;
+}
+.color-square {
+  border: 0.1em solid white;
+  border-radius: 0.5em;
+  display: inline-block;
+  height: 23px;
+  margin-top: 1.1em;
+  padding: 0.25em;
+  position: relative;
+  width: 23px;
+}
+.types {
+  height: 11px;
+  margin-top: 0.8em;
+  width: 55px;
+}
+.answers-text {
+  font-size: 0.8em;
+  margin-top: 1.6em;
+}
+#victory-ad-container {
+  animation: fadeIn 1s;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  position: fixed;
+  z-index: 10000;
+}
+.victory-ad-content {
+  align-items: center;
+  border-radius: 3em;
+  display: flex;
+  flex-direction: column;
+  height: 38em;
+  max-height: calc(100vh - 2em);
+  overflow-y: auto;
+  font-size: 0.9em;
+  text-align: center;
+  width: 26em;
+}
+.victory-pokemon-image {
+  height: 162px;
+  width: 162px;
+}
+#victory-text1,
+#victory-text2,
+#victory-text3,
+#victory-text4,
+#victory-text5 {
+  animation: fadeIn 500ms;
+  font-size: 1em;
+  margin: 1.1em;
+}
+#victory-text1 {
+  margin-bottom: auto;
+  margin-top: 2em;
+}

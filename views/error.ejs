@@ -1,19 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <link rel="icon" href="/public/images/icons/favicon.ico" />
-    <link
-      rel="stylesheet"
-      href="/public/stylesheets/style.css?v=<%= encodeURIComponent(appVersion) %>"
-    />
-    <link
-      rel="manifest"
-      type="application/manifest+json"
-      href="/public/app.webmanifest"
-    />
-    <meta name="viewport" content="initial-scale=1, width=device-width" />
-    <title>Error</title>
-  </head>
+  <%- include("partials/head", {
+    title: "Error",
+    modules: ["base", "responsive"],
+    includeAuthState: false
+  }) %>
   <body style="--page-background-image: url(&quot;<%= bg %>&quot;)">
     <div id="container" role="main">
       <div id="logo" class="fadeIn">
@@ -24,7 +15,7 @@
             src="/public/images/misc/pokedle-logo.webp"
         /></a>
       </div>
-      <div style="font-size: 1em" class="fadeIn">
+      <div class="fadeIn inline-error-message">
         <h1>Error <%= error.status %>: <%= message %></h1>
         <br />
         <img

@@ -1,0 +1,23 @@
+<head>
+  <link rel="icon" href="/public/images/icons/favicon.ico" />
+  <% if (
+    typeof includeAuthState === "undefined" ||
+    includeAuthState !== false
+  ) { %>
+    <%- include("auth-state-bootstrap") %>
+  <% } %>
+  <%- include("stylesheets", { modules }) %>
+  <% if (typeof preconnect !== "undefined" && preconnect) { %>
+    <link rel="preconnect" href="https://www.gstatic.com" />
+  <% } %>
+  <link
+    rel="manifest"
+    type="application/manifest+json"
+    href="/public/app.webmanifest"
+  />
+  <meta name="viewport" content="initial-scale=1, width=device-width" />
+  <% if (typeof description !== "undefined" && description) { %>
+    <meta name="description" content="<%= description %>" />
+  <% } %>
+  <title><%= title %></title>
+</head>

@@ -1,10 +1,11 @@
 import { auth } from "./auth.js";
+import { getPokemonDisplayName } from "./pokemonNames.js";
 
-let feedback = document.getElementById("sentry-feedback");
-let optionsContainer = document.getElementById("sentry-options");
-let audio = document.getElementById("sentry-audio");
-let feedbackAudio = document.getElementById("sentry-feedback-audio");
-let muteButton = document.getElementById("sentry-mute");
+const feedback = document.getElementById("sentry-feedback");
+const optionsContainer = document.getElementById("sentry-options");
+const audio = document.getElementById("sentry-audio");
+const feedbackAudio = document.getElementById("sentry-feedback-audio");
+const muteButton = document.getElementById("sentry-mute");
 
 let totalScore = 0;
 let sessionFailed = 0;
@@ -25,10 +26,8 @@ if (muteButton && audio) {
     muteButton.setAttribute("aria-pressed", "false");
   }
 
-  if (audio) {
-    audio.volume = 0.5;
-    audio.play().catch(() => {});
-  }
+  audio.volume = 0.5;
+  audio.play().catch(() => {});
   muteButton.addEventListener("click", () => {
     const muted = !audio.muted;
     setAudioMuted(muted);
@@ -80,7 +79,7 @@ function renderChallenge() {
   if (failuresEl) failuresEl.textContent = `X: ${sessionFailed}/3`;
   optionsContainer.textContent = "";
   currentChallenge.options.forEach((option) => {
-    let pokemonDisplayName = getPokemonDisplayName(option);
+    const pokemonDisplayName = getPokemonDisplayName(option);
     const button = document.createElement("button");
     button.className = "sentry-option";
     button.dataset.option = option;
@@ -102,13 +101,6 @@ function renderChallenge() {
     button.addEventListener("click", () => submitGuess(option));
     optionsContainer.appendChild(button);
   });
-
-  function getPokemonDisplayName(pokemonName) {
-    return pokemonName
-      .replace("Farfetchd", "Farfetch'd")
-      .replace("NidoranF", "Nidoran♀")
-      .replace("NidoranM", "Nidoran♂");
-  }
 }
 
 function startCountdown(duration) {

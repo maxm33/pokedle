@@ -1,0 +1,526 @@
+#autocomplete {
+  display: inline-block;
+  margin-left: 3.5em;
+  position: relative;
+  width: 16em;
+}
+#textbar {
+  font-size: 0.55em;
+}
+.autocomplete-items {
+  border-bottom: none;
+  border-top: none;
+  left: 0;
+  max-height: 21.9em;
+  overflow-y: scroll;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 99;
+}
+.autocomplete-items div {
+  background-color: #333;
+  border: none;
+  cursor: pointer;
+}
+.autocomplete-items div:hover {
+  background-color: #404040;
+  transition: all 0.2s;
+}
+.list-options {
+  align-items: center;
+  border-radius: 0.36em;
+  display: flex;
+  font-size: 0.8em;
+  font-weight: 100;
+}
+.autocomplete-match {
+  color: #8cff66;
+}
+.mode-link {
+  margin-top: 0.5em;
+}
+#guess-button {
+  align-items: center;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  display: inline-flex;
+  height: 5em;
+  justify-content: center;
+  margin: 0em 0.3em 0.3em 0;
+  padding: 0;
+  position: relative;
+  text-decoration: none;
+  vertical-align: middle;
+  width: 4em;
+}
+#guess-button:focus-visible {
+  border-radius: 50%;
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+.guess-pokeball-scene {
+  display: block;
+  height: 5em;
+  position: relative;
+  width: 5.8em;
+}
+.guess-pokeball-bouncer {
+  animation: guess-pokeball-bounce 1.5s infinite;
+  bottom: 0.2em;
+  left: 50%;
+  margin-left: -0.9em;
+  position: absolute;
+}
+.guess-pokeball-shaker {
+  display: block;
+  transform-origin: center bottom;
+}
+.guess-pokeball-squasher {
+  animation: guess-pokeball-squash 1.5s infinite;
+  transform-origin: center bottom;
+}
+.guess-pokeball {
+  background: linear-gradient(
+    to bottom,
+    #e3000f 0%,
+    #e3000f calc(50% - 3px),
+    #222224 calc(50% - 3px),
+    #222224 calc(50% + 3px),
+    #fff calc(50% + 3px),
+    #fff 100%
+  );
+  border: 3px solid #222224;
+  border-radius: 50%;
+  display: block;
+  height: 3.6em;
+  overflow: visible;
+  position: relative;
+  width: 3.6em;
+}
+.guess-pokeball::after {
+  border-radius: 50%;
+  box-shadow:
+    inset -8px -6px 14px rgba(0, 0, 0, 0.2),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.3);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+}
+.guess-pokeball-light,
+.guess-pokeball-half-face {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+}
+.guess-pokeball-light {
+  background: white;
+  border-radius: 50%;
+  height: 1.2em;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 1.2em;
+  z-index: 1;
+}
+.guess-pokeball-top,
+.guess-pokeball-bottom {
+  position: absolute;
+  inset: 0;
+}
+.guess-pokeball-top {
+  transform-origin: center bottom;
+  z-index: 3;
+}
+.guess-pokeball-bottom {
+  transform-origin: center top;
+  z-index: 2;
+}
+.guess-pokeball-half-face {
+  background: linear-gradient(
+    to bottom,
+    #e3000f 0%,
+    #e3000f calc(50% - 3px),
+    #222224 calc(50% - 3px),
+    #222224 calc(50% + 3px),
+    #fff calc(50% + 3px),
+    #fff 100%
+  );
+  border: 3px solid #222224;
+  border-radius: 50%;
+  box-sizing: border-box;
+  height: calc(100% + 6px);
+  inset: -3px;
+  width: calc(100% + 6px);
+  box-shadow:
+    inset -8px -6px 14px rgba(0, 0, 0, 0.2),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.3);
+}
+.guess-pokeball-bottom .guess-pokeball-half-face {
+  clip-path: inset(50% 0 0);
+  -webkit-mask: radial-gradient(
+    circle at 50% 50%,
+    transparent 0.675em,
+    black 0.675em
+  );
+  mask: radial-gradient(circle at 50% 50%, transparent 0.675em, black 0.675em);
+}
+.guess-pokeball-scene.great-ball .guess-pokeball,
+.guess-pokeball-scene.great-ball .guess-pokeball-half-face {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 50'%3E%3Cpolygon points='4,0 28,0 42,32 18,32' fill='%23d3000f'/%3E%3Cpolygon points='96,0 72,0 58,32 82,32' fill='%23d3000f'/%3E%3C/svg%3E")
+      0 0 / 100% calc(50% - 3px) no-repeat,
+    linear-gradient(
+      to bottom,
+      #1960c6 0%,
+      #1960c6 calc(50% - 3px),
+      #222224 calc(50% - 3px),
+      #222224 calc(50% + 3px),
+      #fff calc(50% + 3px),
+      #fff 100%
+    );
+}
+.guess-pokeball-scene.ultra-ball .guess-pokeball,
+.guess-pokeball-scene.ultra-ball .guess-pokeball-half-face {
+  background:
+    linear-gradient(
+        90deg,
+        transparent 18%,
+        #ffcc00 18%,
+        #ffcc00 36%,
+        transparent 36%,
+        transparent 64%,
+        #ffcc00 64%,
+        #ffcc00 82%,
+        transparent 82%
+      )
+      0 0 / 100% calc(50% - 3px) no-repeat,
+    linear-gradient(
+      to bottom,
+      #222222 0%,
+      #222222 calc(50% - 3px),
+      #222224 calc(50% - 3px),
+      #222224 calc(50% + 3px),
+      #fff calc(50% + 3px),
+      #fff 100%
+    );
+}
+.guess-pokeball-scene.master-ball .guess-pokeball,
+.guess-pokeball-scene.master-ball .guess-pokeball-half-face {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 50'%3E%3Ccircle cx='12' cy='30' r='15' fill='%23d53165'/%3E%3Ccircle cx='88' cy='30' r='15' fill='%23d53165'/%3E%3Cpath d='M34,34 L34,14 L50,26 L66,14 L66,34' stroke='white' stroke-width='6' stroke-linejoin='miter' stroke-linecap='butt' fill='none'/%3E%3C/svg%3E")
+      0 0 / 100% calc(50% - 3px) no-repeat,
+    linear-gradient(
+      to bottom,
+      #5c358f 0%,
+      #5c358f calc(50% - 3px),
+      #222224 calc(50% - 3px),
+      #222224 calc(50% + 3px),
+      #fff calc(50% + 3px),
+      #fff 100%
+    );
+}
+.guess-pokeball-top .guess-pokeball-half-face {
+  clip-path: inset(0 0 50%);
+}
+.guess-pokeball-bottom .guess-pokeball-half-face {
+  clip-path: inset(50% 0 0);
+}
+.guess-pokeball-button {
+  background: #fff;
+  border: 3px solid #222224;
+  border-radius: 50%;
+  height: 1.35em;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 1.35em;
+  z-index: 1;
+}
+.guess-pokeball-button::before {
+  background: #fff;
+  border: 1px solid #222224;
+  border-radius: 50%;
+  content: "";
+  height: 0.7em;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 0.7em;
+}
+.guess-pokeball-scene.is-catching .guess-pokeball-bouncer,
+.guess-pokeball-scene.is-releasing .guess-pokeball-bouncer {
+  animation: none;
+  transform: translateY(0);
+}
+.guess-pokeball-scene.is-catching .guess-pokeball-squasher,
+.guess-pokeball-scene.is-releasing .guess-pokeball-squasher {
+  animation: none;
+}
+.guess-pokeball-scene.is-catching .guess-pokeball-shaker {
+  animation: guess-pokeball-catch-shake 8s 1 ease-in-out both;
+}
+.guess-pokeball-scene.is-releasing .guess-pokeball-shaker {
+  animation: guess-pokeball-release-shake 1.6s var(--release-shake-count)
+    ease-in-out both;
+}
+.guess-pokeball-scene.is-catching .guess-pokeball {
+  animation: guess-pokeball-catch-pop 8s 1 both;
+}
+.guess-pokeball-scene.is-catching .guess-pokeball-button {
+  animation: guess-pokeball-blink 8s 1 both;
+}
+.guess-pokeball-scene.is-releasing .guess-pokeball-button {
+  animation: guess-pokeball-release-blink 1.6s var(--release-shake-count) both;
+}
+.guess-pokeball-scene.is-releasing .guess-pokeball {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+.guess-pokeball-scene.is-releasing .guess-pokeball::after {
+  opacity: 0;
+}
+.guess-pokeball-scene.is-releasing.is-opening .guess-pokeball-light {
+  animation: guess-pokeball-burst 2.4s 1 both ease-out;
+  box-shadow:
+    0 0 1.2em 0.6em #fff,
+    0 0 3.2em 1.6em #c2e9fb;
+}
+.guess-pokeball-scene.is-releasing.is-opening .guess-pokeball-top {
+  animation: guess-pokeball-open-top 2.4s 1 both;
+}
+.guess-pokeball-scene.is-releasing.is-opening .guess-pokeball-bottom {
+  animation: guess-pokeball-open-bottom 2.4s 1 both;
+}
+.guess-pokeball-scene.is-releasing .guess-pokeball-half-face {
+  opacity: 1;
+}
+.guess-pokeball-scene.is-catching .guess-pokeball-button::before {
+  animation: guess-pokeball-catch-core-blink 8s 1 both;
+}
+.guess-pokeball-scene.is-releasing .guess-pokeball-button::before {
+  animation: guess-pokeball-release-core-blink 1.6s var(--release-shake-count)
+    both;
+}
+@keyframes guess-pokeball-bounce {
+  0% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
+  }
+  50% {
+    transform: translateY(-1.6em);
+    animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.5);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes guess-pokeball-squash {
+  0%,
+  40%,
+  60%,
+  100% {
+    transform: scale(1, 1);
+  }
+  45%,
+  55% {
+    transform: scale(0.95, 1.05);
+  }
+  50% {
+    transform: scale(1.2, 0.8);
+  }
+}
+@keyframes guess-pokeball-catch-shake {
+  0%,
+  11%,
+  17%,
+  31%,
+  37%,
+  51%,
+  57%,
+  100% {
+    transform: rotate(0);
+  }
+  12%,
+  16%,
+  32%,
+  36%,
+  52%,
+  56% {
+    transform: rotate(-12deg);
+  }
+  14%,
+  34%,
+  54% {
+    transform: rotate(18deg);
+  }
+}
+@keyframes guess-pokeball-release-shake {
+  0%,
+  60%,
+  100% {
+    transform: rotate(0);
+  }
+  65%,
+  75% {
+    transform: rotate(-12deg);
+  }
+  70% {
+    transform: rotate(18deg);
+  }
+}
+@keyframes guess-pokeball-catch-pop {
+  0%,
+  64%,
+  67%,
+  100% {
+    transform: scale(1);
+  }
+  65% {
+    transform: scale(1.1);
+  }
+}
+@keyframes guess-pokeball-open-top {
+  0%,
+  10% {
+    transform: translateY(0) rotate(0);
+  }
+  18%,
+  55% {
+    transform: translateY(-1.4em) rotate(-15deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+}
+@keyframes guess-pokeball-open-bottom {
+  0%,
+  10% {
+    transform: translateY(0) rotate(0);
+  }
+  18%,
+  55% {
+    transform: translateY(0.4em) rotate(8deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+}
+@keyframes guess-pokeball-burst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+  }
+  4% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(2);
+  }
+  10% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(15);
+  }
+  20%,
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(20);
+  }
+}
+@keyframes guess-pokeball-blink {
+  0%,
+  9%,
+  12%,
+  29%,
+  32%,
+  49%,
+  52%,
+  61%,
+  85%,
+  100% {
+    background: #fff;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.2);
+  }
+  10%,
+  11%,
+  30%,
+  31%,
+  50%,
+  51% {
+    background: #ff3333;
+    box-shadow: 0 0 0.75em 0.15em #f00;
+  }
+  62%,
+  82% {
+    background: #fff;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.2);
+  }
+}
+@keyframes guess-pokeball-release-core-blink {
+  0%,
+  60%,
+  75%,
+  100% {
+    background: #fff;
+  }
+  65%,
+  70% {
+    background: #ff3333;
+  }
+}
+@keyframes guess-pokeball-release-blink {
+  0%,
+  60%,
+  75%,
+  100% {
+    background: #fff;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.2);
+  }
+  65%,
+  70% {
+    background: #ff3333;
+    box-shadow: 0 0 0.75em 0.15em #f00;
+  }
+}
+@keyframes guess-pokeball-catch-core-blink {
+  0%,
+  9%,
+  12%,
+  29%,
+  32%,
+  49%,
+  52%,
+  61%,
+  85%,
+  100% {
+    background: #fff;
+  }
+  10%,
+  11%,
+  30%,
+  31%,
+  50%,
+  51%,
+  64%,
+  65%,
+  67% {
+    background: #ff3333;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .guess-pokeball-bouncer,
+  .guess-pokeball-squasher,
+  .guess-pokeball-shaker,
+  .guess-pokeball,
+  .guess-pokeball-button,
+  .guess-pokeball-light,
+  .guess-pokeball-top,
+  .guess-pokeball-bottom,
+  .guess-pokeball-half-face {
+    animation: none;
+  }
+}

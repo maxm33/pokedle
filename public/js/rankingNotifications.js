@@ -1,5 +1,9 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 import { auth } from "./auth.js";
+import {
+  getClosestNotificationIndex,
+  renderNotificationIndicators,
+} from "./notificationCarousel.js";
 
 const seenStorageKey = "rankingNotificationSeenIds";
 let seenNotificationIds = new Set();
@@ -67,26 +71,22 @@ function renderSentryNotifications() {
   indicators.hidden = visible.length < 2;
   previous.hidden = visible.length < 2;
   next.hidden = visible.length < 2;
-  indicators.replaceChildren();
-  visible.forEach((card, index) => {
-    const button = document.createElement("button");
-    button.className = "event-notification-indicator";
-    button.type = "button";
-    button.setAttribute("aria-label", `Show notification ${index + 1}`);
-    if (index === currentNotificationIndex)
-      button.setAttribute("aria-current", "true");
-    button.addEventListener("click", () => {
+  if (currentNotificationIndex >= visible.length)
+    currentNotificationIndex = Math.max(0, visible.length - 1);
+  renderNotificationIndicators(
+    indicators,
+    visible,
+    currentNotificationIndex,
+    (index) => {
       currentNotificationIndex = index;
       notificationSwiper.scrollTo({
-        left: card.offsetLeft,
+        left: visible[index].offsetLeft,
         behavior: "smooth",
       });
       renderSentryNotifications();
-    });
-    indicators.appendChild(button);
-  });
-  if (currentNotificationIndex >= visible.length)
-    currentNotificationIndex = Math.max(0, visible.length - 1);
+    },
+    (index) => `Show notification ${index + 1}`,
+  );
 }
 
 if (!isClassicPage && notificationSwiper) {
@@ -120,15 +120,9 @@ if (!isClassicPage && notificationSwiper) {
     const visible = sentryNotifications.filter((card) => !card.hidden);
     if (!visible.length) return;
     const swiperLeft = notificationSwiper.getBoundingClientRect().left;
-    currentNotificationIndex = visible.reduce(
-      (closestIndex, card, index) =>
-        Math.abs(card.getBoundingClientRect().left - swiperLeft) <
-        Math.abs(
-          visible[closestIndex].getBoundingClientRect().left - swiperLeft,
-        )
-          ? index
-          : closestIndex,
-      0,
+    currentNotificationIndex = getClosestNotificationIndex(
+      visible,
+      swiperLeft,
     );
     document
       .querySelectorAll(".event-notification-indicator")

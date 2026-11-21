@@ -7,7 +7,6 @@ from io import BytesIO
 import json
 import os
 from pathlib import Path
-import re
 import tempfile
 import time
 from urllib.error import URLError

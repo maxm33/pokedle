@@ -1,0 +1,114 @@
+#profile-name-container {
+  align-items: center;
+  display: flex;
+  gap: 0.75em;
+  justify-content: center;
+  background-color: #333;
+  border-radius: 2em;
+  padding: 0.5em 1.5em;
+  margin-top: 1.5em;
+  animation: fadeIn 1.5s;
+}
+#profile-name-container:has(+ #profile-name-form:not([hidden])),
+#profile-name-container[hidden] {
+  display: none !important;
+}
+#profile-name-container h1 {
+  overflow-wrap: anywhere;
+  margin: 0 !important;
+}
+#edit-profile-name-button {
+  background-color: white;
+  border: 0;
+  border-radius: 50%;
+  color: black;
+  cursor: pointer;
+  font-size: 1.3em;
+  height: 1.5em;
+  line-height: 1;
+  width: 1.5em;
+  margin-top: 0;
+  animation: fadeIn 1.5s;
+}
+#profile-name-form {
+  margin-bottom: 1em;
+  max-width: 20em;
+  width: 80%;
+}
+#profile-name-actions {
+  display: flex;
+  gap: 0.5em;
+  justify-content: center;
+  margin-top: 0.5em;
+}
+#profile-name-actions button {
+  align-items: center;
+  background-color: white;
+  border: 0;
+  border-radius: 1em;
+  color: black;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 0.5em;
+  padding: 0.5em 1em;
+}
+#profile-name-actions button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+#profile-name-actions button > span:not(.profile-loader) {
+  color: black;
+}
+.profile-loader {
+  animation: profile-loader-spin 0.8s linear infinite;
+  border: 0.15em solid rgba(0, 0, 0, 0.25);
+  border-radius: 50%;
+  border-top-color: black;
+  display: inline-block;
+  height: 1em;
+  width: 1em;
+}
+.profile-loader[hidden] {
+  display: none;
+}
+.state-loading {
+  align-items: center;
+  display: flex;
+  gap: 0.65em;
+  justify-content: center;
+  margin: 1em;
+}
+.state-loading .profile-loader {
+  border-color: rgba(255, 255, 255, 0.35);
+  border-top-color: white;
+  flex: 0 0 auto;
+}
+.state-loading[hidden] {
+  display: none;
+}
+@keyframes profile-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .profile-loader {
+    animation-duration: 1.6s;
+  }
+}
+#profile-name-error {
+  color: #ff6666;
+  font-size: 0.75em;
+  min-height: 1em;
+}
+#continue-button {
+  animation: fadeIn 500ms;
+  border-width: 0;
+  font-size: 1em;
+  margin-bottom: 2em;
+  margin-top: auto;
+}
+#onprofile-dex-button {
+  font-size: 0.7em;
+  margin-bottom: 1.25em;
+}

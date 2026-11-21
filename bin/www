@@ -29,7 +29,7 @@ server.on("listening", onListening);
 
 // Normalize a port into a number, string, or false.
 function normalizePort(val) {
-  let port = parseInt(val, 10);
+  const port = parseInt(val, 10);
   // named pipe
   if (isNaN(port)) return val;
   // port number
@@ -40,7 +40,7 @@ function normalizePort(val) {
 // Event listener for HTTP server "error" event.
 function onError(error) {
   if (error.syscall !== "listen") throw error;
-  let bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
+  const bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case "EACCES":
@@ -56,7 +56,7 @@ function onError(error) {
 
 // Event listener for HTTP server "listening" event.
 function onListening() {
-  let addr = server.address();
-  let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+  const addr = server.address();
+  const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
   debug("Listening on " + bind);
 }

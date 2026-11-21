@@ -1,0 +1,21 @@
+<script>
+  try {
+    const authState = sessionStorage.getItem("pokedleAuthState");
+    if (authState === "signed-in" || authState === "signed-out") {
+      document.documentElement.dataset.authState = authState;
+    }
+    const accountRateLimitUntil = Number(
+      localStorage.getItem("pokedleAccountRateLimitUntil"),
+    );
+    if (
+      Number.isFinite(accountRateLimitUntil) &&
+      accountRateLimitUntil > Date.now()
+    ) {
+      document.documentElement.dataset.accountRateLimited = "true";
+    } else {
+      localStorage.removeItem("pokedleAccountRateLimitUntil");
+    }
+  } catch (err) {
+    console.error("Failed to restore navigation state:", err);
+  }
+</script>

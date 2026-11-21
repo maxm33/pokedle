@@ -1,0 +1,233 @@
+#sentry-status,
+#sentry-status * {
+  font-size: 0.95em;
+}
+#sentry-feedback {
+  margin-top: 0.5em;
+}
+#sentry-footprint-container {
+  margin: 1em 0 0.5em 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 15%;
+  min-width: 280px;
+  max-width: 22em;
+  aspect-ratio: 4 / 3;
+  background-image: url("/public/images/sentry/footprint-grate-frame.png");
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+.sentry-grate-stat {
+  position: absolute;
+  z-index: 10;
+  font-size: 0.9em;
+  color: white;
+  text-shadow:
+    2px 2px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+.sentry-top-left {
+  top: 8%;
+  left: 6%;
+}
+.sentry-top-right {
+  top: 10%;
+  right: 8%;
+}
+.sentry-top-mid {
+  top: 7%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+#sentry-mute {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 1.4em;
+  transition: transform 0.2s ease;
+}
+#sentry-mute:hover {
+  transform: translateX(-50%) scale(1.15);
+}
+#sentry-timer-bar-container {
+  position: absolute;
+  bottom: 8%;
+  left: 10%;
+  width: 80%;
+  height: 6px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  z-index: 10;
+  overflow: hidden;
+}
+#sentry-timer-bar {
+  height: 100%;
+  width: 100%;
+  background-color: #8cff66;
+  transform-origin: left center;
+  transition: width 0.1s linear;
+}
+#sentry-footprint {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  transform: translate(-50%, -50%) scale(3);
+  transform-origin: center center;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+  display: block;
+  transition: transform 240ms ease;
+}
+#sentry-overlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+  pointer-events: none;
+  color: white;
+  font-size: 1.15em;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 0.6em;
+}
+.sentry-options {
+  align-items: center;
+  display: grid;
+  gap: 0.6em;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  justify-content: center;
+  margin: 1em auto 0;
+  max-width: 22em;
+  width: min(90vw, 22em);
+}
+.sentry-option {
+  align-items: center;
+  background-color: rgba(32, 200, 60, 1);
+  border: none;
+  border-radius: 0.6em;
+  display: flex;
+  cursor: pointer;
+  justify-content: space-between;
+  overflow: visible;
+  padding: 0.6em 0.8em;
+  position: relative;
+}
+.sentry-option-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.sentry-name {
+  font-size: 0.65em;
+  font-weight: 600;
+}
+.sentry-mini {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  margin-left: 0.8em;
+}
+.sentry-option.sentry-correct::after {
+  content: "";
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 6px solid #0a7fff;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  box-sizing: border-box;
+  z-index: 2;
+}
+.sentry-option.sentry-wrong::before,
+.sentry-option.sentry-wrong::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 55%;
+  height: 6px;
+  background: #ff3333;
+  transform-origin: center;
+  pointer-events: none;
+  z-index: 2;
+}
+.sentry-option.sentry-wrong::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.sentry-option.sentry-wrong::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+#sentry-title {
+  font-size: 1.2em;
+}
+.profile-sentry-stat {
+  margin-top: 0.75em;
+}
+img[src*="/images/sentry/footprints/"] {
+  image-rendering: pixelated;
+}
+@media (min-width: 671px) {
+  #sentry-game-layout {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 1.5em;
+    justify-content: center;
+  }
+  #sentry-footprint-container {
+    flex: 0 0 22em;
+  }
+  .sentry-options {
+    flex: 0 0 22em;
+    margin: 0;
+  }
+}
+@media (max-width: 670px) {
+  #sentry-game-layout {
+    display: contents;
+  }
+  #sentry-footprint-container,
+  .sentry-options {
+    max-width: 100%;
+    width: calc(100% - 4em);
+  }
+  #sentry-footprint {
+    max-width: 100%;
+    max-height: 75%;
+  }
+  #sentry-status,
+  #sentry-status * {
+    font-size: 0.85em;
+  }
+}
+@media (max-width: 420px) {
+  #sentry-title,
+  #sentry-feedback {
+    font-size: 0.6em;
+  }
+  .sentry-name {
+    font-size: 0.55em;
+  }
+  .sentry-mini {
+    width: 48px;
+    height: 48px;
+    margin-left: 0.1em;
+  }
+}
