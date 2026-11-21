@@ -2658,6 +2658,11 @@ body.ranking-page #leaderboard-board {
 .ranking-rows:hover {
   transform: translateX(4px);
 }
+.ranking-rows.rank-standard:link,
+.ranking-rows.rank-standard:visited {
+  background-color: #f8fafc;
+  color: inherit;
+}
 .ranking-rows.rank-1 {
   background: linear-gradient(90deg, #fef9c3 0%, #fde047 100%);
   border-color: #ca8a04;
