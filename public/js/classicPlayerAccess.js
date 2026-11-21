@@ -6,6 +6,8 @@ export function initializeClassicPlayerAccess(auth, userID) {
   const subtitle = document.getElementById("subtitle");
   const inputContainer = document.getElementById("textbar-container");
   const stateContainer = document.getElementById("state-container");
+  const isDisplayed = (element) =>
+    window.getComputedStyle(element).display !== "none";
 
   onAuthStateChanged(auth, async (user) => {
     setGuessBallVariant(null);
@@ -39,31 +41,31 @@ export function initializeClassicPlayerAccess(auth, userID) {
       })
       .then((response) => {
         if (response.data) {
-          if (subtitle.style.display === "block") {
+          if (isDisplayed(subtitle)) {
             triggerElementAnimation(subtitle, "fadeOut");
             window.setTimeout(() => (subtitle.style.display = "none"), 1150);
           }
-          if (inputContainer.style.display === "none") {
+          if (!isDisplayed(inputContainer)) {
             triggerElementAnimation(inputContainer, "fadeIn");
             inputContainer.style.display = "block";
           }
-          if (stateContainer.style.display === "none") {
+          if (!isDisplayed(stateContainer)) {
             triggerElementAnimation(stateContainer, "fadeIn");
             stateContainer.style.display = "block";
           }
         } else {
-          if (subtitle.style.display === "none") {
+          if (!isDisplayed(subtitle)) {
             triggerElementAnimation(subtitle, "fadeIn");
             subtitle.style.display = "block";
           }
-          if (inputContainer.style.display === "block") {
+          if (isDisplayed(inputContainer)) {
             triggerElementAnimation(inputContainer, "fadeOut");
             window.setTimeout(
               () => (inputContainer.style.display = "none"),
               1150,
             );
           }
-          if (stateContainer.style.display === "block") {
+          if (isDisplayed(stateContainer)) {
             triggerElementAnimation(stateContainer, "fadeOut");
             window.setTimeout(
               () => (stateContainer.style.display = "none"),

@@ -23,6 +23,13 @@
   font-size: 1em;
   margin: 0;
 }
+#author > a {
+  color: deepskyblue;
+  text-decoration: none;
+}
+#author > a:hover {
+  color: greenyellow;
+}
 .auth-loading {
   align-items: center;
   display: flex;

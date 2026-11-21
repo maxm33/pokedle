@@ -32,6 +32,7 @@ body.ranking-page #leaderboard-board {
   margin: 0;
   padding: 0.55em 0.9em;
   text-align: left;
+  text-decoration: none;
   transition: transform 150ms ease;
 }
 .ranking-rows:hover {
