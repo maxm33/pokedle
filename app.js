@@ -6,7 +6,7 @@ const { RedisStore } = require("rate-limit-redis");
 const { createClient } = require("redis");
 const { initializeApp, applicationDefault } = require("firebase-admin/app");
 const { getAuth } = require("firebase-admin/auth");
-const { FieldValue, getFirestore } = require("firebase-admin/firestore");
+const { getFirestore } = require("firebase-admin/firestore");
 const logger = require("morgan");
 const createError = require("http-errors");
 const packageJson = require("./package.json");
@@ -279,7 +279,6 @@ async function ensureMonthlyRankingPeriod() {
       );
       for (const [userId, reward] of rewardsByUser) {
         const user = reward.profile.data();
-        normalizeMasterBallBoostInventory(user);
         const ownedBoosts = getOwnedBoostInventory(user);
         ownedBoosts["boost-master-ball"] += reward.masterBallBoosts;
         ownedBoosts["boost-double-earnings"] += reward.doubleEarningsBoosts;
@@ -1358,12 +1357,6 @@ app.get("/shop/state", firestoreReadLimiter, async (req, res, next) => {
       const doc = await transaction.get(userRef);
       const profile = doc.data();
       if (!profile) return null;
-
-      if (normalizeMasterBallBoostInventory(profile))
-        transaction.update(userRef, {
-          ownedBoosts: profile.ownedBoosts,
-          ...getMasterBallBoostProfileUpdates(profile.activeMasterBallBoost),
-        });
       return profile;
     });
     if (!user) return res.status(404).send({ error: "User not found" });
@@ -1566,8 +1559,6 @@ app.post("/shop/boost/purchase", shopLimiter, async (req, res, next) => {
 
       if (pokedollars < actualPrice)
         return { error: "Not enough Pokédollars", status: 400 };
-
-      normalizeMasterBallBoostInventory(user);
       const ownedBoosts = getOwnedBoostInventory(user);
       ownedBoosts[boost.id]++;
       transaction.update(userRef, {
@@ -1604,24 +1595,13 @@ app.post("/shop/boost/activate", shopLimiter, async (req, res, next) => {
       const doc = await transaction.get(userRef);
       const user = doc.data();
       if (!user) return { error: "User not found", status: 404 };
-
-      const migrationChanged = normalizeMasterBallBoostInventory(user);
-      const saveMigration = () => {
-        if (migrationChanged)
-          transaction.update(userRef, {
-            ownedBoosts: user.ownedBoosts,
-            ...getMasterBallBoostProfileUpdates(user.activeMasterBallBoost),
-          });
-      };
       const currentDate = classicGetCurrentDate();
       if (isUserBoostActive(user, itemId, currentDate)) {
-        saveMigration();
         return { error: "This boost is already active", status: 409 };
       }
 
       const ownedBoosts = getOwnedBoostInventory(user);
       if (ownedBoosts[itemId] < 1) {
-        saveMigration();
         return {
           error: "You do not have this boost in your inventory",
           status: 409,
@@ -2007,65 +1987,21 @@ function classicFormatDate(date) {
   )}-${year}`;
 }
 
-function classicGetLegacyMasterBallBoostUses(user) {
-  if (Number.isSafeInteger(user.masterBallBoostUses))
-    return Math.max(0, user.masterBallBoostUses);
-  return user.masterBallBoostDate ? 1 : 0;
-}
-
 function getMasterBallBoostProfileUpdates(active) {
   return {
     activeMasterBallBoost: Boolean(active),
-    masterBallBoostUses: FieldValue.delete(),
-    masterBallBoostDate: FieldValue.delete(),
   };
 }
 
-function normalizeMasterBallBoostInventory(user) {
-  const ownedBoosts = getOwnedBoostInventory(user);
-  const legacyUses = classicGetLegacyMasterBallBoostUses(user);
-  const currentDate = classicGetCurrentDate();
-  const active = classicIsMasterBallBoostActive(user, currentDate);
-  if (active)
-    ownedBoosts["boost-master-ball"] += Math.max(0, legacyUses - 1);
-  const previousOwnedBoosts = user.ownedBoosts;
-  const inventoryChanged =
-    !previousOwnedBoosts ||
-    boostItems.some(
-      (boost) => previousOwnedBoosts[boost.id] !== ownedBoosts[boost.id],
-    );
-  const changed =
-    inventoryChanged ||
-    typeof user.activeMasterBallBoost !== "boolean" ||
-    Object.prototype.hasOwnProperty.call(user, "masterBallBoostUses") ||
-    Object.prototype.hasOwnProperty.call(user, "masterBallBoostDate") ||
-    user.activeMasterBallBoost !== active;
-
-  user.ownedBoosts = ownedBoosts;
-  user.activeMasterBallBoost = active;
-  delete user.masterBallBoostUses;
-  delete user.masterBallBoostDate;
-  return changed;
-}
-
-function classicIsMasterBallBoostActive(user, currentDate) {
-  if (typeof user.activeMasterBallBoost === "boolean")
-    return user.activeMasterBallBoost;
-
-  const uses = classicGetLegacyMasterBallBoostUses(user);
-  if (uses <= 0) return false;
-  if (!user.masterBallBoostDate) return true;
-
-  const daysUntilScheduledBoost = classicGetDaysBetween(
-    currentDate,
-    user.masterBallBoostDate,
-  );
-  return daysUntilScheduledBoost !== null && daysUntilScheduledBoost >= 0;
+function classicIsMasterBallBoostActive(user) {
+  return typeof user.activeMasterBallBoost === "boolean"
+    ? user.activeMasterBallBoost
+    : false;
 }
 
 function isUserBoostActive(user, itemId, currentDate) {
   if (itemId === "boost-master-ball")
-    return classicIsMasterBallBoostActive(user, currentDate);
+    return classicIsMasterBallBoostActive(user);
   if (itemId === "boost-double-earnings") {
     const remainingDays = user.doubleEarningsUntilDate
       ? classicGetDaysBetween(currentDate, user.doubleEarningsUntilDate)
@@ -2164,7 +2100,7 @@ function classicGetStreakBall(user, currentDate = classicGetCurrentDate()) {
 
 function classicGetActiveBall(user, currentDate = classicGetCurrentDate()) {
   if (!user) return null;
-  if (classicIsMasterBallBoostActive(user, currentDate)) return "master-ball";
+  if (classicIsMasterBallBoostActive(user)) return "master-ball";
   return classicGetStreakBall(user, currentDate);
 }
 
@@ -2226,12 +2162,8 @@ async function updateStatsOnClassicWin(
         rankingUpdated: false,
       };
 
-    normalizeMasterBallBoostInventory(user);
     const streakBall = classicGetStreakBall(user, streakDate);
-    const masterBallBoostActive = classicIsMasterBallBoostActive(
-      user,
-      streakDate,
-    );
+    const masterBallBoostActive = classicIsMasterBallBoostActive(user);
     const ball = masterBallBoostActive ? "master-ball" : streakBall;
     user.classicWinStreak = classicGetNextStreak(
       previousStreak,
