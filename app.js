@@ -335,7 +335,7 @@ function scheduleMonthlyRankingReset() {
     ensureMonthlyRankingPeriod().catch((err) => {
       console.error("Failed to reset monthly rankings:", err);
     });
-  }, 60 * 1000);
+  }, 5 * 60 * 1000);
 }
 
 async function addSurpassedNotifications(
