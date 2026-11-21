@@ -333,6 +333,22 @@ html[data-auth-state="signed-out"] #profile-button {
 .rate-limit-toast[hidden] {
   display: none;
 }
+.shop-purchase-count {
+  color: #15803d;
+  font-size: 1.5em;
+  font-weight: bold;
+  pointer-events: none;
+  position: fixed;
+  transform: translate(-50%, 0);
+  z-index: 10001;
+  animation: shop-purchase-float 1.2s ease-out forwards;
+}
+@keyframes shop-purchase-float {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -3em);
+  }
+}
 .event-icon {
   flex: 0 0 auto;
   font-size: 1.25em;

@@ -26,6 +26,18 @@ let activeSort = "default";
 let discountOnlyActive = false;
 let inventoryCategory = null;
 
+function showPurchaseCount(button) {
+  const { left, top, width } = button.getBoundingClientRect();
+  const count = document.createElement("span");
+  count.className = "shop-purchase-count";
+  count.textContent = "+1";
+  count.setAttribute("aria-hidden", "true");
+  count.style.left = `${left + width / 2}px`;
+  count.style.top = `${top}px`;
+  document.body.appendChild(count);
+  window.setTimeout(() => count.remove(), 1250);
+}
+
 function updateFilterOptions() {
   if (!sortSelect) return;
 
@@ -165,6 +177,7 @@ items.addEventListener("click", async (event) => {
     return;
   requestPending = true;
   renderShop();
+  let purchaseSucceeded = false;
 
   try {
     const token = await user.getIdToken();
@@ -176,6 +189,7 @@ items.addEventListener("click", async (event) => {
           { backgroundId: itemId },
           { headers },
         );
+        purchaseSucceeded = true;
       } else {
         const nextBackground = action === "unequip" ? null : itemId;
         await axios.patch(
@@ -185,16 +199,19 @@ items.addEventListener("click", async (event) => {
         );
       }
     } else if (type === "boost") {
-      if (action === "purchase")
+      if (action === "purchase") {
         await axios.post("/shop/boost/purchase", { itemId }, { headers });
-      else if (action === "activate")
+        purchaseSucceeded = true;
+      } else if (action === "activate") {
         await axios.post("/shop/boost/activate", { itemId }, { headers });
+      }
     } else if (action === "purchase") {
       await axios.post(
         "/shop/collectibles/purchase",
         { type, itemId },
         { headers },
       );
+      purchaseSucceeded = true;
     } else {
       const nextItem = action === "unequip" ? null : itemId;
       await axios.patch(
@@ -203,6 +220,7 @@ items.addEventListener("click", async (event) => {
         { headers },
       );
     }
+    if (purchaseSucceeded) showPurchaseCount(button);
     await loadShopState(user);
   } catch (error) {
     console.error(error);
