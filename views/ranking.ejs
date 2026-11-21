@@ -12,7 +12,10 @@
         console.error("Failed to restore navigation state:", err);
       }
     </script>
-    <link rel="stylesheet" href="/public/stylesheets/style.css" />
+    <link
+      rel="stylesheet"
+      href="/public/stylesheets/style.css?v=<%= encodeURIComponent(appVersion) %>"
+    />
     <link
       rel="manifest"
       type="application/manifest+json"
@@ -318,6 +321,9 @@
       });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script type="module" src="/public/js/auth.js"></script>
+    <script
+      type="module"
+      src="/public/js/auth.js?v=<%= encodeURIComponent(appVersion) %>"
+    ></script>
   </body>
 </html>

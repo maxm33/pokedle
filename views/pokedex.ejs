@@ -12,7 +12,10 @@
         console.error("Failed to restore navigation state:", err);
       }
     </script>
-    <link rel="stylesheet" href="/public/stylesheets/style.css" />
+    <link
+      rel="stylesheet"
+      href="/public/stylesheets/style.css?v=<%= encodeURIComponent(appVersion) %>"
+    />
     <link
       rel="manifest"
       type="application/manifest+json"
@@ -218,10 +221,13 @@
       updateLightBlinking();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script type="module" src="/public/js/auth.js"></script>
+    <script
+      type="module"
+      src="/public/js/auth.js?v=<%= encodeURIComponent(appVersion) %>"
+    ></script>
     <script type="module">
-      import { pokemons } from "../../public/js/pokemons.js";
-      import { auth } from "/public/js/auth.js";
+      import { pokemons } from "../../public/js/pokemons.js?v=<%= encodeURIComponent(appVersion) %>";
+      import { auth } from "/public/js/auth.js?v=<%= encodeURIComponent(appVersion) %>";
 
       let history = <%- JSON.stringify(history || []).replace(/</g, "\\u003c") %>;
 

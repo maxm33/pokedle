@@ -296,7 +296,10 @@
       <p id="shop-empty-state" class="shop-empty-state" hidden></p>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script type="module" src="/public/js/auth.js"></script>
+    <script
+      type="module"
+      src="/public/js/auth.js?v=<%= encodeURIComponent(appVersion) %>"
+    ></script>
     <script
       type="module"
       src="/public/js/shop.js?v=<%= encodeURIComponent(appVersion) %>"

@@ -133,6 +133,7 @@ const auth = getAuth(); // reference to auth service
 const firestore = getFirestore(); // reference to firestore cloud storage service
 const rateLimitRedis = createClient({ url: process.env.REDIS_URL });
 const appVersion = packageJson.version;
+app.locals.appVersion = appVersion;
 
 rateLimitRedis.on("error", (err) => {
   console.error("Shared rate-limit Redis connection error:", err);

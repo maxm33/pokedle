@@ -12,7 +12,10 @@
         console.error("Failed to restore navigation state:", err);
       }
     </script>
-    <link rel="stylesheet" href="/public/stylesheets/style.css" />
+    <link
+      rel="stylesheet"
+      href="/public/stylesheets/style.css?v=<%= encodeURIComponent(appVersion) %>"
+    />
     <link rel="preconnect" href="https://www.gstatic.com" />
     <link
       rel="preload"
