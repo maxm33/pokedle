@@ -2176,6 +2176,12 @@ function classicGetPokedollarReward(tries) {
   return 100;
 }
 
+function classicGetMonthlyRankingPoints(tries) {
+  const validTries =
+    Number.isSafeInteger(tries) && tries > 0 ? tries : 1;
+  return Math.round(200 / validTries);
+}
+
 // update a logged user's document on winning
 async function updateStatsOnClassicWin(
   id,
@@ -2236,7 +2242,8 @@ async function updateStatsOnClassicWin(
 
     const classicWins = Number(user.classicWins) || 0;
     const previousMonthlyScore = monthlyRankingDoc.data()?.score || 0;
-    const monthlyScore = previousMonthlyScore + 1;
+    const monthlyScore =
+      previousMonthlyScore + classicGetMonthlyRankingPoints(tries);
     const classicAvgTries = Number(user.classicAvgTries) || 0;
     user.classicAvgTries =
       (classicWins * classicAvgTries + tries) / (classicWins + 1);
