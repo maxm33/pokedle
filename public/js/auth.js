@@ -182,8 +182,6 @@ const unsubscribe = onAuthStateChanged(
         animateFadeIn(loginButton, "1s");
         animateFadeIn(rankingButton, "1s");
         animateFadeIn(shopButton, "1s");
-        animateFadeOut(pokedexButton, "1s");
-        animateFadeOut(profileButton, "1s");
       }
     }
 
@@ -255,18 +253,16 @@ loginButton.addEventListener("click", async () => {
     if (profileNameEditButton) profileNameEditButton.hidden = true;
     if (profileNameForm) profileNameForm.hidden = true;
     if (profileName) profileName.hidden = false;
-    const fadeOutButtons = Promise.all([
-      animateFadeOut(pokedexButton, "1s"),
-      animateFadeOut(profileButton, "1s"),
-    ]);
     try {
       await signOut(auth);
-      await fadeOutButtons;
+      try {
+        sessionStorage.setItem("pokedleAuthState", "signed-out");
+      } catch (err) {
+        console.error("Failed to cache navigation state:", err);
+      }
       window.location.reload();
     } catch (err) {
       console.error("Failed to sign out:", err);
-      animateFadeIn(pokedexButton, "1s");
-      animateFadeIn(profileButton, "1s");
     }
   }
 });
@@ -371,21 +367,6 @@ shopButton.addEventListener("click", () => {
 export function animateFadeIn(element, duration) {
   element.style.animation = "fadeIn " + duration;
   element.style.visibility = "visible";
-}
-
-function animateFadeOut(element, duration) {
-  return new Promise((resolve) => {
-    element.addEventListener(
-      "animationend",
-      () => {
-        element.style.visibility = "hidden";
-        resolve();
-      },
-      { once: true },
-    );
-    element.style.visibility = "visible";
-    element.style.animation = "fadeOut " + duration;
-  });
 }
 
 function getStoredAppVersion() {
