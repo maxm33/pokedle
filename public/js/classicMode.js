@@ -41,6 +41,7 @@ let visibleEventNotifications = [];
 let activeEventNotificationIndex = 0;
 let eventNotificationAutoAdvance;
 let eventNotificationPointerInteraction = false;
+let rankingEventNotifications = [];
 let guessBallScene = document.querySelector(".guess-pokeball-scene");
 const guessBallVariants = ["great-ball", "ultra-ball", "master-ball"];
 const eventNotificationDismissalStorageKey = "eventNotificationDismissals";
@@ -149,6 +150,7 @@ function renderEventNotifications() {
     eventNotification,
     eventNotificationDouble,
     eventNotificationShiny,
+    ...rankingEventNotifications,
   ].filter((notification) => notification && !notification.hidden);
 
   eventNotifications.hidden = visibleEventNotifications.length === 0;
@@ -185,6 +187,19 @@ function renderEventNotifications() {
 
   resetEventNotificationAutoAdvance();
 }
+
+window.addEventListener("ranking-notification", (event) => {
+  const notification = event.detail?.card;
+  if (!notification || rankingEventNotifications.includes(notification)) return;
+  rankingEventNotifications.push(notification);
+  eventNotificationSwiper.appendChild(notification);
+  renderEventNotifications();
+  showEventNotification(visibleEventNotifications.length - 1);
+});
+window.addEventListener(
+  "ranking-notification-dismissed",
+  renderEventNotifications,
+);
 
 eventNotificationSwiper.addEventListener(
   "scroll",

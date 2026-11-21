@@ -2,7 +2,20 @@
 <html lang="en">
   <head>
     <link rel="icon" href="/public/images/icons/favicon.ico" />
-    <link rel="stylesheet" href="/public/stylesheets/style.css" />
+    <script>
+      try {
+        const authState = sessionStorage.getItem("pokedleAuthState");
+        if (authState === "signed-in" || authState === "signed-out") {
+          document.documentElement.dataset.authState = authState;
+        }
+      } catch (err) {
+        console.error("Failed to restore navigation state:", err);
+      }
+    </script>
+    <link
+      rel="stylesheet"
+      href="/public/stylesheets/style.css?v=<%= encodeURIComponent(appVersion) %>"
+    />
     <link
       rel="manifest"
       type="application/manifest+json"
@@ -222,7 +235,7 @@
       <div id="shop-items" class="shop-grid">
         <% shopItems.forEach((item) => { %>
         <article
-          class="shop-item fadeIn"
+          class="shop-item"
           data-item-id="<%= item.id %>"
           data-item-type="<%= item.type %>"
           data-purchasable="<%= item.purchasable !== false %>"
@@ -264,6 +277,7 @@
                 <span><%= item.price.toLocaleString("en-US") %></span>
               </div>
             </div>
+            <p class="shop-boost-quantity" hidden></p>
             <button
               class="shop-item-action"
               type="button"
@@ -283,6 +297,9 @@
     </main>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="module" src="/public/js/auth.js"></script>
-    <script type="module" src="/public/js/shop.js"></script>
+    <script
+      type="module"
+      src="/public/js/shop.js?v=<%= encodeURIComponent(appVersion) %>"
+    ></script>
   </body>
 </html>

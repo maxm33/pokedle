@@ -62,6 +62,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   await loadShopState(user);
+  if (currentUser?.uid === user.uid) renderShop();
 });
 
 sectionTabs.forEach((tab) => {
@@ -184,7 +185,10 @@ items.addEventListener("click", async (event) => {
         );
       }
     } else if (type === "boost") {
-      await axios.post("/shop/boost/purchase", { itemId }, { headers });
+      if (action === "purchase")
+        await axios.post("/shop/boost/purchase", { itemId }, { headers });
+      else if (action === "activate")
+        await axios.post("/shop/boost/activate", { itemId }, { headers });
     } else if (action === "purchase") {
       await axios.post(
         "/shop/collectibles/purchase",
@@ -225,8 +229,6 @@ async function loadShopState(user) {
     shopState = null;
     setWalletLoading(false);
     wallet.textContent = "???";
-  } finally {
-    renderShop();
   }
 }
 
@@ -266,6 +268,11 @@ function getEquippedItem(type) {
   ];
 }
 
+function getOwnedBoostCount(itemId) {
+  const quantity = shopState?.boostInventory?.[itemId];
+  return Number.isSafeInteger(quantity) && quantity > 0 ? quantity : 0;
+}
+
 function isBoostActive(itemId) {
   if (!shopState) return false;
   if (itemId === "boost-master-ball") {
@@ -282,6 +289,9 @@ function renderShop() {
   if (discountFilter) {
     discountFilter.hidden = activeSection === "inventory";
   }
+  const ownedBoostsCount =
+    getOwnedBoostCount("boost-master-ball") +
+    getOwnedBoostCount("boost-double-earnings");
   const activeBoostsCount =
     (isBoostActive("boost-master-ball") ? 1 : 0) +
     (isBoostActive("boost-double-earnings") ? 1 : 0);
@@ -289,6 +299,7 @@ function renderShop() {
     getOwnedItems("background").length +
     getOwnedItems("overlay").length +
     getOwnedItems("companion").length +
+    ownedBoostsCount +
     activeBoostsCount;
   inventoryCount.textContent = String(totalOwned);
   if (inventoryButton) {
@@ -310,6 +321,7 @@ function renderShop() {
     const type = item.dataset.itemType;
     const button = item.querySelector(".shop-item-action");
     const priceDisplay = item.querySelector(".shop-price");
+    const boostQuantity = item.querySelector(".shop-boost-quantity");
     const titleElement = item.querySelector("h2");
     const itemName = titleElement ? titleElement.textContent.toLowerCase() : "";
     const matchesSearch = itemName.includes(searchQuery);
@@ -318,11 +330,13 @@ function renderShop() {
 
     if (type === "boost") {
       const active = isBoostActive(itemId);
+      const quantity = getOwnedBoostCount(itemId);
+      const inInventory = activeSection === "inventory";
       const visible =
-        (activeSection === "inventory" ? active : activeSection === "boost") &&
+        (inInventory ? active || quantity > 0 : activeSection === "boost") &&
         matchesSearch &&
         matchesDiscount &&
-        (activeSection !== "inventory" ||
+        (!inInventory ||
           inventoryCategory === null ||
           inventoryCategory === "boost");
 
@@ -331,12 +345,15 @@ function renderShop() {
       visibleCount++;
 
       if (priceDisplay) {
-        priceDisplay.style.display =
-          activeSection === "inventory" ? "none" : "";
+        priceDisplay.style.display = inInventory ? "none" : "";
+      }
+      if (boostQuantity) {
+        boostQuantity.hidden = !inInventory;
+        boostQuantity.textContent = `Quantity: ${quantity}`;
       }
 
       if (itemId === "boost-double-earnings" && titleElement) {
-        if (activeSection === "inventory") {
+        if (inInventory && active) {
           const daysLeft = shopState.doubleEarningsRemainingDays || 0;
           titleElement.textContent = `2x Earnings (${daysLeft} ${
             daysLeft === 1 ? "day" : "days"
@@ -344,18 +361,31 @@ function renderShop() {
         } else {
           titleElement.textContent = "2x Earnings (7 Days)";
         }
+      } else if (itemId === "boost-master-ball" && titleElement) {
+        titleElement.textContent = "Master Ball Upgrade";
       }
 
-      button.dataset.action =
-        activeSection === "inventory" ? "active" : "purchase";
-      button.textContent = active ? "Active" : "Buy";
+      button.dataset.action = inInventory
+        ? quantity > 0
+          ? "activate"
+          : "active"
+        : "purchase";
+      button.textContent = inInventory
+        ? active
+          ? "Already active"
+          : "Activate"
+        : "Buy";
 
       const price = Number(button.dataset.price);
       const cannotAfford =
         button.dataset.action === "purchase" && getPokedollars() < price;
 
       button.disabled =
-        !currentUser || !shopState || requestPending || cannotAfford || active;
+        !currentUser ||
+        !shopState ||
+        requestPending ||
+        cannotAfford ||
+        (inInventory && (quantity === 0 || active));
       return;
     }
 
@@ -393,9 +423,7 @@ function renderShop() {
   });
 
   const visibleItems = shopItems.filter((item) => !item.hidden);
-  if (activeSort === "default") {
-    visibleItems.forEach((item) => items.appendChild(item));
-  } else {
+  if (activeSort !== "default") {
     visibleItems.sort((left, right) => {
       if (activeSort.startsWith("price")) {
         const leftPrice = Number(
@@ -422,19 +450,21 @@ function renderShop() {
         ? leftOrder - rightOrder
         : rightOrder - leftOrder;
     });
-    visibleItems.forEach((item) => items.appendChild(item));
   }
 
+  let orderedItems = visibleItems;
   if (activeSection === "inventory") {
-    const boostElements = Array.from(
-      items.querySelectorAll('.shop-item[data-item-type="boost"]'),
+    const boostItems = visibleItems.filter(
+      (item) => item.dataset.itemType === "boost",
     );
-    boostElements.reverse().forEach((boostEl) => {
-      if (!boostEl.hidden) {
-        items.prepend(boostEl);
-      }
-    });
+    const otherItems = visibleItems.filter(
+      (item) => item.dataset.itemType !== "boost",
+    );
+    orderedItems = [...boostItems, ...otherItems];
   }
+  orderedItems.forEach((item, index) => {
+    item.style.order = String(index);
+  });
 
   emptyState.hidden = visibleCount > 0;
   if (visibleCount === 0) {

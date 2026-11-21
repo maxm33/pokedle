@@ -2,6 +2,16 @@
 <html lang="en">
   <head>
     <link rel="icon" href="/public/images/icons/favicon.ico" />
+    <script>
+      try {
+        const authState = sessionStorage.getItem("pokedleAuthState");
+        if (authState === "signed-in" || authState === "signed-out") {
+          document.documentElement.dataset.authState = authState;
+        }
+      } catch (err) {
+        console.error("Failed to restore navigation state:", err);
+      }
+    </script>
     <link rel="stylesheet" href="/public/stylesheets/style.css" />
     <link
       rel="manifest"
@@ -11,7 +21,7 @@
     <meta name="viewport" content="initial-scale=1, width=device-width" />
     <title>Rankings</title>
   </head>
-  <body style="--page-background-image: url(&quot;<%= bg %>&quot;)">
+  <body class="ranking-page" style="--page-background-image: url(&quot;<%= bg %>&quot;)">
     <div id="topnav" role="banner">
       <div id="credits">
         <p id="author">
@@ -86,101 +96,172 @@
           ><img fetchpriority="high" alt="" src="/public/images/misc/pokedle-logo.webp"
         /></a>
       </div>
-      <div id="subtitle" class="fadeIn">
-        <h1>Champions</h1>
+      <div id="leaderboard-board" class="fadeIn">
+        <div class="lb-header">
+          <div class="lb-title-group">
+            <h1>HALL OF FAME</h1>
+            <p class="lb-subtitle">
+              <span class="subtitle-gem-dot" aria-hidden="true"></span>
+              POKÉDLE CHAMPIONS
+              <span class="subtitle-gem-dot" aria-hidden="true"></span>
+            </p>
+          </div>
+        </div>
         <div class="ranking-tabs" role="tablist" aria-label="Ranking mode">
           <button
             id="classic-ranking-tab"
             class="ranking-tab"
             type="button"
             role="tab"
-            aria-controls="classic-ranking-panel"
+            aria-controls="<%= activeMode %>-all-time-ranking-panel"
             aria-selected="<%= activeMode === 'classic' %>"
             tabindex="<%= activeMode === 'classic' ? 0 : -1 %>"
             data-ranking-mode="classic"
-          >Classic</button>
+          >
+            <span class="tab-pokeball" aria-hidden="true"></span>
+            Classic
+          </button>
           <button
             id="sentry-ranking-tab"
             class="ranking-tab"
             type="button"
             role="tab"
-            aria-controls="sentry-ranking-panel"
+            aria-controls="<%= activeMode %>-all-time-ranking-panel"
             aria-selected="<%= activeMode === 'sentry' %>"
             tabindex="<%= activeMode === 'sentry' ? 0 : -1 %>"
             data-ranking-mode="sentry"
-          >Sentry Duty</button>
+          >
+            <span class="tab-pokeball" aria-hidden="true"></span>
+            Sentry Duty
+          </button>
         </div>
+        <div class="ranking-tabs ranking-period-tabs" role="tablist" aria-label="Ranking period">
+          <button
+            id="all-time-ranking-tab"
+            class="ranking-tab"
+            type="button"
+            role="tab"
+            aria-controls="<%= activeMode %>-all-time-ranking-panel"
+            aria-selected="true"
+            tabindex="0"
+            data-ranking-period="all-time"
+          >
+            All-Time
+          </button>
+          <button
+            id="monthly-ranking-tab"
+            class="ranking-tab"
+            type="button"
+            role="tab"
+            aria-controls="<%= activeMode %>-monthly-ranking-panel"
+            aria-selected="false"
+            tabindex="-1"
+            data-ranking-period="monthly"
+          >
+            Monthly
+          </button>
+        </div>
+        <% const rankingSections = [
+          { mode: "classic", period: "all-time", data: classicAllTimeRankingData },
+          { mode: "sentry", period: "all-time", data: sentryAllTimeRankingData },
+          { mode: "classic", period: "monthly", data: classicMonthlyRankingData },
+          { mode: "sentry", period: "monthly", data: sentryMonthlyRankingData },
+        ]; %>
+        <% rankingSections.forEach((ranking) => { %>
         <section
-          id="classic-ranking-panel"
+          id="<%= ranking.mode %>-<%= ranking.period %>-ranking-panel"
           class="ranking-panel"
           role="tabpanel"
-          aria-labelledby="classic-ranking-tab"
-          <% if (activeMode !== "classic") { %>hidden<% } %>
+          aria-labelledby="<%= ranking.period === 'all-time' ? 'all-time' : 'monthly' %>-ranking-tab"
+          <% if (ranking.mode !== activeMode || ranking.period !== "all-time") { %>hidden<% } %>
         >
-          <% for (let i = 0; i < classicRankingData.length; i++) { %>
-          <div class="ranking-rows">
-            <b
-              ><% if (i < 3) { %><img
-                class="ranking-medal"
-                alt="<%= i + 1 %> place"
-                src="/public/images/misc/<%= i === 0 ? '1st' : i === 1 ? '2nd' : '3rd' %>.png"
-              />
-              <% } else { %><%= i + 1 %>.
-              <% } %>
-              <a
-                aria-label="<%= classicRankingData[i].id %>'s profile"
-                href="/user/<%= classicRankingData[i].id %>/profile"
-                ><%= classicRankingData[i].username %></a
-              ></b
-            >
-            - <%= classicRankingData[i].classicWins %> pts<br />
+          <div class="ranking-list">
+            <% if (ranking.data.length === 0) { %>
+            <p class="ranking-empty">
+              No scores have been recorded for this ranking yet.
+            </p>
+            <% } %>
+            <% for (let i = 0; i < ranking.data.length; i++) { %>
+            <div class="ranking-rows rank-<%= i < 3 ? i + 1 : 'standard' %>">
+              <div class="ranking-badge">
+                <% if (i < 3) { %>
+                <img
+                  class="ranking-medal"
+                  alt="<%= i + 1 %> place"
+                  src="/public/images/misc/<%= i === 0 ? '1st' : i === 1 ? '2nd' : '3rd' %>.png"
+                />
+                <% } else { %>
+                <span class="ranking-number">#<%= i + 1 %></span>
+                <% } %>
+              </div>
+              <div class="ranking-trainer">
+                <% if (i === 0) { %>
+                <span class="ranking-tag-champion">♛ CHAMPION</span>
+                <% } else if (i < 5) { %>
+                <span class="ranking-tag-elite">ELITE FOUR</span>
+                <% } %>
+                <a
+                  class="ranking-username"
+                  aria-label="<%= ranking.data[i].id %>'s profile"
+                  href="/user/<%= ranking.data[i].id %>/profile"
+                  ><%= ranking.data[i].username %></a
+                >
+              </div>
+              <div class="ranking-score">
+                <span class="ranking-score-val"><%= ranking.data[i].score %></span>
+                <span class="ranking-score-unit">pts</span>
+              </div>
+            </div>
+            <% } %>
           </div>
-          <% } %>
         </section>
-        <section
-          id="sentry-ranking-panel"
-          class="ranking-panel"
-          role="tabpanel"
-          aria-labelledby="sentry-ranking-tab"
-          <% if (activeMode !== "sentry") { %>hidden<% } %>
-        >
-          <% for (let i = 0; i < sentryRankingData.length; i++) { %>
-          <div class="ranking-rows">
-            <b
-              ><% if (i < 3) { %><img
-                class="ranking-medal"
-                alt="<%= i + 1 %> place"
-                src="/public/images/misc/<%= i === 0 ? '1st' : i === 1 ? '2nd' : '3rd' %>.png"
-              />
-              <% } else { %><%= i + 1 %>.
-              <% } %>
-              <a
-                aria-label="<%= sentryRankingData[i].id %>'s profile"
-                href="/user/<%= sentryRankingData[i].id %>/profile"
-                ><%= sentryRankingData[i].username %></a
-              ></b
-            >
-            - <%= sentryRankingData[i].score %> pts<br />
-          </div>
-          <% } %>
-        </section>
+        <% }); %>
       </div>
     </div>
     <script>
-      const rankingTabs = [...document.querySelectorAll(".ranking-tab")];
+      const rankingTabs = [...document.querySelectorAll("[data-ranking-mode]")];
+      const periodTabs = [...document.querySelectorAll("[data-ranking-period]")];
       const rankingPanels = [...document.querySelectorAll(".ranking-panel")];
       const rankingLogo = document.querySelector("#logo a");
 
       function selectRankingTab(tab, focus = false) {
         const mode = tab.dataset.rankingMode;
+        const period = periodTabs.find(
+          (periodTab) =>
+            periodTab.getAttribute("aria-selected") === "true",
+        )?.dataset.rankingPeriod || "all-time";
+        selectRankingView(mode, period, tab, null);
+        if (focus) tab.focus();
+      }
+
+      function selectRankingView(mode, period, modeTab, periodTab) {
         const returnPath = mode === "sentry" ? "/sentry" : "/classic";
         rankingTabs.forEach((rankingTab) => {
-          const isSelected = rankingTab === tab;
+          const isSelected = modeTab
+            ? rankingTab === modeTab
+            : rankingTab.dataset.rankingMode === mode;
+          rankingTab.setAttribute("aria-selected", String(isSelected));
+          rankingTab.tabIndex = isSelected ? 0 : -1;
+          rankingTab.setAttribute(
+            "aria-controls",
+            `${rankingTab.dataset.rankingMode}-${period}-ranking-panel`,
+          );
+        });
+        periodTabs.forEach((rankingTab) => {
+          const isSelected = rankingTab === periodTab ||
+            (!periodTab && rankingTab.dataset.rankingPeriod === period);
           rankingTab.setAttribute("aria-selected", String(isSelected));
           rankingTab.tabIndex = isSelected ? 0 : -1;
         });
         rankingPanels.forEach((panel) => {
-          panel.hidden = panel.id !== `${mode}-ranking-panel`;
+          panel.hidden =
+            panel.id !== `${mode}-${period}-ranking-panel`;
+        });
+        periodTabs.forEach((periodTab) => {
+          periodTab.setAttribute(
+            "aria-controls",
+            `${mode}-${periodTab.dataset.rankingPeriod}-ranking-panel`,
+          );
         });
         rankingLogo.href = returnPath;
         rankingLogo.setAttribute(
@@ -195,7 +276,6 @@
           "",
           `${url.pathname}${url.search}${url.hash}`,
         );
-        if (focus) tab.focus();
       }
 
       rankingTabs.forEach((tab, index) => {
@@ -212,6 +292,28 @@
 
           event.preventDefault();
           selectRankingTab(rankingTabs[nextIndex], true);
+        });
+      });
+      periodTabs.forEach((tab, index) => {
+        tab.addEventListener("click", () => {
+          const mode = rankingTabs.find(
+            (rankingTab) => rankingTab.getAttribute("aria-selected") === "true",
+          ).dataset.rankingMode;
+          selectRankingView(mode, tab.dataset.rankingPeriod, null, tab);
+        });
+        tab.addEventListener("keydown", (event) => {
+          let nextIndex;
+          if (event.key === "ArrowRight" || event.key === "ArrowDown")
+            nextIndex = (index + 1) % periodTabs.length;
+          else if (event.key === "ArrowLeft" || event.key === "ArrowUp")
+            nextIndex = (index - 1 + periodTabs.length) % periodTabs.length;
+          else if (event.key === "Home") nextIndex = 0;
+          else if (event.key === "End") nextIndex = periodTabs.length - 1;
+          else return;
+
+          event.preventDefault();
+          periodTabs[nextIndex].click();
+          periodTabs[nextIndex].focus();
         });
       });
     </script>

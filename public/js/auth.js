@@ -29,6 +29,17 @@ let profileNameError = document.getElementById("profile-name-error");
 let rateLimitToast;
 let rateLimitToastTimeout;
 let rateLimitToastRemovalTimeout;
+// This cached value only paints the navigation; Firebase still resolves auth.
+let displayedAuthState = document.documentElement.dataset.authState;
+
+function showAuthError(message) {
+  document.documentElement.removeAttribute("data-auth-state");
+  displayedAuthState = undefined;
+  if (authLoading) {
+    authLoading.textContent = message;
+    authLoading.hidden = false;
+  }
+}
 
 function showRateLimitToast(message) {
   if (!rateLimitToast) {
@@ -89,32 +100,46 @@ try {
   config = await axios.get("/env/fb");
 } catch (err) {
   console.error("Failed to initialize authentication:", err);
-  if (authLoading) authLoading.textContent = "Unable to check authentication.";
+  showAuthError("Unable to check authentication.");
   throw err;
 }
 export const auth = getAuth(initializeApp(config.data));
 
 const unsubscribe = onAuthStateChanged(auth, (user) => {
+  const authState = user ? "signed-in" : "signed-out";
+  const shouldAnimate = displayedAuthState !== authState;
+  displayedAuthState = authState;
+  document.documentElement.dataset.authState = authState;
+  try {
+    sessionStorage.setItem("pokedleAuthState", authState);
+  } catch (err) {
+    console.error("Failed to cache navigation state:", err);
+  }
+
   if (user) {
     // user is signed in
     loginButton.style.backgroundColor = "#ff6666";
     logimg.src = "/public/images/misc/logout.webp";
     rankingButton.style.borderRadius = "0";
-    animateFadeIn(loginButton, "1s");
-    animateFadeIn(rankingButton, "1s");
-    animateFadeIn(shopButton, "1s");
-    animateFadeIn(pokedexButton, "1s");
-    animateFadeIn(profileButton, "1s");
+    if (shouldAnimate) {
+      animateFadeIn(loginButton, "1s");
+      animateFadeIn(rankingButton, "1s");
+      animateFadeIn(shopButton, "1s");
+      animateFadeIn(pokedexButton, "1s");
+      animateFadeIn(profileButton, "1s");
+    }
   } else {
     // user is not signed in
     loginButton.style.backgroundColor = "#8cff66";
     logimg.src = "/public/images/misc/login.webp";
     rankingButton.style.borderRadius = "1.5em 0 0 1.5em";
-    animateFadeIn(loginButton, "1s");
-    animateFadeIn(rankingButton, "1s");
-    animateFadeIn(shopButton, "1s");
-    animateFadeOut(pokedexButton, "1s");
-    animateFadeOut(profileButton, "1s");
+    if (shouldAnimate) {
+      animateFadeIn(loginButton, "1s");
+      animateFadeIn(rankingButton, "1s");
+      animateFadeIn(shopButton, "1s");
+      animateFadeOut(pokedexButton, "1s");
+      animateFadeOut(profileButton, "1s");
+    }
   }
 
   if (profileNameEditButton && profileName) {
@@ -130,10 +155,11 @@ const unsubscribe = onAuthStateChanged(auth, (user) => {
   if (authLoading) authLoading.hidden = true;
 }, (error) => {
   console.error("Authentication check failed:", error);
-  if (authLoading) authLoading.textContent = "Unable to check authentication.";
+  showAuthError("Unable to check authentication.");
 });
 
-loginButton.addEventListener("click", () => {
+loginButton.addEventListener("click", async () => {
+  await auth.authStateReady();
   unsubscribe();
   if (!auth.currentUser)
     signInWithPopup(auth, provider)
@@ -156,8 +182,10 @@ loginButton.addEventListener("click", () => {
   }
 });
 
-profileButton.addEventListener("click", () => {
-  window.location.href = `/user/${auth.currentUser.uid}/profile`;
+profileButton.addEventListener("click", async () => {
+  await auth.authStateReady();
+  if (auth.currentUser)
+    window.location.href = `/user/${auth.currentUser.uid}/profile`;
 });
 
 if (
@@ -230,8 +258,10 @@ if (
   });
 }
 
-pokedexButton.addEventListener("click", () => {
-  window.location.href = `/user/${auth.currentUser.uid}/pokedex`;
+pokedexButton.addEventListener("click", async () => {
+  await auth.authStateReady();
+  if (auth.currentUser)
+    window.location.href = `/user/${auth.currentUser.uid}/pokedex`;
 });
 
 rankingButton.addEventListener("click", () => {

@@ -1,23 +1,22 @@
 const fs = require("fs");
 const { randomUUID } = require("crypto");
 const express = require("express");
-const device = require("express-device");
 const { rateLimit } = require("express-rate-limit");
 const { RedisStore } = require("rate-limit-redis");
 const { createClient } = require("redis");
-const { initializeApp, cert } = require("firebase-admin/app");
+const { initializeApp, applicationDefault } = require("firebase-admin/app");
 const { getAuth } = require("firebase-admin/auth");
-const { getFirestore } = require("firebase-admin/firestore");
+const { FieldValue, getFirestore } = require("firebase-admin/firestore");
 const logger = require("morgan");
 const createError = require("http-errors");
 const packageJson = require("./package.json");
 const badFootprints = require("./data/badFootprints.json");
 const eventPokemonPool = require("./data/legendaryPokemon.json");
-const serviceAccount = require("/etc/secrets/service_account_admin_sdk");
 
 // initialize Firebase with admin privileges
 initializeApp({
-  credential: cert(serviceAccount),
+  credential: applicationDefault(),
+  projectId: process.env.PROJECT_ID,
 });
 
 // needed for client-side use only
@@ -52,8 +51,26 @@ const pokemonCache = new Map();
 let validSentryIds = [];
 
 const rankingCacheTtlMs = 1 * 60 * 60 * 1000;
-const classicRankingCache = { data: null, expiresAt: 0, pending: null };
-const sentryRankingCache = { data: null, expiresAt: 0, pending: null };
+const classicRankingCache = {
+  data: null,
+  expiresAt: 0,
+  pending: null,
+  generation: 0,
+};
+const sentryRankingCache = {
+  data: null,
+  expiresAt: 0,
+  pending: null,
+  generation: 0,
+};
+const rankingNotificationCollection = "rankingNotifications";
+const monthlyRankingRewards = {
+  1: { pokedollars: 20000, doubleEarningsBoosts: 2, masterBallBoosts: 2 },
+  2: { pokedollars: 12500, doubleEarningsBoosts: 1, masterBallBoosts: 2 },
+  3: { pokedollars: 8000, doubleEarningsBoosts: 1, masterBallBoosts: 1 },
+  4: { pokedollars: 5000, doubleEarningsBoosts: 0, masterBallBoosts: 1 },
+  5: { pokedollars: 2500, doubleEarningsBoosts: 0, masterBallBoosts: 1 },
+};
 const shopBackgrounds = require("./data/shopBackgrounds.json");
 const shopOverlays = require("./data/shopOverlays.json");
 const companionDirectory = "./public/images/animations";
@@ -154,22 +171,242 @@ async function getCachedRanking(cache, orderField, mapUser) {
   if (cache.data !== null && Date.now() < cache.expiresAt) return cache.data;
 
   if (!cache.pending) {
-    cache.pending = firestore
+    const generation = cache.generation;
+    let request;
+    request = firestore
       .collection("users")
       .orderBy(orderField, "desc")
       .limit(10)
       .get()
       .then((queryResult) => {
-        cache.data = queryResult.docs.map(mapUser);
-        cache.expiresAt = Date.now() + rankingCacheTtlMs;
-        return cache.data;
+        const data = queryResult.docs.map(mapUser);
+        if (cache.generation === generation) {
+          cache.data = data;
+          cache.expiresAt = Date.now() + rankingCacheTtlMs;
+        }
+        return data;
       })
       .finally(() => {
-        cache.pending = null;
+        if (cache.pending === request) cache.pending = null;
       });
+    cache.pending = request;
   }
 
   return cache.pending;
+}
+
+function invalidateRankingCache(cache) {
+  cache.generation++;
+  cache.data = null;
+  cache.expiresAt = 0;
+  cache.pending = null;
+}
+
+function getRankingPeriod(date = new Date()) {
+  const { year, month } = classicGetDateTimeParts(date);
+  return `${year}-${String(month).padStart(2, "0")}`;
+}
+
+function getMonthlyRankingCollection(period, mode) {
+  return firestore.collection("monthlyRankings").doc(period).collection(mode);
+}
+
+async function ensureMonthlyRankingPeriod() {
+  const period = getRankingPeriod();
+  const periodRef = firestore.collection("rankingPeriods").doc("current");
+
+  await firestore.runTransaction(async (transaction) => {
+    const periodDoc = await transaction.get(periodRef);
+    const previousPeriod = periodDoc.data()?.period;
+    if (previousPeriod === period) return;
+
+    if (previousPeriod) {
+      const previousRankings = await Promise.all(
+        ["classic", "sentry"].map((mode) =>
+          transaction.get(
+            getMonthlyRankingCollection(previousPeriod, mode)
+              .orderBy("score", "desc")
+              .limit(5),
+          ),
+        ),
+      );
+
+      const awards = previousRankings.flatMap((ranking, modeIndex) =>
+        ranking.docs.map((player, index) => ({
+          userId: player.id,
+          mode: modeIndex === 0 ? "classic" : "sentry",
+          place: index + 1,
+        })),
+      );
+      const profileRefs = new Map(
+        awards.map((award) => [
+          award.userId,
+          firestore.collection("users").doc(award.userId),
+        ]),
+      );
+      const profiles = await Promise.all(
+        [...profileRefs.values()].map((profileRef) =>
+          transaction.get(profileRef),
+        ),
+      );
+      const profilesById = new Map(
+        profiles.map((profile) => [profile.id, profile]),
+      );
+      const rewardsByUser = new Map();
+
+      awards.forEach((award) => {
+        const profile = profilesById.get(award.userId);
+        if (!profile?.exists) return;
+
+        const reward = monthlyRankingRewards[award.place];
+        let total = rewardsByUser.get(award.userId);
+        if (!total) {
+          total = {
+            profile,
+            pokedollars: 0,
+            doubleEarningsBoosts: 0,
+            masterBallBoosts: 0,
+          };
+          rewardsByUser.set(award.userId, total);
+        }
+        total.pokedollars += reward.pokedollars;
+        total.doubleEarningsBoosts += reward.doubleEarningsBoosts;
+        total.masterBallBoosts += reward.masterBallBoosts;
+      });
+
+      const awardedNotifications = awards.filter(
+        (award) => profilesById.get(award.userId)?.exists,
+      );
+      for (const [userId, reward] of rewardsByUser) {
+        const user = reward.profile.data();
+        normalizeMasterBallBoostInventory(user);
+        const ownedBoosts = getOwnedBoostInventory(user);
+        ownedBoosts["boost-master-ball"] += reward.masterBallBoosts;
+        ownedBoosts["boost-double-earnings"] += reward.doubleEarningsBoosts;
+        const updates = {
+          pokedollars:
+            (Number.isSafeInteger(user.pokedollars) && user.pokedollars >= 0
+              ? user.pokedollars
+              : 0) + reward.pokedollars,
+          ownedBoosts,
+          ...getMasterBallBoostProfileUpdates(user.activeMasterBallBoost),
+        };
+        transaction.update(reward.profile.ref, updates);
+      }
+
+      awardedNotifications.forEach((award) => {
+        const reward = monthlyRankingRewards[award.place];
+        const boostRewards = [];
+        if (reward.doubleEarningsBoosts > 0)
+          boostRewards.push("a 2x earnings boost (7 days)");
+        if (reward.masterBallBoosts > 0)
+          boostRewards.push("a Master Ball boost");
+        const boostDescription =
+          boostRewards.length > 1
+            ? `${boostRewards.slice(0, -1).join(", ")}, and ${
+                boostRewards[boostRewards.length - 1]
+              }`
+            : boostRewards[0];
+        const rewardMessage = `received ${new Intl.NumberFormat("en-US").format(reward.pokedollars)} Pokédollars${
+          boostDescription
+            ? ` and added ${boostDescription} to your inventory`
+            : ""
+        }`;
+        const notificationRef = firestore
+          .collection("users")
+          .doc(award.userId)
+          .collection(rankingNotificationCollection)
+          .doc(randomUUID());
+        transaction.set(notificationRef, {
+          type: "monthly-award",
+          mode: award.mode,
+          place: award.place,
+          message: `Congratulations! You finished ${award.place}${award.place === 1 ? "st" : award.place === 2 ? "nd" : award.place === 3 ? "rd" : "th"} in the ${award.mode === "classic" ? "Classic" : "Sentry Duty"} monthly ranking and ${rewardMessage}.`,
+          createdAt: new Date(),
+        });
+      });
+    }
+
+    transaction.set(periodRef, { period });
+  });
+}
+
+function scheduleMonthlyRankingReset() {
+  setInterval(() => {
+    ensureMonthlyRankingPeriod().catch((err) => {
+      console.error("Failed to reset monthly rankings:", err);
+    });
+  }, 60 * 1000);
+}
+
+async function addSurpassedNotifications(
+  transaction,
+  {
+    mode,
+    period,
+    userId,
+    username,
+    previousAllTimeScore,
+    newAllTimeScore,
+    previousMonthlyScore,
+    newMonthlyScore,
+  },
+) {
+  const scoreField = mode === "classic" ? "classicWins" : "sentryBestScore";
+  const queries = [];
+  if (newAllTimeScore > previousAllTimeScore)
+    queries.push({
+      monthly: false,
+      query: firestore
+        .collection("users")
+        .where(scoreField, ">", previousAllTimeScore)
+        .where(scoreField, "<", newAllTimeScore),
+    });
+  if (newMonthlyScore > previousMonthlyScore)
+    queries.push({
+      monthly: true,
+      query: getMonthlyRankingCollection(period, mode)
+        .where("score", ">", previousMonthlyScore)
+        .where("score", "<", newMonthlyScore),
+    });
+
+  const results = await Promise.all(
+    queries.map(({ query }) => transaction.get(query)),
+  );
+  results.forEach((players, index) => {
+    const { monthly } = queries[index];
+    const rankingName = monthly
+      ? `${mode === "classic" ? "Classic" : "Sentry Duty"} monthly`
+      : `${mode === "classic" ? "Classic" : "Sentry Duty"} All-Time`;
+    players.docs
+      .filter((player) => player.id !== userId)
+      .forEach((player) => {
+        const notificationRef = firestore
+          .collection("users")
+          .doc(player.id)
+          .collection(rankingNotificationCollection)
+          .doc(randomUUID());
+        transaction.set(notificationRef, {
+          type: "surpassed",
+          mode,
+          monthly,
+          message: `${username} has surpassed you in the ${rankingName} ranking.`,
+          createdAt: new Date(),
+        });
+      });
+  });
+}
+
+async function getMonthlyRanking(period, mode) {
+  const snapshot = await getMonthlyRankingCollection(period, mode)
+    .orderBy("score", "desc")
+    .limit(10)
+    .get();
+  return snapshot.docs.map((player) => ({
+    id: player.id,
+    username: player.data().username,
+    score: player.data().score,
+  }));
 }
 
 async function mergeClassicGuestState(uid, guestId) {
@@ -221,6 +458,10 @@ async function initializeClassicGame() {
 
 app.locals.initializeRateLimitStore = initializeRateLimitStore;
 app.locals.initializeClassicGame = initializeClassicGame;
+app.locals.initializeMonthlyRankings = async () => {
+  await ensureMonthlyRankingPeriod();
+  scheduleMonthlyRankingReset();
+};
 
 // EJS view engine setup
 app.set("views", __dirname + "/views");
@@ -314,7 +555,15 @@ const authLimiter = rateLimit({
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(device.capture());
+app.use((req, res, next) => {
+  const ua = req.headers["user-agent"] || "";
+  req.device = {
+    type: /Mobi|Android|iPhone|iPod|Windows Phone/i.test(ua)
+      ? "phone"
+      : "desktop",
+  };
+  next();
+});
 
 // Client app version check, ignores cache policies if not synchronized with server's
 app.use((req, res, next) => {
@@ -607,39 +856,93 @@ function redirectToRanking(res, mode) {
   res.redirect(302, `/ranking?mode=${mode}`);
 }
 
-app.get("/classic/ranking", (_, res) =>
-  redirectToRanking(res, "classic"),
-);
-app.get("/sentry/ranking", (_, res) =>
-  redirectToRanking(res, "sentry"),
-);
+app.get("/classic/ranking", (_, res) => redirectToRanking(res, "classic"));
+app.get("/sentry/ranking", (_, res) => redirectToRanking(res, "sentry"));
 
 app.get("/ranking", async (req, res, next) => {
   const mode = req.query.mode === "sentry" ? "sentry" : "classic";
   try {
-    const [classicRankingData, sentryRankingData] = await Promise.all([
+    await ensureMonthlyRankingPeriod();
+    const period = getRankingPeriod();
+    const [
+      classicAllTimeRankingData,
+      sentryAllTimeRankingData,
+      classicMonthlyRankingData,
+      sentryMonthlyRankingData,
+    ] = await Promise.all([
       getCachedRanking(classicRankingCache, "classicWins", (user) => ({
         id: user.id,
         username: user.data().username,
-        classicWins: user.data().classicWins,
+        score: user.data().classicWins || 0,
       })),
       getCachedRanking(sentryRankingCache, "sentryBestScore", (user) => ({
         id: user.id,
         username: user.data().username,
         score: user.data().sentryBestScore || 0,
       })),
+      getMonthlyRanking(period, "classic"),
+      getMonthlyRanking(period, "sentry"),
     ]);
 
     res.status(200).render("ranking", {
       activeMode: mode,
-      classicRankingData,
-      sentryRankingData,
+      classicAllTimeRankingData,
+      sentryAllTimeRankingData,
+      classicMonthlyRankingData,
+      sentryMonthlyRankingData,
       bg: bgPathSelector(req.device.type),
     });
   } catch (err) {
     console.error(err);
     next(createError(500));
   }
+});
+
+app.get("/notifications/stream", async (req, res) => {
+  const token = req.get("authorization")?.match(/^Bearer\s+(.+)$/i)?.[1];
+  if (!token) return res.status(401).end();
+
+  let uid;
+  try {
+    uid = (await auth.verifyIdToken(token)).uid;
+  } catch (err) {
+    return res.status(401).end();
+  }
+
+  res.set({
+    "Cache-Control": "no-cache, no-transform",
+    Connection: "keep-alive",
+    "Content-Type": "text/event-stream",
+    "X-Accel-Buffering": "no",
+  });
+  res.flushHeaders();
+  const send = (notification) => {
+    if (!res.writableEnded)
+      res.write(`data: ${JSON.stringify(notification)}\n\n`);
+  };
+  const query = firestore
+    .collection("users")
+    .doc(uid)
+    .collection(rankingNotificationCollection)
+    .orderBy("createdAt", "desc")
+    .limit(20);
+  const unsubscribe = query.onSnapshot(
+    (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added")
+          send({ id: change.doc.id, ...change.doc.data() });
+      });
+    },
+    (err) => {
+      console.error("Ranking notification stream failed:", err);
+      res.end();
+    },
+  );
+  const heartbeat = setInterval(() => res.write(": keep-alive\n\n"), 25000);
+  res.on("close", () => {
+    clearInterval(heartbeat);
+    unsubscribe();
+  });
 });
 
 // send a boolean stating if user can play the current game
@@ -905,6 +1208,11 @@ app.put("/user/:gid", authLimiter, async (req, res, next) => {
         classicLastWinDate: null,
         classicHistory: [],
         pokedollars: 0,
+        ownedBoosts: {
+          "boost-master-ball": 0,
+          "boost-double-earnings": 0,
+        },
+        activeMasterBallBoost: false,
         ownedBackgrounds: [],
         equippedBackground: null,
         ownedOverlays: [],
@@ -1036,6 +1344,7 @@ app.get("/shop", (req, res) => {
   res.render("shop", {
     bg: bgPathSelector(req.device.type),
     shopItems: discountedItems,
+    appVersion,
   });
 });
 
@@ -1044,22 +1353,27 @@ app.get("/shop/state", firestoreReadLimiter, async (req, res, next) => {
   if (!decodedToken) return;
 
   try {
-    const doc = await firestore.collection("users").doc(decodedToken.uid).get();
-    const user = doc.data();
+    const userRef = firestore.collection("users").doc(decodedToken.uid);
+    const user = await firestore.runTransaction(async (transaction) => {
+      const doc = await transaction.get(userRef);
+      const profile = doc.data();
+      if (!profile) return null;
+
+      if (normalizeMasterBallBoostInventory(profile))
+        transaction.update(userRef, {
+          ownedBoosts: profile.ownedBoosts,
+          ...getMasterBallBoostProfileUpdates(profile.activeMasterBallBoost),
+        });
+      return profile;
+    });
     if (!user) return res.status(404).send({ error: "User not found" });
 
-    const now = Date.now();
     const currentDate = classicGetCurrentDate();
-    const tomorrow = new Date(now + 24 * 60 * 60 * 1000);
-    const { year, month, day } = classicGetDateTimeParts(tomorrow);
-    const tomorrowDate = `${String(day).padStart(2, "0")}-${String(
-      month,
-    ).padStart(2, "0")}-${year}`;
-
-    const masterBallBoostActive =
-      user.masterBallBoostDate === currentDate ||
-      user.masterBallBoostDate === tomorrowDate;
-
+    const masterBallBoostActive = isUserBoostActive(
+      user,
+      "boost-master-ball",
+      currentDate,
+    );
     const doubleEarningsUntilDate = user.doubleEarningsUntilDate || null;
     const remainingDays = doubleEarningsUntilDate
       ? classicGetDaysBetween(currentDate, doubleEarningsUntilDate)
@@ -1079,6 +1393,7 @@ app.get("/shop/state", firestoreReadLimiter, async (req, res, next) => {
       equippedOverlay:
         getCollectible("overlay", user.equippedOverlay)?.id || null,
       ownedCompanions: getOwnedCollectibles(user, "companion"),
+      boostInventory: getOwnedBoostInventory(user),
       equippedCompanion:
         getCollectible("companion", user.equippedCompanion)?.id || null,
       masterBallBoostActive,
@@ -1252,54 +1567,81 @@ app.post("/shop/boost/purchase", shopLimiter, async (req, res, next) => {
       if (pokedollars < actualPrice)
         return { error: "Not enough Pokédollars", status: 400 };
 
-      const updates = {
+      normalizeMasterBallBoostInventory(user);
+      const ownedBoosts = getOwnedBoostInventory(user);
+      ownedBoosts[boost.id]++;
+      transaction.update(userRef, {
         pokedollars: pokedollars - actualPrice,
+        ownedBoosts,
+        ...getMasterBallBoostProfileUpdates(user.activeMasterBallBoost),
+      });
+      return {
+        pokedollars: pokedollars - actualPrice,
+        boostInventory: ownedBoosts,
+      };
+    });
+
+    if (result.error)
+      return res.status(result.status).send({ error: result.error });
+    res.status(200).send(result);
+  } catch (err) {
+    console.error(err);
+    next(createError(500));
+  }
+});
+
+app.post("/shop/boost/activate", shopLimiter, async (req, res, next) => {
+  const decodedToken = await verifyShopUserToken(req, res);
+  if (!decodedToken) return;
+
+  const { itemId } = req.body || {};
+  const boost = boostItems.find((item) => item.id === itemId);
+  if (!boost) return res.status(400).send({ error: "Unknown boost item" });
+
+  try {
+    const userRef = firestore.collection("users").doc(decodedToken.uid);
+    const result = await firestore.runTransaction(async (transaction) => {
+      const doc = await transaction.get(userRef);
+      const user = doc.data();
+      if (!user) return { error: "User not found", status: 404 };
+
+      const migrationChanged = normalizeMasterBallBoostInventory(user);
+      const saveMigration = () => {
+        if (migrationChanged)
+          transaction.update(userRef, {
+            ownedBoosts: user.ownedBoosts,
+            ...getMasterBallBoostProfileUpdates(user.activeMasterBallBoost),
+          });
+      };
+      const currentDate = classicGetCurrentDate();
+      if (isUserBoostActive(user, itemId, currentDate)) {
+        saveMigration();
+        return { error: "This boost is already active", status: 409 };
+      }
+
+      const ownedBoosts = getOwnedBoostInventory(user);
+      if (ownedBoosts[itemId] < 1) {
+        saveMigration();
+        return {
+          error: "You do not have this boost in your inventory",
+          status: 409,
+        };
+      }
+      ownedBoosts[itemId]--;
+      const updates = {
+        ownedBoosts,
+        ...getMasterBallBoostProfileUpdates(
+          itemId === "boost-master-ball" || user.activeMasterBallBoost,
+        ),
       };
 
-      const now = Date.now();
-      const currentDate = classicGetCurrentDate();
-      const alreadyWonToday = user.classicLastWinDate === currentDate;
-
-      if (boost.id === "boost-master-ball") {
-        if (alreadyWonToday) {
-          const tomorrow = new Date(now + 24 * 60 * 60 * 1000);
-          const { year, month, day } = classicGetDateTimeParts(tomorrow);
-          updates.masterBallBoostDate = `${String(day).padStart(
-            2,
-            "0",
-          )}-${String(month).padStart(2, "0")}-${year}`;
-        } else {
-          updates.masterBallBoostDate = currentDate;
-        }
-      } else if (boost.id === "boost-double-earnings") {
-        const currentDate = classicGetCurrentDate();
-        const currentUntil = user.doubleEarningsUntilDate;
-        let baseDate = currentDate;
-
-        if (typeof currentUntil === "string") {
-          const daysRemaining = classicGetDaysBetween(
-            currentDate,
-            currentUntil,
-          );
-          if (daysRemaining !== null && daysRemaining > 0) {
-            baseDate = currentUntil;
-          }
-        }
-
-        const [day, month, year] = baseDate.split("-").map(Number);
-        const targetUtc = Date.UTC(year, month - 1, day + 7);
-        const targetDateObj = new Date(targetUtc);
-        const {
-          year: y,
-          month: m,
-          day: d,
-        } = classicGetDateTimeParts(targetDateObj);
-
-        updates.doubleEarningsUntilDate = `${String(d).padStart(2, "0")}-${String(m).padStart(2, "0")}-${y}`;
+      if (itemId !== "boost-master-ball") {
+        updates.doubleEarningsUntilDate =
+          classicGetDoubleEarningsUntilDate(currentDate);
       }
 
       transaction.update(userRef, updates);
-      return { pokedollars: updates.pokedollars, updates };
+      return { boostInventory: ownedBoosts, active: itemId };
     });
 
     if (result.error)
@@ -1654,11 +1996,89 @@ function classicGetRemainingTime() {
 }
 
 function classicGetCurrentDate() {
-  const { year, month, day } = classicGetDateTimeParts(new Date());
+  return classicFormatDate(new Date());
+}
+
+function classicFormatDate(date) {
+  const { year, month, day } = classicGetDateTimeParts(date);
   return `${String(day).padStart(2, "0")}-${String(month).padStart(
     2,
     "0",
   )}-${year}`;
+}
+
+function classicGetLegacyMasterBallBoostUses(user) {
+  if (Number.isSafeInteger(user.masterBallBoostUses))
+    return Math.max(0, user.masterBallBoostUses);
+  return user.masterBallBoostDate ? 1 : 0;
+}
+
+function getMasterBallBoostProfileUpdates(active) {
+  return {
+    activeMasterBallBoost: Boolean(active),
+    masterBallBoostUses: FieldValue.delete(),
+    masterBallBoostDate: FieldValue.delete(),
+  };
+}
+
+function normalizeMasterBallBoostInventory(user) {
+  const ownedBoosts = getOwnedBoostInventory(user);
+  const legacyUses = classicGetLegacyMasterBallBoostUses(user);
+  const currentDate = classicGetCurrentDate();
+  const active = classicIsMasterBallBoostActive(user, currentDate);
+  if (active)
+    ownedBoosts["boost-master-ball"] += Math.max(0, legacyUses - 1);
+  const previousOwnedBoosts = user.ownedBoosts;
+  const inventoryChanged =
+    !previousOwnedBoosts ||
+    boostItems.some(
+      (boost) => previousOwnedBoosts[boost.id] !== ownedBoosts[boost.id],
+    );
+  const changed =
+    inventoryChanged ||
+    typeof user.activeMasterBallBoost !== "boolean" ||
+    Object.prototype.hasOwnProperty.call(user, "masterBallBoostUses") ||
+    Object.prototype.hasOwnProperty.call(user, "masterBallBoostDate") ||
+    user.activeMasterBallBoost !== active;
+
+  user.ownedBoosts = ownedBoosts;
+  user.activeMasterBallBoost = active;
+  delete user.masterBallBoostUses;
+  delete user.masterBallBoostDate;
+  return changed;
+}
+
+function classicIsMasterBallBoostActive(user, currentDate) {
+  if (typeof user.activeMasterBallBoost === "boolean")
+    return user.activeMasterBallBoost;
+
+  const uses = classicGetLegacyMasterBallBoostUses(user);
+  if (uses <= 0) return false;
+  if (!user.masterBallBoostDate) return true;
+
+  const daysUntilScheduledBoost = classicGetDaysBetween(
+    currentDate,
+    user.masterBallBoostDate,
+  );
+  return daysUntilScheduledBoost !== null && daysUntilScheduledBoost >= 0;
+}
+
+function isUserBoostActive(user, itemId, currentDate) {
+  if (itemId === "boost-master-ball")
+    return classicIsMasterBallBoostActive(user, currentDate);
+  if (itemId === "boost-double-earnings") {
+    const remainingDays = user.doubleEarningsUntilDate
+      ? classicGetDaysBetween(currentDate, user.doubleEarningsUntilDate)
+      : null;
+    return remainingDays !== null && remainingDays >= 0;
+  }
+  return false;
+}
+
+function classicGetDoubleEarningsUntilDate(currentDate) {
+  const [day, month, year] = currentDate.split("-").map(Number);
+  const targetDate = new Date(Date.UTC(year, month - 1, day + 6));
+  return classicFormatDate(targetDate);
 }
 
 function classicGetDaysBetween(firstDate, secondDate) {
@@ -1726,12 +2146,8 @@ function classicShouldResetStreak(user, currentDate) {
   return daysSinceLastWin !== 0 && !(daysSinceLastWin === 1 && streak < 7);
 }
 
-function classicGetActiveBall(user, currentDate = classicGetCurrentDate()) {
+function classicGetStreakBall(user, currentDate = classicGetCurrentDate()) {
   if (!user) return null;
-
-  if (user.masterBallBoostDate === currentDate) {
-    return "master-ball";
-  }
 
   const streak = Number.isInteger(user.classicWinStreak)
     ? user.classicWinStreak
@@ -1744,6 +2160,12 @@ function classicGetActiveBall(user, currentDate = classicGetCurrentDate()) {
   if (daysSinceLastWin === 1 && streak < 7)
     return classicGetBallForStreak(streak);
   return null;
+}
+
+function classicGetActiveBall(user, currentDate = classicGetCurrentDate()) {
+  if (!user) return null;
+  if (classicIsMasterBallBoostActive(user, currentDate)) return "master-ball";
+  return classicGetStreakBall(user, currentDate);
 }
 
 function classicGetPokedollarReward(tries) {
@@ -1770,11 +2192,18 @@ async function updateStatsOnClassicWin(
     "0",
   )}-${year}`;
   const userRef = firestore.collection("users").doc(id);
+  await ensureMonthlyRankingPeriod();
+  const rankingPeriod = getRankingPeriod();
+  const monthlyRankingRef = getMonthlyRankingCollection(
+    rankingPeriod,
+    "classic",
+  ).doc(id);
 
-  return firestore.runTransaction(async (transaction) => {
+  const result = await firestore.runTransaction(async (transaction) => {
     const doc = await transaction.get(userRef);
     const user = doc.data();
     if (!user) return null;
+    const monthlyRankingDoc = await transaction.get(monthlyRankingRef);
 
     const previousStreak = Number.isInteger(user.classicWinStreak)
       ? user.classicWinStreak
@@ -1788,9 +2217,16 @@ async function updateStatsOnClassicWin(
         ball: classicGetBallForStreak(previousStreak),
         shiny: guaranteedShiny,
         pokedollarsEarned: 0,
+        rankingUpdated: false,
       };
 
-    const ball = classicGetActiveBall(user, streakDate);
+    normalizeMasterBallBoostInventory(user);
+    const streakBall = classicGetStreakBall(user, streakDate);
+    const masterBallBoostActive = classicIsMasterBallBoostActive(
+      user,
+      streakDate,
+    );
+    const ball = masterBallBoostActive ? "master-ball" : streakBall;
     user.classicWinStreak = classicGetNextStreak(
       previousStreak,
       user.classicLastWinDate,
@@ -1799,10 +2235,22 @@ async function updateStatsOnClassicWin(
     user.classicLastWinDate = streakDate;
 
     const classicWins = Number(user.classicWins) || 0;
+    const previousMonthlyScore = monthlyRankingDoc.data()?.score || 0;
+    const monthlyScore = previousMonthlyScore + 1;
     const classicAvgTries = Number(user.classicAvgTries) || 0;
     user.classicAvgTries =
       (classicWins * classicAvgTries + tries) / (classicWins + 1);
     user.classicWins = classicWins + 1;
+    await addSurpassedNotifications(transaction, {
+      mode: "classic",
+      period: rankingPeriod,
+      userId: id,
+      username: user.username || "A player",
+      previousAllTimeScore: classicWins,
+      newAllTimeScore: user.classicWins,
+      previousMonthlyScore,
+      newMonthlyScore: monthlyScore,
+    });
     let pokedollarsEarned = classicGetPokedollarReward(tries);
     const doubleEarningsUntilDate = user.doubleEarningsUntilDate;
     const remainingDays = doubleEarningsUntilDate
@@ -1819,11 +2267,9 @@ async function updateStatsOnClassicWin(
         : 0;
     user.pokedollars = currentPokedollars + pokedollarsEarned;
 
-    if (
-      user.masterBallBoostDate &&
-      classicGetDaysBetween(streakDate, user.masterBallBoostDate) <= 0
-    )
-      user.masterBallBoostDate = null;
+    if (masterBallBoostActive && streakBall !== "master-ball") {
+      user.activeMasterBallBoost = false;
+    }
     if (remainingDays !== null && remainingDays <= 0)
       user.doubleEarningsUntilDate = null;
 
@@ -1848,8 +2294,24 @@ async function updateStatsOnClassicWin(
       });
 
     transaction.set(userRef, user);
-    return { ball, shiny, pokedollarsEarned };
+    transaction.set(monthlyRankingRef, {
+      username: user.username || "???",
+      score: monthlyScore,
+    });
+    return {
+      ball,
+      shiny,
+      pokedollarsEarned,
+      rankingUpdated: true,
+    };
   });
+
+  if (result?.rankingUpdated) {
+    invalidateRankingCache(classicRankingCache);
+  }
+  if (!result) return null;
+  const { rankingUpdated, ...gameResult } = result;
+  return gameResult;
 }
 
 async function generateSentryChallenge(sessionID, session) {
@@ -1908,12 +2370,32 @@ async function updateStatsOnSentryRound(
   gameOver,
 ) {
   const userRef = firestore.collection("users").doc(id);
+  await ensureMonthlyRankingPeriod();
+  const rankingPeriod = getRankingPeriod();
+  const monthlyRankingRef = getMonthlyRankingCollection(
+    rankingPeriod,
+    "sentry",
+  ).doc(id);
   await firestore.runTransaction(async (transaction) => {
     const doc = await transaction.get(userRef);
     const user = doc.data();
     if (!user) return;
 
-    const sentryBestScore = Math.max(user.sentryBestScore || 0, sessionTotal);
+    const monthlyRankingDoc = await transaction.get(monthlyRankingRef);
+    const previousAllTimeScore = user.sentryBestScore || 0;
+    const previousMonthlyScore = monthlyRankingDoc.data()?.score || 0;
+    const sentryBestScore = Math.max(previousAllTimeScore, sessionTotal);
+    const monthlyScore = Math.max(previousMonthlyScore, sessionTotal);
+    await addSurpassedNotifications(transaction, {
+      mode: "sentry",
+      period: rankingPeriod,
+      userId: id,
+      username: user.username || "A player",
+      previousAllTimeScore,
+      newAllTimeScore: sentryBestScore,
+      previousMonthlyScore,
+      newMonthlyScore: monthlyScore,
+    });
     const sentrySessionsCompleted = (user.sentrySessionsCompleted || 0) + 1;
     const sentryFailures = (user.sentryFailures || 0) + (failed ? 1 : 0);
     const sentryBestSession =
@@ -1927,7 +2409,13 @@ async function updateStatsOnSentryRound(
       sentryFailures,
       sentryBestSession,
     });
+    if (monthlyScore > previousMonthlyScore)
+      transaction.set(monthlyRankingRef, {
+        username: user.username || "???",
+        score: monthlyScore,
+      });
   });
+  invalidateRankingCache(sentryRankingCache);
 }
 
 const getFootprintUrl = (pokemonName) =>
@@ -1983,6 +2471,22 @@ function profileBgPathSelector(backgroundId, device) {
   const background = getShopBackground(backgroundId);
   if (!background) return bgPathSelector(device);
   return device === "phone" ? background.mobileUrl : background.desktopUrl;
+}
+
+function getOwnedBoostInventory(user) {
+  const storedBoosts =
+    user.ownedBoosts &&
+    typeof user.ownedBoosts === "object" &&
+    !Array.isArray(user.ownedBoosts)
+      ? user.ownedBoosts
+      : {};
+  const inventory = { ...storedBoosts };
+  boostItems.forEach((boost) => {
+    const quantity = inventory[boost.id];
+    inventory[boost.id] =
+      Number.isSafeInteger(quantity) && quantity >= 0 ? quantity : 0;
+  });
+  return inventory;
 }
 
 async function verifyShopUserToken(req, res) {

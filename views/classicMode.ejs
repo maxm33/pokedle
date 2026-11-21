@@ -2,6 +2,16 @@
 <html lang="en">
   <head>
     <link rel="icon" href="/public/images/icons/favicon.ico" />
+    <script>
+      try {
+        const authState = sessionStorage.getItem("pokedleAuthState");
+        if (authState === "signed-in" || authState === "signed-out") {
+          document.documentElement.dataset.authState = authState;
+        }
+      } catch (err) {
+        console.error("Failed to restore navigation state:", err);
+      }
+    </script>
     <link rel="stylesheet" href="/public/stylesheets/style.css" />
     <link rel="preconnect" href="https://www.gstatic.com" />
     <link
@@ -130,7 +140,7 @@
       </div>
       <div
         id="event-notifications"
-        class="event-notification-carousel fadeIn"
+        class="event-notification-carousel"
         role="region"
         aria-roledescription="carousel"
         aria-label="Event notifications"
@@ -143,7 +153,9 @@
             type="button"
             aria-label="Previous notification"
             hidden
-          >&lt;</button>
+          >
+            &lt;
+          </button>
           <div
             id="event-notification-swiper"
             class="event-notification-swiper"
@@ -166,7 +178,9 @@
                 type="button"
                 aria-label="Hide this notification"
                 title="Hide notification"
-              >🗑</button>
+              >
+                🗑
+              </button>
             </div>
             <div
               id="event-notification-double"
@@ -185,7 +199,9 @@
                 type="button"
                 aria-label="Hide this notification"
                 title="Hide notification"
-              >🗑</button>
+              >
+                🗑
+              </button>
             </div>
             <div
               id="event-notification-shiny"
@@ -204,7 +220,9 @@
                 type="button"
                 aria-label="Hide this notification"
                 title="Hide notification"
-              >🗑</button>
+              >
+                🗑
+              </button>
             </div>
           </div>
           <button
@@ -213,7 +231,9 @@
             type="button"
             aria-label="Next notification"
             hidden
-          >&gt;</button>
+          >
+            &gt;
+          </button>
         </div>
         <div
           id="event-notification-indicators"
@@ -296,6 +316,10 @@
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script
+      type="module"
+      src="/public/js/rankingNotifications.js?v=<%= encodeURIComponent(appVersion) %>"
+    ></script>
     <script
       type="module"
       src="/public/js/classicMode.js?v=<%= encodeURIComponent(appVersion) %>"

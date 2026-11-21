@@ -2,6 +2,16 @@
 <html lang="en">
   <head>
     <link rel="icon" href="/public/images/icons/favicon.ico" />
+    <script>
+      try {
+        const authState = sessionStorage.getItem("pokedleAuthState");
+        if (authState === "signed-in" || authState === "signed-out") {
+          document.documentElement.dataset.authState = authState;
+        }
+      } catch (err) {
+        console.error("Failed to restore navigation state:", err);
+      }
+    </script>
     <link rel="stylesheet" href="/public/stylesheets/style.css" />
     <link
       rel="manifest"
@@ -207,7 +217,8 @@
           <button id="cancel-profile-name-button" type="button">Cancel</button>
         </div>
       </form>
-      <div class="profile-stat-card">
+      <div class="profile-mode-panels">
+        <div class="profile-stat-card">
         <% if (companion) { %>
         <div class="profile-companion-container">
           <img
@@ -236,6 +247,7 @@
           <span class="mode-line">Recognized: <%= sentrySessionsCompleted %></span><br />
           <span class="mode-line">Accuracy: <%= sentryAccuracy %>%</span><br />
         </div>
+      </div>
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

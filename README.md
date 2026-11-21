@@ -133,6 +133,10 @@ A new update has been implemented:<br>
 
 A new minor update has been implemented:<br>
 
+- unified `rankings` of the two available modes into one;
+
+- restyled the `ranking` view;
+
 - restyled the `victory banner` for `Classic`;
 
 - added `shiny-only event`;
@@ -145,7 +149,9 @@ A new minor update has been implemented:<br>
 
 - added a `profile configuration sidebar` to save/load customization presets for your own profile page;
 
-- unified ranking pages of the two available modes into one.
+- added `monthly rankings` for both game modes, with a reset of the `rankings` at the end of each month;
+
+- added `rewards` to the first three trainers in each monthly ranking and `real-time notifications` when you get surpassed in any ranking.
 
 <br>
 

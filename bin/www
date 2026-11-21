@@ -19,6 +19,7 @@ server.on("listening", onListening);
   try {
     await app.locals.initializeRateLimitStore();
     await app.locals.initializeClassicGame();
+    await app.locals.initializeMonthlyRankings();
     server.listen(port);
   } catch (error) {
     console.error("Failed to initialize the application:", error);
