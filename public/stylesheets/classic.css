@@ -42,6 +42,9 @@
   max-width: calc(7 * 5.5em + 6 * 0.4em);
   width: 100%;
 }
+#state-container.hidden-initially {
+  display: none;
+}
 .answers {
   animation: fadeIn 1.5s;
   align-items: center;
