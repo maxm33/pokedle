@@ -8,6 +8,17 @@
         if (authState === "signed-in" || authState === "signed-out") {
           document.documentElement.dataset.authState = authState;
         }
+        const accountRateLimitUntil = Number(
+          sessionStorage.getItem("pokedleAccountRateLimitUntil"),
+        );
+        if (
+          Number.isFinite(accountRateLimitUntil) &&
+          accountRateLimitUntil > Date.now()
+        ) {
+          document.documentElement.dataset.accountRateLimited = "true";
+        } else {
+          sessionStorage.removeItem("pokedleAccountRateLimitUntil");
+        }
       } catch (err) {
         console.error("Failed to restore navigation state:", err);
       }

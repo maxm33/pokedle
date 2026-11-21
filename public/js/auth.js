@@ -72,6 +72,7 @@ function applyAccountRateLimit(until) {
 
   if (remainingMs <= 0) {
     loginButton.disabled = false;
+    document.documentElement.removeAttribute("data-account-rate-limited");
     try {
       sessionStorage.removeItem(accountRateLimitStorageKey);
     } catch (err) {
@@ -81,8 +82,10 @@ function applyAccountRateLimit(until) {
   }
 
   loginButton.disabled = true;
+  document.documentElement.dataset.accountRateLimited = "true";
   accountRateLimitTimeout = window.setTimeout(() => {
     loginButton.disabled = false;
+    document.documentElement.removeAttribute("data-account-rate-limited");
     try {
       sessionStorage.removeItem(accountRateLimitStorageKey);
     } catch (err) {

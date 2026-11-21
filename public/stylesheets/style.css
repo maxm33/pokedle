@@ -113,9 +113,11 @@ html[data-auth-state="signed-out"] #profile-button {
 .topnav-buttons:hover {
   background-color: darkgrey;
 }
-#login-button:disabled {
+#login-button:disabled,
+html[data-account-rate-limited="true"] #login-button {
   cursor: not-allowed;
   opacity: 0.5;
+  pointer-events: none;
 }
 #buttons-container > :first-child {
   border-bottom-right-radius: 1.5em;
