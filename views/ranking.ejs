@@ -185,7 +185,11 @@
             </p>
             <% } %>
             <% for (let i = 0; i < ranking.data.length; i++) { %>
-            <div class="ranking-rows rank-<%= i < 3 ? i + 1 : 'standard' %>">
+            <a
+              class="ranking-rows rank-<%= i < 3 ? i + 1 : 'standard' %>"
+              href="/user/<%= ranking.data[i].id %>/profile"
+              aria-label="<%= ranking.data[i].username %>'s profile"
+            >
               <div class="ranking-badge">
                 <% if (i < 3) { %>
                 <img
@@ -204,11 +208,8 @@
                 <span class="ranking-tag-elite">ELITE FOUR</span>
                 <% } %>
                 <div class="ranking-name-streak">
-                  <a
-                    class="ranking-username"
-                    aria-label="<%= ranking.data[i].id %>'s profile"
-                    href="/user/<%= ranking.data[i].id %>/profile"
-                    ><%= ranking.data[i].username %></a
+                  <span class="ranking-username"
+                    ><%= ranking.data[i].username %></span
                   >
                   <% if (
                     ranking.mode === "classic" &&
@@ -245,7 +246,7 @@
                 <span class="ranking-score-val"><%= ranking.data[i].score %></span>
                 <span class="ranking-score-unit">pts</span>
               </div>
-            </div>
+            </a>
             <% } %>
           </div>
         </section>
