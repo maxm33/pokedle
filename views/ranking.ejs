@@ -140,28 +140,28 @@
         </div>
         <div class="ranking-tabs ranking-period-tabs" role="tablist" aria-label="Ranking period">
           <button
-            id="all-time-ranking-tab"
-            class="ranking-tab"
-            type="button"
-            role="tab"
-            aria-controls="<%= activeMode %>-all-time-ranking-panel"
-            aria-selected="true"
-            tabindex="0"
-            data-ranking-period="all-time"
-          >
-            All-Time
-          </button>
-          <button
             id="monthly-ranking-tab"
             class="ranking-tab"
             type="button"
             role="tab"
             aria-controls="<%= activeMode %>-monthly-ranking-panel"
-            aria-selected="false"
-            tabindex="-1"
+            aria-selected="true"
+            tabindex="0"
             data-ranking-period="monthly"
           >
             Monthly
+          </button>
+          <button
+            id="all-time-ranking-tab"
+            class="ranking-tab"
+            type="button"
+            role="tab"
+            aria-controls="<%= activeMode %>-all-time-ranking-panel"
+            aria-selected="false"
+            tabindex="-1"
+            data-ranking-period="all-time"
+          >
+            All-Time
           </button>
         </div>
         <% const rankingSections = [
@@ -176,7 +176,7 @@
           class="ranking-panel"
           role="tabpanel"
           aria-labelledby="<%= ranking.period === 'all-time' ? 'all-time' : 'monthly' %>-ranking-tab"
-          <% if (ranking.mode !== activeMode || ranking.period !== "all-time") { %>hidden<% } %>
+          <% if (ranking.mode !== activeMode || ranking.period !== "monthly") { %>hidden<% } %>
         >
           <div class="ranking-list">
             <% if (ranking.data.length === 0) { %>
@@ -203,13 +203,44 @@
                 <% } else if (i < 5) { %>
                 <span class="ranking-tag-elite">ELITE FOUR</span>
                 <% } %>
-                <a
-                  class="ranking-username"
-                  aria-label="<%= ranking.data[i].id %>'s profile"
-                  href="/user/<%= ranking.data[i].id %>/profile"
-                  ><%= ranking.data[i].username %></a
-                >
+                <div class="ranking-name-streak">
+                  <a
+                    class="ranking-username"
+                    aria-label="<%= ranking.data[i].id %>'s profile"
+                    href="/user/<%= ranking.data[i].id %>/profile"
+                    ><%= ranking.data[i].username %></a
+                  >
+                  <% if (
+                    ranking.mode === "classic" &&
+                    ranking.period === "monthly" &&
+                    ranking.data[i].streak > 0
+                  ) { %>
+                  <span
+                    class="ranking-streak"
+                    role="img"
+                    aria-label="<%= ranking.data[i].streak %> win streak"
+                  >
+                    <span class="ranking-streak-flame" aria-hidden="true"
+                      >🔥</span
+                    >
+                    <span class="ranking-streak-value"
+                      ><%= ranking.data[i].streak %></span
+                    >
+                  </span>
+                  <% } %>
+                </div>
               </div>
+              <% if (
+                ranking.mode === "classic" &&
+                ranking.period === "monthly"
+              ) { %>
+              <span
+                class="ranking-points-today <%= ranking.data[i].pointsToday > 0 ? 'has-points' : 'no-points' %>"
+                aria-label="<%= ranking.data[i].pointsToday > 0 ? 'Points earned today: ' + ranking.data[i].pointsToday : 'No points earned today' %>"
+              >
+                <%= ranking.data[i].pointsToday > 0 ? "+" + ranking.data[i].pointsToday : "-" %>
+              </span>
+              <% } %>
               <div class="ranking-score">
                 <span class="ranking-score-val"><%= ranking.data[i].score %></span>
                 <span class="ranking-score-unit">pts</span>
@@ -232,7 +263,7 @@
         const period = periodTabs.find(
           (periodTab) =>
             periodTab.getAttribute("aria-selected") === "true",
-        )?.dataset.rankingPeriod || "all-time";
+        )?.dataset.rankingPeriod || "monthly";
         selectRankingView(mode, period, tab, null);
         if (focus) tab.focus();
       }

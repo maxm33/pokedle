@@ -2918,11 +2918,19 @@ body.ranking-page #leaderboard-board {
   background-color: #1e293b;
   color: #facc15;
 }
+.ranking-name-streak {
+  align-items: center;
+  display: flex;
+  gap: 0.35em;
+  min-width: 0;
+}
 .ranking-username,
 .ranking-username:link,
 .ranking-username:visited {
   color: #0f172a;
   display: block;
+  flex: 0 1 auto;
+  min-width: 0;
   overflow: hidden;
   text-decoration: none;
   text-overflow: ellipsis;
@@ -2933,6 +2941,41 @@ body.ranking-page #leaderboard-board {
 .ranking-username:hover {
   color: #dc2626;
   text-decoration: underline;
+}
+.ranking-streak {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 1.55em;
+  justify-content: center;
+  position: relative;
+  width: 1.5em;
+}
+.ranking-streak-flame {
+  font-size: 1.7em;
+  line-height: 1;
+}
+.ranking-streak-value {
+  color: white;
+  font-size: 0.62em;
+  font-weight: bold;
+  left: 50%;
+  position: absolute;
+  text-shadow: 0 1px 2px #7f1d1d;
+  top: 55%;
+  transform: translate(-50%, -50%);
+}
+.ranking-points-today {
+  flex-shrink: 0;
+  font-size: 0.82em;
+  font-weight: bold;
+  white-space: nowrap;
+}
+.ranking-points-today.has-points {
+  color: #15803d;
+}
+.ranking-points-today.no-points {
+  color: #64748b;
 }
 .ranking-score {
   align-items: baseline;

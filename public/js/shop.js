@@ -350,6 +350,9 @@ function renderShop() {
       const active = isBoostActive(itemId);
       const quantity = getOwnedBoostCount(itemId);
       const inInventory = activeSection === "inventory";
+      const streakMasterBallAvailable =
+        itemId === "boost-master-ball" &&
+        Boolean(shopState?.streakMasterBallUpcoming);
       const visible =
         (inInventory ? active || quantity > 0 : activeSection === "boost") &&
         matchesSearch &&
@@ -391,7 +394,9 @@ function renderShop() {
       button.textContent = inInventory
         ? active
           ? "Already active"
-          : "Activate"
+          : streakMasterBallAvailable
+            ? "Already active"
+            : "Activate"
         : "Buy";
 
       const price = Number(button.dataset.price);
@@ -403,7 +408,8 @@ function renderShop() {
         !shopState ||
         requestPending ||
         cannotAfford ||
-        (inInventory && (quantity === 0 || active));
+        (inInventory &&
+          (quantity === 0 || active || streakMasterBallAvailable));
       return;
     }
 

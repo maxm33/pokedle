@@ -402,11 +402,23 @@ async function getMonthlyRanking(period, mode) {
     .orderBy("score", "desc")
     .limit(10)
     .get();
-  return snapshot.docs.map((player) => ({
-    id: player.id,
-    username: player.data().username,
-    score: player.data().score,
-  }));
+  const currentDate = mode === "classic" ? classicGetCurrentDate() : null;
+  return snapshot.docs.map((player) => {
+    const data = player.data();
+    return {
+      id: player.id,
+      username: data.username,
+      score: data.score,
+      streak: Number.isInteger(data.streak) ? data.streak : 0,
+      pointsToday:
+        mode === "classic" &&
+        data.pointsDate === currentDate &&
+        Number.isSafeInteger(data.pointsToday) &&
+        data.pointsToday > 0
+          ? data.pointsToday
+          : 0,
+    };
+  });
 }
 
 async function mergeClassicGuestState(uid, guestId) {
@@ -1391,6 +1403,8 @@ app.get("/shop/state", firestoreReadLimiter, async (req, res, next) => {
       equippedCompanion:
         getCollectible("companion", user.equippedCompanion)?.id || null,
       masterBallBoostActive,
+      streakMasterBallUpcoming:
+        classicGetStreakBall(user, currentDate) === "master-ball",
       doubleEarningsUntilDate,
       doubleEarningsRemainingDays: doubleEarningsActive ? remainingDays + 1 : 0,
     });
@@ -1599,6 +1613,15 @@ app.post("/shop/boost/activate", shopLimiter, async (req, res, next) => {
       const currentDate = classicGetCurrentDate();
       if (isUserBoostActive(user, itemId, currentDate)) {
         return { error: "This boost is already active", status: 409 };
+      }
+      if (
+        itemId === "boost-master-ball" &&
+        classicGetStreakBall(user, currentDate) === "master-ball"
+      ) {
+        return {
+          error: "A Master Ball is already available from your streak",
+          status: 409,
+        };
       }
 
       const ownedBoosts = getOwnedBoostInventory(user);
@@ -2113,10 +2136,15 @@ function classicGetPokedollarReward(tries) {
   return 100;
 }
 
-function classicGetMonthlyRankingPoints(tries) {
+function classicGetMonthlyRankingPoints(tries, previousStreak) {
   const validTries =
     Number.isSafeInteger(tries) && tries > 0 ? tries : 1;
-  return Math.round(200 / validTries);
+  const validStreak =
+    Number.isInteger(previousStreak) && previousStreak > 0
+      ? previousStreak
+      : 0;
+  const basePoints = Math.round(200 / validTries);
+  return Math.round(basePoints * (1 + validStreak / 2));
 }
 
 // update a logged user's document on winning
@@ -2175,8 +2203,12 @@ async function updateStatsOnClassicWin(
 
     const classicWins = Number(user.classicWins) || 0;
     const previousMonthlyScore = monthlyRankingDoc.data()?.score || 0;
+    const monthlyPointsEarned = classicGetMonthlyRankingPoints(
+      tries,
+      previousStreak,
+    );
     const monthlyScore =
-      previousMonthlyScore + classicGetMonthlyRankingPoints(tries);
+      previousMonthlyScore + monthlyPointsEarned;
     const classicAvgTries = Number(user.classicAvgTries) || 0;
     user.classicAvgTries =
       (classicWins * classicAvgTries + tries) / (classicWins + 1);
@@ -2237,6 +2269,9 @@ async function updateStatsOnClassicWin(
     transaction.set(monthlyRankingRef, {
       username: user.username || "???",
       score: monthlyScore,
+      streak: user.classicWinStreak,
+      pointsDate: streakDate,
+      pointsToday: monthlyPointsEarned,
     });
     return {
       ball,
