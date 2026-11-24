@@ -1,0 +1,365 @@
+#credits {
+  align-items: center;
+  background: #3b3b3b;
+  border: 1px solid #595959;
+  border-radius: 18px;
+  box-shadow: 0 3px 8px #000;
+  display: inline-flex;
+  float: left;
+  gap: 0.6em;
+  margin-top: 0.35em;
+  padding: 0.3em 0.5em;
+  position: sticky;
+  z-index: 9999;
+}
+#credits:hover {
+  background: #4a4a4a;
+  border-color: #666;
+  box-shadow: 0 4px 10px #000;
+  transform: translateX(3px);
+}
+#credits img {
+  background: #351821;
+  border: 1px solid transparent;
+  box-sizing: border-box;
+  border-radius: 50%;
+  display: block;
+  flex: 0 0 auto;
+  height: 28px;
+  padding: 2px;
+  width: 28px;
+}
+#author,
+#author > a {
+  font-family:
+    "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+.auth-loading,
+.auth-loading *,
+.state-loading,
+.state-loading * {
+  font-family:
+    "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+#author {
+  font-size: 1em;
+  margin: 0;
+}
+#author > a {
+  color: deepskyblue;
+  text-decoration: none;
+}
+#author > a:hover {
+  color: greenyellow;
+}
+.auth-loading {
+  align-items: center;
+  display: flex;
+  font-size: 1em;
+  gap: 0.5em;
+  padding: 0.6em 1.3em;
+  position: absolute;
+  right: 0.75em;
+  top: 0.5em;
+}
+.auth-loading .profile-loader {
+  border-color: rgba(255, 255, 255, 0.35);
+  border-top-color: white;
+  flex: 0 0 auto;
+  height: 20px;
+  width: 20px;
+}
+.auth-loading[hidden] {
+  display: none;
+}
+.shake {
+  animation: horizontal-shaking 0.35s;
+}
+.fadeIn {
+  animation: fadeIn 1.5s;
+}
+.fadeOut {
+  animation: fadeOut 1.5s;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes horizontal-shaking {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(0.25em);
+  }
+  50% {
+    transform: translateX(-0.25em);
+  }
+  75% {
+    transform: translateX(0.25em);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@media (max-width: 670px) {
+  .event-notification-carousel {
+    width: 95%;
+  }
+  .shop-inventory-btn {
+    border-radius: 50%;
+    height: 2.6em;
+    padding: 0.4em;
+    width: 2.6em;
+  }
+  .shop-inventory-btn img {
+    display: block;
+  }
+  .shop-inventory-text {
+    display: none;
+  }
+  .profile-stat-card {
+    margin: 2em;
+  }
+  .profile-stat-card::after {
+    inset: -2.5em;
+  }
+  .profile-stat-card + .profile-stat-card::after {
+    inset: -2.1em;
+  }
+  .profile-companion {
+    height: 7em;
+    width: 7em;
+  }
+  .event-notification {
+    font-size: 0.5em;
+  }
+  #topnav {
+    padding: 0.3em 0.5em 0;
+  }
+  #topnav button img {
+    height: 25px;
+    width: 25px;
+  }
+  .topnav-buttons {
+    padding: 0.45em 0.9em;
+  }
+  #credits {
+    margin-top: 0.33em;
+    padding: 0.45em 0.9em;
+    scale: 0.7;
+    transform-origin: left top;
+  }
+  #container {
+    margin: 0.3em;
+  }
+  #logo,
+  #logo a img {
+    height: 7em;
+    width: 20em;
+  }
+  #prev-next {
+    font-size: 0.9em;
+  }
+  #autocomplete {
+    margin-left: 0;
+  }
+  #state-container,
+  #titles-container,
+  .answers {
+    max-width: 26em;
+  }
+  #titles-container {
+    gap: 0.5em;
+    grid-template-columns: repeat(7, minmax(0, 3.2em));
+    margin: 0.6em auto 0;
+    width: calc(7 * 3.2em + 6 * 1.5em);
+  }
+  .titles {
+    font-size: 0.6em;
+    margin: 0.2em;
+    width: 3.2em;
+  }
+  .answers {
+    margin-top: 0;
+  }
+  .answers > :first-child {
+    height: 3.5em;
+    margin-right: 0.5em;
+    width: 3.5em;
+  }
+  .wrong,
+  .correct,
+  .partial,
+  .wrong-higher,
+  .wrong-lower {
+    height: 3.5em;
+    padding: 0;
+    width: 3.5em;
+    word-wrap: break-word;
+  }
+  .habitat {
+    margin-top: 0.6em;
+  }
+  .color-square {
+    height: 18px;
+    width: 18px;
+  }
+  .types {
+    margin-top: 0.6em;
+  }
+  .answers-text {
+    font-size: 0.75em;
+  }
+  .victory-ad-content {
+    height: 30em;
+    font-size: 1em;
+    width: 20em;
+    max-width: calc(100vw - 2em);
+  }
+  .victory-pokemon-image {
+    height: 135px;
+    width: 135px;
+  }
+  #victory-text1,
+  #victory-text2,
+  #victory-text3,
+  #victory-text4,
+  #victory-text5 {
+    font-size: 0.8em;
+  }
+  .ranking-rows {
+    font-size: 0.6em;
+  }
+  .ranking-medal {
+    height: 40px;
+    width: 40px;
+  }
+  #author {
+    font-size: 0.7em;
+  }
+  #credits img {
+    height: 25px;
+    width: 25px;
+  }
+  .auth-loading {
+    font-size: 0.7em;
+    right: 0.5em;
+    top: 0.3em;
+  }
+  .auth-loading .profile-loader {
+    height: 15px;
+    width: 15px;
+  }
+}
+@media (max-width: 420px) {
+  #topnav button img {
+    height: 18.75px;
+    width: 18.75px;
+  }
+  .topnav-buttons {
+    padding: 0.3em 0.7em;
+  }
+  #credits {
+    margin-top: 0.22em;
+    padding: 0.3em 0.7em;
+  }
+  #credits img {
+    height: 18.75px;
+    width: 18.75px;
+  }
+  .event-notification {
+    font-size: 0.4em;
+  }
+  #logo,
+  #logo a img {
+    height: 5.83em;
+    width: 16.66em;
+  }
+  #prev-next {
+    font-size: 0.8em;
+  }
+  #subtitle {
+    font-size: 1.1em;
+  }
+  #mode-switch {
+    font-size: 0.65em;
+    margin-top: 0.5em;
+  }
+  input[type="text"] {
+    font-size: 0.7em;
+  }
+  #autocomplete {
+    margin-left: 1em;
+  }
+  .autocomplete-items {
+    max-height: 17.5em;
+  }
+  .list-options {
+    font-size: 0.65em;
+  }
+  #state-container,
+  #titles-container,
+  .answers {
+    max-width: 23em;
+  }
+  #titles-container {
+    gap: 0.45em;
+    grid-template-columns: repeat(7, minmax(0, 2.8em));
+    width: calc(7 * 2.8em + 6 * 0.6em);
+  }
+  .titles {
+    font-size: 0.5em;
+    width: 2.8em;
+  }
+  .answers {
+    max-height: 4.2em;
+  }
+  .wrong,
+  .correct,
+  .partial,
+  .wrong-higher,
+  .wrong-lower {
+    height: 3em;
+    width: 3em;
+  }
+  .habitat {
+    height: 30px;
+    width: 36px;
+  }
+  .color-square {
+    height: 15px;
+    width: 15px;
+  }
+  .types {
+    height: 10px;
+    margin-top: 0;
+    width: 40px;
+  }
+  .answers-text {
+    font-size: 0.6em;
+  }
+  .ranking-medal {
+    height: 32px;
+    width: 32px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .event-notification-swiper {
+    scroll-behavior: auto;
+  }
+}

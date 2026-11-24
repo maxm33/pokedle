@@ -1,0 +1,6 @@
+<% modules.forEach((stylesheet) => { %>
+<link
+  rel="stylesheet"
+  href="/public/stylesheets/<%= stylesheet %>.css?v=<%= encodeURIComponent(appVersion) %>"
+/>
+<% }); %>

@@ -1,92 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <link rel="icon" href="/public/images/icons/favicon.ico" />
-    <link rel="stylesheet" href="/public/stylesheets/style.css" />
-    <link
-      rel="manifest"
-      type="application/manifest+json"
-      href="/public/app.webmanifest"
-    />
-    <meta name="viewport" content="initial-scale=1, width=device-width" />
-    <title>Profile</title>
-  </head>
+  <%- include("partials/head", {
+    title: "Profile",
+    modules: ["base", "profile", "sentry", "profile-account", "responsive"]
+  }) %>
   <body
     class="profile-page<%= hasCustomBackground ? ' profile-has-custom-background' : ''%>"
     style="--page-background-image: url(&quot;<%= bg%>&quot;); --profile-default-background-image: url(&quot;<%= defaultBg%>&quot;); --profile-overlay-image: <%= overlay ? 'url(' + overlay + ')' : 'none'%>"
     data-rate-limit-toast="<%= typeof rateLimitToast === 'string' ? rateLimitToast : '' %>"
   >
-    <div id="topnav" role="banner">
-      <div id="credits">
-        <p id="author">
-          Created by <a href="https://github.com/maxm33">maxm33</a>
-        </p>
-        <img
-          alt=""
-          src="/public/images/misc/github-mark.webp"
-          width="20px"
-          height="20px"
-        />
-      </div>
-      <div
-        id="auth-loading"
-        class="auth-loading"
-        role="status"
-        aria-live="polite"
-      >
-        <span class="profile-loader" aria-hidden="true"></span>
-        <span>Checking authentication...</span>
-      </div>
-      <div id="buttons-container">
-        <button id="login-button" class="topnav-buttons">
-          <img
-            id="login-img"
-            alt=""
-            src="/public/images/misc/login.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-        <button
-          id="shop-button"
-          class="topnav-buttons"
-          type="button"
-          aria-label="Shop"
-          title="Shop"
-        >
-          <img
-            alt=""
-            src="/public/images/misc/shop.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-        <button id="ranking-button" class="topnav-buttons">
-          <img
-            alt=""
-            src="/public/images/misc/ranking.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-        <button id="pokedex-button" class="topnav-buttons">
-          <img
-            alt=""
-            src="/public/images/misc/pokedex.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-        <button id="profile-button" class="topnav-buttons">
-          <img
-            alt=""
-            src="/public/images/misc/profile.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-      </div>
-    </div>
+        <%- include("partials/topnav") %>
     <button
       id="profile-background-toggle"
       type="button"
@@ -170,8 +93,7 @@
         <h1
           id="profile-name"
           data-profile-uid="<%= profileId %>"
-          style="margin-top: 1.5em; font-size: 1.2em"
-          class="fadeIn"
+          class="fadeIn profile-name-heading"
         >
           <%= username %>
         </h1>
@@ -207,7 +129,8 @@
           <button id="cancel-profile-name-button" type="button">Cancel</button>
         </div>
       </form>
-      <div class="profile-stat-card">
+      <div class="profile-mode-panels">
+        <div class="profile-stat-card">
         <% if (companion) { %>
         <div class="profile-companion-container">
           <img
@@ -217,55 +140,38 @@
           />
         </div>
         <% } %>
-        <div id="mode-title">
+        <div class="mode-title">
           <span class="mode-line">Classic</span>
         </div>
-        <div id="mode-data">
+        <div class="mode-data">
           <span class="mode-line">Wins: <%= classicWins %></span><br />
           <span class="mode-line">Average Tries: <%= classicAvgTries %></span><br /><br />
           <button id="onprofile-dex-button">View Pokédex</button>
         </div>
       </div>
       <div class="profile-stat-card">
-        <div style="margin-top: 0.75em" id="mode-title">
+        <div class="profile-sentry-stat mode-title">
           <span class="mode-line">Sentry Duty</span>
         </div>
-        <div id="mode-data">
+        <div class="mode-data">
           <span class="mode-line">Best Score: <%= sentryBestScore %></span><br />
-          <span class="mode-line">Best Session: <%= sentryBestSession %> rounds</span><br />
+          <span class="mode-line">Most Rounds: <%= sentryBestSession %></span><br />
           <span class="mode-line">Recognized: <%= sentrySessionsCompleted %></span><br />
           <span class="mode-line">Accuracy: <%= sentryAccuracy %>%</span><br />
         </div>
       </div>
+      </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script type="module" src="/public/js/auth.js"></script>
-    <script>
-      document
-        .getElementById("onprofile-dex-button")
-        .addEventListener("click", () => {
-          let url = window.location.href;
-          let url_cut = url.substring(0, url.length - 8); // removing "/profile"
-          window.location.href = url_cut + "/pokedex";
-        });
-
-      const backgroundToggle = document.getElementById(
-        "profile-background-toggle",
-      );
-      const eyeOpen = backgroundToggle.querySelector(".profile-eye-open");
-      const eyeSlash = backgroundToggle.querySelector(".profile-eye-slash");
-      backgroundToggle.addEventListener("click", () => {
-        const isActive = document.body.classList.toggle(
-          "profile-background-focus",
-        );
-        const label = isActive
-          ? "Show the full profile"
-          : "Show only the profile background";
-        backgroundToggle.setAttribute("aria-pressed", String(isActive));
-        backgroundToggle.setAttribute("aria-label", label);
-        backgroundToggle.title = label;
-      });
-    </script>
-    <script type="module" src="/public/js/profilePresets.js"></script>
+    <%- include("partials/page-modules", {
+      modules: ["auth"],
+    }) %>
+    <script
+      type="module"
+      src="/public/js/profilePage.js?v=<%= encodeURIComponent(appVersion) %>"
+    ></script>
+    <script
+      type="module"
+      src="/public/js/profilePresets.js?v=<%= encodeURIComponent(appVersion) %>"
+    ></script>
   </body>
 </html>

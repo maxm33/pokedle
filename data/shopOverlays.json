@@ -96,5 +96,89 @@
     "price": 1500,
     "imageUrl": "/public/images/shop/overlays/Dual-Galaxies.webp",
     "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "overlay-15",
+    "name": "Arceus Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Arceus.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "overlay-16",
+    "name": "Cresselia Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Cresselia.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "overlay-17",
+    "name": "Darkrai Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Darkrai.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "overlay-18",
+    "name": "Dialga Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Dialga.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "overlay-19",
+    "name": "Gengar Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Gengar.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "overlay-20",
+    "name": "Giratina Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Giratina.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "overlay-21",
+    "name": "Lake Guardians Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Lake-Guardians.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "overlay-22",
+    "name": "Legendary Birds Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Legendary-Birds.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "overlay-23",
+    "name": "Legendary Dogs Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Legendary-Dogs.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "overlay-24",
+    "name": "Legendary Giants Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Legendary-Giants.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "overlay-25",
+    "name": "Palkia Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Palkia.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "overlay-26",
+    "name": "Pikachu Overlay",
+    "price": 1500,
+    "imageUrl": "/public/images/shop/overlays/Pikachu.webp",
+    "publishedAt": "2026-11-22"
   }
 ]

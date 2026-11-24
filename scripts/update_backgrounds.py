@@ -28,6 +28,8 @@ OUTPUT_SIZE = (546, 970)
 DEFAULT_PRICE = 1200
 USER_AGENT = "Pokedle background updater/1.0"
 PUBLISHED_DATE = date.today().isoformat()
+EXPECTED_WALLPAPER_COUNT = 491
+CARD_IMAGE_PATTERN = re.compile(r"/cards/([^/]+)/(\d+)\.webp")
 
 
 def find_project_root(script_path):
@@ -141,9 +143,84 @@ def get_listing_cards():
     return list(parser.cards.values())
 
 
+def get_detail_cards(card):
+    detail_url = f"{BASE_URL}/pokemon/{card.slug}"
+    html = fetch_bytes(detail_url).decode("utf-8")
+    primary_path = urlsplit(card.image_url).path
+    card_paths = []
+
+    for match in CARD_IMAGE_PATTERN.finditer(html):
+        card_path = f"/cards/{match.group(1)}/{match.group(2)}.webp"
+        if card_path not in card_paths:
+            card_paths.append(card_path)
+
+    if not card_paths:
+        card_paths = [primary_path]
+
+    cards = []
+    for index, card_path in enumerate(card_paths):
+        if card_path == primary_path:
+            slug = card.slug
+        else:
+            set_slug = CARD_IMAGE_PATTERN.match(card_path).group(1)
+            card_number = CARD_IMAGE_PATTERN.match(card_path).group(2)
+            slug = f"{card.slug}-{set_slug}-{card_number}"
+
+        cards.append(Card(slug, urljoin(BASE_URL, card_path)))
+
+    return cards
+
+
 def card_name(slug):
     words = slug.split("-")
     return " ".join(word if word == "ex" else word.capitalize() for word in words)
+
+
+def base_pokemon_slug(item_id):
+    slug = item_id.removeprefix("pokeforge-")
+    variant_match = re.match(r"^(.*)-[a-z0-9]+-\d+$", slug, re.IGNORECASE)
+    return variant_match.group(1) if variant_match else slug
+
+
+def get_background_name(pokemon_slug, name_counts):
+    base_name = f"{card_name(pokemon_slug)} Background"
+    occurrence = name_counts.get(base_name, 0) + 1
+    name_counts[base_name] = occurrence
+    if occurrence == 1:
+        return base_name
+    return f"{base_name} {occurrence}"
+
+
+def normalize_catalog_names(items):
+    name_counts = {}
+    changed = False
+    for item in items:
+        item_id = item.get("id", "")
+        if not item_id.startswith("pokeforge-"):
+            continue
+        pokemon_slug = base_pokemon_slug(item_id)
+        desired_name = get_background_name(pokemon_slug, name_counts)
+        if item.get("name") != desired_name:
+            item["name"] = desired_name
+            changed = True
+    return changed
+
+
+def allocate_catalog_name(card_slug, items):
+    pokemon_slug = base_pokemon_slug(f"pokeforge-{card_slug}")
+    base_name = f"{card_name(pokemon_slug)} Background"
+    used_names = {
+        item.get("name")
+        for item in items
+        if item.get("id", "").startswith("pokeforge-")
+    }
+    if base_name not in used_names:
+        return base_name
+
+    occurrence = 2
+    while f"{base_name} {occurrence}" in used_names:
+        occurrence += 1
+    return f"{base_name} {occurrence}"
 
 
 def download_and_crop(card):
@@ -211,7 +288,21 @@ def main():
     )
     args = argument_parser.parse_args()
 
-    cards = get_listing_cards()
+    listing_cards = get_listing_cards()
+    cards = []
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        futures = [
+            executor.submit(get_detail_cards, card)
+            for card in listing_cards
+        ]
+        for future in as_completed(futures):
+            cards.extend(future.result())
+
+    if len(cards) != EXPECTED_WALLPAPER_COUNT:
+        raise RuntimeError(
+            f"Expected {EXPECTED_WALLPAPER_COUNT} card wallpapers, "
+            f"but found {len(cards)}."
+        )
     items = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
     if not isinstance(items, list):
         raise RuntimeError(f"Expected a JSON array in {CATALOG_PATH}")
@@ -222,6 +313,8 @@ def main():
         if not item_id or item_id in items_by_id:
             raise RuntimeError(f"Invalid or duplicate shop item ID: {item_id}")
         items_by_id[item_id] = item
+
+    catalog_changed = normalize_catalog_names(items)
 
     card_prices = {
         item["price"]
@@ -234,7 +327,6 @@ def main():
 
     missing_images = []
     added_catalog_entries = 0
-    catalog_changed = False
     for card in cards:
         item_id = f"pokeforge-{card.slug}"
         image_path = OUTPUT_DIRECTORY / f"{card.slug}.webp"
@@ -254,7 +346,7 @@ def main():
         else:
             new_item = {
                 "id": item_id,
-                "name": f"{card_name(card.slug)} Background",
+                "name": allocate_catalog_name(card.slug, items),
                 "price": price,
                 "desktopUrl": image_url,
                 "mobileUrl": image_url,

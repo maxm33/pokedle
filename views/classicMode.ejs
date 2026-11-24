@@ -1,98 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <link rel="icon" href="/public/images/icons/favicon.ico" />
-    <link rel="stylesheet" href="/public/stylesheets/style.css" />
-    <link rel="preconnect" href="https://www.gstatic.com" />
-    <link
-      rel="preload"
-      as="script"
-      href="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
-    />
-    <link
-      rel="manifest"
-      type="application/manifest+json"
-      href="/public/app.webmanifest"
-    />
-    <meta name="viewport" content="initial-scale=1, width=device-width" />
-    <meta
-      name="description"
-      content="Pokédle is a game heavily inspired by Wordle and LoLdle, in which you have to guess the daily secret pokémon."
-    />
-    <title>Pokédle - Classic</title>
-  </head>
+  <%- include("partials/head", {
+    title: "Pokédle - Classic",
+    description: "Pokédle is a game heavily inspired by Wordle and LoLdle, in which you have to guess the daily secret pokémon.",
+    modules: ["base", "profile", "game", "classic", "profile-account", "responsive"],
+    preconnect: true
+  }) %>
   <body style="--page-background-image: url(&quot;<%= bg %>&quot;)">
-    <div id="topnav" role="banner">
-      <div id="credits">
-        <p id="author">
-          Created by <a href="https://github.com/maxm33">maxm33</a>
-        </p>
-        <img
-          alt=""
-          src="/public/images/misc/github-mark.webp"
-          width="20px"
-          height="20px"
-        />
+        <%- include("partials/topnav") %>
+    <aside
+      id="game-mode-nav"
+      class="game-mode-nav is-collapsed fadeIn"
+      aria-label="Game modes"
+    >
+      <div id="game-mode-nav-panel" class="game-mode-nav-panel">
+        <h2>Modes</h2>
+        <div class="game-mode-nav-slots">
+          <div class="game-mode-item">
+            <a
+              class="game-mode-link"
+              href="/classic"
+              aria-label="Classic"
+              title="Classic"
+            >
+              <img
+                src="/public/images/misc/pokedle-logo.webp"
+                alt=""
+                aria-hidden="true"
+              />
+            </a>
+            <span class="game-mode-label">Classic</span>
+          </div>
+          <div class="game-mode-item">
+            <a
+              class="game-mode-link sentry-mode-link"
+              href="/sentry"
+              aria-label="Sentry Duty"
+              title="Sentry Duty"
+            >
+              <img
+                class="game-mode-sentry-frame"
+                src="/public/images/sentry/footprint-grate-frame.png"
+                alt=""
+                aria-hidden="true"
+              />
+              <img
+                class="game-mode-sentry-footprint"
+                src="/public/images/sentry/footprints/Groudon.png"
+                alt=""
+                aria-hidden="true"
+              />
+            </a>
+            <span class="game-mode-label">Sentry Duty</span>
+          </div>
+        </div>
       </div>
-      <div
-        id="auth-loading"
-        class="auth-loading"
-        role="status"
-        aria-live="polite"
-      >
-        <span class="profile-loader" aria-hidden="true"></span>
-        <span>Checking authentication...</span>
-      </div>
-      <div id="buttons-container">
-        <button id="login-button" class="topnav-buttons">
-          <img
-            id="login-img"
-            alt=""
-            src="/public/images/misc/login.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-        <button
-          id="shop-button"
-          class="topnav-buttons"
-          type="button"
-          aria-label="Shop"
-          title="Shop"
-        >
-          <img
-            alt=""
-            src="/public/images/misc/shop.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-        <button id="ranking-button" class="topnav-buttons">
-          <img
-            alt=""
-            src="/public/images/misc/ranking.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-        <button id="pokedex-button" class="topnav-buttons">
-          <img
-            alt=""
-            src="/public/images/misc/pokedex.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-        <button id="profile-button" class="topnav-buttons">
-          <img
-            alt=""
-            src="/public/images/misc/profile.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-      </div>
-    </div>
+      <button
+        id="game-mode-nav-toggle"
+        class="game-mode-nav-toggle"
+        type="button"
+        aria-controls="game-mode-nav-panel"
+        aria-expanded="false"
+        aria-label="Expand game modes"
+        title="Expand game modes"
+      ><span aria-hidden="true">‹</span></button>
+    </aside>
     <div id="container" role="main">
       <div id="logo-container">
         <div id="logo">
@@ -105,32 +77,43 @@
         </div>
         <div id="mode">Classic</div>
       </div>
-      <div id="mode-switch" class="fadeIn">
-        <a class="mode-link" href="/sentry">Play Sentry Duty</a>
-      </div>
-      <div id="prev-next">
-        <div id="prev">
-          <% const previousPokemonDisplayName = prev.name .replace("Farfetchd",
-          "Farfetch'd") .replace("NidoranF", "Nidoran♀") .replace("NidoranM",
-          "Nidoran♂"); const previousPokemonSlug = prev.name .toLowerCase()
-          .replace("mr. mime", "mr-mime") .replace("nidoranf", "nidoran-female")
-          .replace("nidoranm", "nidoran-male") .replace("mime jr.", "mime-jr")
-          .replaceAll(" ", "-"); %> Last was<br />
-          <a
-            id="previous-pokemon-link"
-            href="https://www.pokemon.com/it/pokedex/<%= previousPokemonSlug %>"
-            ><%= previousPokemonDisplayName %></a
-          >
-          #<%= String(prev.ID).padStart(3, "0") %>
+      <div id="mode-switch" class="fadeIn" aria-hidden="true"></div>
+      <div id="prev-next" aria-label="Daily Pokédex status">
+        <section id="prev" class="daily-status-card" aria-label="Previous Pokémon">
+          <span class="daily-status-label">Previous</span>
+          <div class="previous-pokemon">
+            <% if (prev) { %>
+              <div class="previous-pokemon-info">
+                <a
+                  id="previous-pokemon-link"
+                  href="https://www.pokemon.com/it/pokedex/<%= prevSlug %>"
+                >
+                  <%= prevDisplayName %>
+                </a>
+                <span class="previous-pokemon-number">#<%= String(prev.ID).padStart(3, "0") %></span>
+              </div>
+              <img
+                class="previous-pokemon-sprite"
+                src="/public/images/sprites/<%= prev.name %>.webp"
+                alt=""
+                aria-hidden="true"
+              />
+            <% } else { %>
+              <span class="previous-pokemon-empty">Preparing Pokédex...</span>
+            <% } %>
+          </div>
+        </section>
+        <div class="daily-status-divider" aria-hidden="true">
+          <span class="status-seal"></span>
         </div>
-        <div id="timer">
-          Reset in<br />
-          ........
-        </div>
+        <section id="timer" class="daily-status-card" aria-label="Time until reset">
+          <span class="daily-status-label">Next encounter</span>
+          <time id="timer-value" datetime="PT0H0M0S">--:--:--</time>
+        </section>
       </div>
       <div
         id="event-notifications"
-        class="event-notification-carousel fadeIn"
+        class="event-notification-carousel"
         role="region"
         aria-roledescription="carousel"
         aria-label="Event notifications"
@@ -143,7 +126,9 @@
             type="button"
             aria-label="Previous notification"
             hidden
-          >&lt;</button>
+          >
+            &lt;
+          </button>
           <div
             id="event-notification-swiper"
             class="event-notification-swiper"
@@ -166,7 +151,9 @@
                 type="button"
                 aria-label="Hide this notification"
                 title="Hide notification"
-              >🗑</button>
+              >
+                🗑
+              </button>
             </div>
             <div
               id="event-notification-double"
@@ -185,7 +172,9 @@
                 type="button"
                 aria-label="Hide this notification"
                 title="Hide notification"
-              >🗑</button>
+              >
+                🗑
+              </button>
             </div>
             <div
               id="event-notification-shiny"
@@ -204,7 +193,9 @@
                 type="button"
                 aria-label="Hide this notification"
                 title="Hide notification"
-              >🗑</button>
+              >
+                🗑
+              </button>
             </div>
           </div>
           <button
@@ -213,7 +204,9 @@
             type="button"
             aria-label="Next notification"
             hidden
-          >&gt;</button>
+          >
+            &gt;
+          </button>
         </div>
         <div
           id="event-notification-indicators"
@@ -223,7 +216,7 @@
           hidden
         ></div>
       </div>
-      <div id="subtitle" style="margin: 0; display: none">
+      <div id="subtitle" class="zero-margin hidden-initially">
         <p>
           We're done for today...<br /><br />
           Check other game modes too!
@@ -238,7 +231,7 @@
         <span class="profile-loader" aria-hidden="true"></span>
         <span id="state-loading-message">Retrieving game state...</span>
       </div>
-      <div id="textbar-container" style="display: none">
+      <div id="textbar-container" class="hidden-initially">
         <div id="autocomplete">
           <input
             id="textbar"
@@ -268,7 +261,7 @@
           </span>
         </button>
       </div>
-      <div id="state-container" style="display: none">
+      <div id="state-container" class="hidden-initially">
         <div id="titles-container">
           <div class="titles">
             <p></p>
@@ -295,10 +288,8 @@
         <div id="answers-container"></div>
       </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script
-      type="module"
-      src="/public/js/classicMode.js?v=<%= encodeURIComponent(appVersion) %>"
-    ></script>
+    <%- include("partials/page-modules", {
+      modules: ["rankingNotifications", "classicMode", "gameModeNavigation"],
+    }) %>
   </body>
 </html>

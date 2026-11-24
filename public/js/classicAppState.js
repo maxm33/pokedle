@@ -1,55 +1,65 @@
-export class classicAppState {
+export class ClassicAppState {
   guesses = [];
   rendered = [];
+  stateLoaded = false;
 
+  readStorage(key) {
+    try {
+      return JSON.parse(window.localStorage.getItem(key));
+    } catch (_) {
+      return null;
+    }
+  }
+  writeStorage(key, value) {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  }
   getUserID() {
-    return JSON.parse(window.localStorage.getItem("userID"));
+    return this.readStorage("userID");
   }
   setUserID(id) {
-    window.localStorage.setItem("userID", JSON.stringify(id));
+    this.writeStorage("userID", id);
   }
   getGameID() {
-    return JSON.parse(window.localStorage.getItem("gameID"));
+    return this.readStorage("gameID");
   }
   setGameID(id) {
-    window.localStorage.setItem("gameID", JSON.stringify(id));
+    this.writeStorage("gameID", id);
   }
   getTries() {
     this.refreshState();
     return this.guesses.length;
-  }
-  getGuessedPokemonNames() {
-    this.refreshState();
-    return this.guesses
-      .map((guess) => guess?.[0]?.name)
-      .filter((name) => typeof name === "string" && name.length > 0);
   }
   isPokemonGuessed(pokemonName) {
     this.refreshState();
     return isPokemonAlreadyGuessed(pokemonName, this.guesses);
   }
   notRendered() {
-    return this.rendered.length == 0 ? true : false;
+    return this.rendered.length === 0;
   }
-  refreshState() {
-    let state = JSON.parse(window.localStorage.getItem("state"));
+  refreshState(force = false) {
+    if (this.stateLoaded && !force) return;
+    const state = this.readStorage("state");
     if (state != null) this.guesses = state;
     else this.guesses = [];
+    this.stateLoaded = true;
   }
   removeState() {
     window.localStorage.removeItem("state");
+    this.guesses = [];
+    this.rendered = [];
+    this.stateLoaded = false;
   }
   addGuess(guess) {
-    this.refreshState();
+    this.refreshState(true);
     this.guesses.unshift(guess);
     window.localStorage.setItem("state", JSON.stringify(this.guesses));
     this.renderGuess(this.guesses[0]);
   }
   renderGuess(guess) {
-    let pokemon = guess[0];
-    let response = guess[1];
-    let menucontainer = document.getElementById("answers-container");
-    let menuoption = document.createElement("DIV");
+    const pokemon = guess[0];
+    const response = guess[1];
+    const menucontainer = document.getElementById("answers-container");
+    const menuoption = document.createElement("DIV");
     menuoption.setAttribute("class", "answers");
     const pokemonImage = document.createElement("img");
     pokemonImage.alt = "";
@@ -67,7 +77,7 @@ export class classicAppState {
           ? color.hex
           : color;
     for (let property in response) {
-      let card = document.createElement("DIV");
+      const card = document.createElement("DIV");
       card.setAttribute("class", response[property]);
       let text;
       switch (property) {
@@ -83,7 +93,7 @@ export class classicAppState {
           break;
         }
         case "colors": {
-          let colors = pokemon[property];
+          const colors = pokemon[property];
           const colorCount = colors[1] == null ? 1 : 2;
           for (let i = 0; i < colorCount; i++) {
             const square = document.createElement("div");
@@ -94,7 +104,7 @@ export class classicAppState {
           break;
         }
         case "types": {
-          let types = pokemon[property];
+          const types = pokemon[property];
           const typeCount = types[1] == null ? 1 : 2;
           for (let i = 0; i < typeCount; i++) {
             const typeImage = document.createElement("img");
@@ -126,31 +136,27 @@ export class classicAppState {
     this.rendered[this.rendered.length] = guess;
   }
   renderState() {
-    this.refreshState();
+    this.refreshState(true);
     for (let i = this.guesses.length - 1; i >= 0; i--)
       this.renderGuess(this.guesses[i]);
   }
   renderStateDiff() {
-    this.refreshState();
-    let copy = this.guesses;
+    this.refreshState(true);
+    const copy = [...this.guesses];
     for (let i = 0; i < this.rendered.length; i++) {
-      let index = copy.findIndex((e) => e[0].name == this.rendered[i][0].name);
+      const index = copy.findIndex((e) => e[0].name == this.rendered[i][0].name);
       if (index >= 0) copy.splice(index, 1);
     }
     for (let i = copy.length - 1; i >= 0; i--) this.renderGuess(copy[i]);
   }
 }
 
-function getGuessedPokemonNames(guesses = []) {
-  return guesses
-    .map((guess) => guess?.[0]?.name)
-    .filter((name) => typeof name === "string" && name.length > 0);
-}
-
 function isPokemonAlreadyGuessed(pokemonName, guesses = []) {
   const normalizedGuess = pokemonName?.trim().toLowerCase();
   if (!normalizedGuess) return false;
-  return getGuessedPokemonNames(guesses).some(
-    (name) => name.trim().toLowerCase() === normalizedGuess,
+  return guesses.some(
+    (guess) =>
+      typeof guess?.[0]?.name === "string" &&
+      guess[0].name.trim().toLowerCase() === normalizedGuess,
   );
 }

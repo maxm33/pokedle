@@ -1,13 +1,18 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 import { auth } from "./auth.js";
+import {
+  getProfilePresetSlotCount,
+  getProfilePresetStorageKey,
+  normalizeProfilePresets,
+} from "./profilePresetStorage.js";
 
 const sidebar = document.getElementById("profile-presets");
 const profileId = sidebar.dataset.profileId;
 const toggle = document.getElementById("profile-presets-toggle");
 const presetButtons = [...sidebar.querySelectorAll(".profile-preset-button")];
 const deleteButtons = [...sidebar.querySelectorAll(".profile-preset-delete")];
-const storageKey = `pokedleProfilePresets:${profileId}`;
-const slotCount = 5;
+const storageKey = getProfilePresetStorageKey(profileId);
+const slotCount = getProfilePresetSlotCount();
 
 let currentUser = null;
 let presets = Array(slotCount).fill(null);
@@ -17,30 +22,7 @@ function readPresets() {
   const storedPresets = window.localStorage.getItem(storageKey);
   if (storedPresets === null) return Array(slotCount).fill(null);
 
-  const parsedPresets = JSON.parse(storedPresets);
-  if (!Array.isArray(parsedPresets) || parsedPresets.length !== slotCount)
-    throw new Error("Invalid saved profile configurations.");
-
-  return parsedPresets.map((preset) => {
-    if (preset === null) return null;
-    if (
-      !preset ||
-      typeof preset.backgroundId !== "string" ||
-      !preset.backgroundId ||
-      typeof preset.overlayId !== "string" ||
-      !preset.overlayId ||
-      typeof preset.companionId !== "string" ||
-      !preset.companionId.startsWith("companion-") ||
-      /[\\/]/.test(preset.companionId)
-    )
-      throw new Error("Invalid saved profile configuration.");
-
-    return {
-      backgroundId: preset.backgroundId,
-      overlayId: preset.overlayId,
-      companionId: preset.companionId,
-    };
-  });
+  return normalizeProfilePresets(JSON.parse(storedPresets));
 }
 
 function getCompanionImageUrl(companionId) {
@@ -177,6 +159,18 @@ presetButtons.forEach((button, index) => {
 
 deleteButtons.forEach((button, index) => {
   button.addEventListener("click", () => deletePreset(index));
+});
+
+window.addEventListener("storage", (event) => {
+  if (event.key !== storageKey || !currentUser) return;
+
+  try {
+    presets = readPresets();
+  } catch (error) {
+    console.error("Could not read profile configurations:", error);
+    presets = Array(slotCount).fill(null);
+  }
+  renderPresets();
 });
 
 onAuthStateChanged(

@@ -1,91 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <link rel="icon" href="/public/images/icons/favicon.ico" />
-    <link rel="stylesheet" href="/public/stylesheets/style.css" />
-    <link
-      rel="manifest"
-      type="application/manifest+json"
-      href="/public/app.webmanifest"
-    />
-    <meta name="viewport" content="initial-scale=1, width=device-width" />
-    <title>PokéShop</title>
-  </head>
+  <%- include("partials/head", {
+    title: "PokéShop",
+    modules: ["base", "shop", "profile-account", "responsive"]
+  }) %>
   <body
     style="--page-background-image: url(&quot;<%= bg %>&quot;)"
+    data-shop-fields="<%= JSON.stringify(shopFields) %>"
     data-rate-limit-toast="<%= typeof rateLimitToast === 'string' ? rateLimitToast : '' %>"
   >
-    <div id="topnav" role="banner">
-      <div id="credits">
-        <p id="author">
-          Created by <a href="https://github.com/maxm33">maxm33</a>
-        </p>
-        <img
-          alt=""
-          src="/public/images/misc/github-mark.webp"
-          width="20px"
-          height="20px"
-        />
-      </div>
-      <div
-        id="auth-loading"
-        class="auth-loading"
-        role="status"
-        aria-live="polite"
-      >
-        <span class="profile-loader" aria-hidden="true"></span>
-        <span>Checking authentication...</span>
-      </div>
-      <div id="buttons-container">
-        <button id="login-button" class="topnav-buttons">
-          <img
-            id="login-img"
-            alt=""
-            src="/public/images/misc/login.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-        <button
-          id="shop-button"
-          class="topnav-buttons"
-          type="button"
-          aria-label="Shop"
-          title="Shop"
-        >
-          <img
-            alt=""
-            src="/public/images/misc/shop.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-        <button id="ranking-button" class="topnav-buttons">
-          <img
-            alt=""
-            src="/public/images/misc/ranking.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-        <button id="pokedex-button" class="topnav-buttons">
-          <img
-            alt=""
-            src="/public/images/misc/pokedex.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-        <button id="profile-button" class="topnav-buttons">
-          <img
-            alt=""
-            src="/public/images/misc/profile.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-      </div>
-    </div>
+        <%- include("partials/topnav") %>
     <header class="shop-header">
       <div class="shop-brand">
         <a
@@ -176,6 +100,25 @@
         </button>
       </nav>
       <div class="shop-search-container">
+        <button
+          id="shop-favorites-filter-button"
+          class="shop-filter-button shop-favorites-filter-button"
+          type="button"
+          aria-label="Show favorite items only"
+          aria-pressed="false"
+          title="Show favorite items only"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+        </button>
         <input type="text" id="shop-search" class="shop-search-input" placeholder="Search items..." aria-label="Search items" />
         <button
           id="shop-filter-button"
@@ -196,8 +139,8 @@
       <dialog id="shop-filter-dialog" class="shop-filter-dialog" aria-labelledby="shop-filter-title">
         <form id="shop-filter-form" method="dialog">
           <div class="shop-filter-header">
-            <h2 id="shop-filter-title">Filter &amp; sort</h2>
-            <button id="shop-filter-close" class="shop-filter-close" type="button" aria-label="Close filters">&times;</button>
+            <h2 id="shop-filter-title">Sort Items</h2>
+            <button id="shop-filter-close" class="shop-filter-close" type="button" aria-label="Close filters" autofocus>&times;</button>
           </div>
           <label class="shop-filter-field" for="shop-sort">
             <span id="shop-sort-label">Sort items</span>
@@ -222,7 +165,7 @@
       <div id="shop-items" class="shop-grid">
         <% shopItems.forEach((item) => { %>
         <article
-          class="shop-item fadeIn"
+          class="shop-item"
           data-item-id="<%= item.id %>"
           data-item-type="<%= item.type %>"
           data-purchasable="<%= item.purchasable !== false %>"
@@ -231,6 +174,48 @@
           data-published-order="<%= item.publishedOrder ?? '' %>"
           hidden
         >
+          <button
+            class="shop-item-favorite"
+            type="button"
+            data-item-id="<%= item.id %>"
+            data-item-type="<%= item.type %>"
+            aria-label="Add <%= item.displayName %> to favorites"
+            aria-pressed="false"
+            title="Add to favorites"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              />
+            </svg>
+          </button>
+          <button
+            class="shop-item-sell"
+            type="button"
+            data-action="sell"
+            data-item-id="<%= item.id %>"
+            data-item-type="<%= item.type %>"
+            aria-label="Sell <%= item.displayName %>"
+            title="Sell item"
+            hidden
+            disabled
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7m4 3v7m4-7v7"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              />
+            </svg>
+          </button>
           <picture class="shop-image-frame">
             <% if (item.type === "background") { %>
             <source
@@ -247,23 +232,24 @@
             />
           </picture>
           <div class="shop-item-content">
-            <h2><%= item.name.replace("Farfetchd", "Farfetch'd").replace("Nidoranf", "Nidoran♀").replace("Nidoranm", "Nidoran♂").replace("Ho Oh", "Ho-Oh") %></h2>
-            <div class="shop-price" style="flex-direction: column; gap: 0.3em;">
+            <h2><%= item.displayName %></h2>
+            <div class="shop-price shop-price-column">
               <% if (item.discountPercent) { %>
-                <div style="display: flex; align-items: center; gap: 0.5em;">
-                  <span style="color: #ef4444; text-decoration: line-through; font-size: 0.9em;">
+                <div class="shop-original-price-row">
+                  <span class="shop-original-price">
                     ₽ <%= item.originalPrice.toLocaleString("en-US") %>
                   </span>
-                  <span style="background-color: #ef4444; color: white !important; font-size: 0.75em; padding: 0.1em 0.4em; border-radius: 0.5em;">
+                  <span class="shop-discount-badge">
                     -<%= item.discountPercent %>%
                   </span>
                 </div>
               <% } %>
-              <div style="display: flex; align-items: center; gap: 0.35em;">
+              <div class="shop-current-price-row">
                 <span class="shop-currency" aria-hidden="true">₽</span>
                 <span><%= item.price.toLocaleString("en-US") %></span>
               </div>
             </div>
+            <p class="shop-boost-quantity" hidden></p>
             <button
               class="shop-item-action"
               type="button"
@@ -281,8 +267,28 @@
       </div>
       <p id="shop-empty-state" class="shop-empty-state" hidden></p>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script type="module" src="/public/js/auth.js"></script>
-    <script type="module" src="/public/js/shop.js"></script>
+    <button
+      id="shop-scroll-top"
+      class="shop-scroll-top"
+      type="button"
+      aria-label="Back to top"
+      title="Back to top"
+      aria-hidden="true"
+      tabindex="-1"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path
+          d="M5 12 12 5l7 7M12 5v14"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2.5"
+        />
+      </svg>
+    </button>
+    <%- include("partials/page-modules", {
+      modules: ["auth", "shop"],
+    }) %>
   </body>
 </html>

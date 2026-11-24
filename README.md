@@ -14,6 +14,7 @@ When the project was still in its early-stages, it was meant to be just a simple
   - [V1.7.1](#v171)
   - [V1.8.0](#v180)
   - [V1.8.5](#v185)
+  - [V1.9.0](#v190)
 
 - [Troubleshooting and Suggestions](#troubleshooting-and-suggestions)
 
@@ -133,6 +134,10 @@ A new update has been implemented:<br>
 
 A new minor update has been implemented:<br>
 
+- unified `rankings` of the two available modes into one;
+
+- restyled the `ranking` view;
+
 - restyled the `victory banner` for `Classic`;
 
 - added `shiny-only event`;
@@ -145,7 +150,27 @@ A new minor update has been implemented:<br>
 
 - added a `profile configuration sidebar` to save/load customization presets for your own profile page;
 
-- unified ranking pages of the two available modes into one.
+- added `monthly rankings` for both game modes, with a reset of the `rankings` at the end of each month;
+
+- added `rewards` to the first three trainers in each monthly ranking and `real-time notifications` when you get surpassed in any ranking.
+
+<br>
+
+## V1.9.0
+
+A new minor update has been implemented:<br>
+
+- restyled the desktop interface across all pages;
+
+- restyled the `previous-next` infobox and `autocomplete` textbar;
+
+- added a `mode sidebar` for faster navigation;
+
+- added new `backgrounds` and `overlays` to shop;
+
+- added `favorite` and `refund` buttons to shop items;
+
+- refactored the codebase for improved security, modularization, consistency and reliability.
 
 <br>
 

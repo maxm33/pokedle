@@ -1,0 +1,7 @@
+<%- include("axios") %>
+<% modules.forEach((module) => { %>
+<script
+  type="module"
+  src="/public/js/<%= module %>.js?v=<%= encodeURIComponent(appVersion) %>"
+></script>
+<% }); %>

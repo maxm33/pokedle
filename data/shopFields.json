@@ -1,0 +1,14 @@
+{
+  "background": {
+    "owned": "ownedBackgrounds",
+    "equipped": "equippedBackground"
+  },
+  "overlay": {
+    "owned": "ownedOverlays",
+    "equipped": "equippedOverlay"
+  },
+  "companion": {
+    "owned": "ownedCompanions",
+    "equipped": "equippedCompanion"
+  }
+}

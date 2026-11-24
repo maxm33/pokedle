@@ -3622,5 +3622,309 @@
     "desktopUrl": "/public/images/shop/backgrounds/zorua.webp",
     "mobileUrl": "/public/images/shop/backgrounds/zorua.webp",
     "publishedAt": "2026-11-18"
+  },
+  {
+    "id": "pokeforge-bulbasaur-a1-227",
+    "name": "Bulbasaur Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/bulbasaur-a1-227.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/bulbasaur-a1-227.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-charmander-a1-230",
+    "name": "Charmander Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/charmander-a1-230.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/charmander-a1-230.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-squirtle-a1-232",
+    "name": "Squirtle Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/squirtle-a1-232.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/squirtle-a1-232.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-pikachu-ex-c1-183",
+    "name": "Pikachu ex Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/pikachu-ex-c1-183.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/pikachu-ex-c1-183.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-pikachu-ex-a4b-376",
+    "name": "Pikachu ex Background 3",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/pikachu-ex-a4b-376.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/pikachu-ex-a4b-376.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-pikachu-ex-a2b-92",
+    "name": "Pikachu ex Background 4",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/pikachu-ex-a2b-92.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/pikachu-ex-a2b-92.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-pikachu-ex-a1-281",
+    "name": "Pikachu ex Background 5",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/pikachu-ex-a1-281.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/pikachu-ex-a1-281.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-jigglypuff-b3b-75",
+    "name": "Jigglypuff Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/jigglypuff-b3b-75.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/jigglypuff-b3b-75.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-meowth-a1-246",
+    "name": "Meowth Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/meowth-a1-246.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/meowth-a1-246.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-lapras-a1-234",
+    "name": "Lapras Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/lapras-a1-234.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/lapras-a1-234.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-eevee-a3b-78",
+    "name": "Eevee Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/eevee-a3b-78.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/eevee-a3b-78.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-eevee-a1-248",
+    "name": "Eevee Background 3",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/eevee-a1-248.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/eevee-a1-248.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-vaporeon-a1a-72",
+    "name": "Vaporeon Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/vaporeon-a1a-72.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/vaporeon-a1a-72.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-snorlax-a1-250",
+    "name": "Snorlax Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/snorlax-a1-250.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/snorlax-a1-250.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-mew-a1-283",
+    "name": "Mew Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mew-a1-283.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mew-a1-283.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-mew-ex-a1a-83",
+    "name": "Mew ex Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mew-ex-a1a-83.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mew-ex-a1a-83.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-chikorita-a4-162",
+    "name": "Chikorita Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/chikorita-a4-162.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/chikorita-a4-162.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-cyndaquil-a4-165",
+    "name": "Cyndaquil Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/cyndaquil-a4-165.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/cyndaquil-a4-165.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-totodile-a4-167",
+    "name": "Totodile Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/totodile-a4-167.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/totodile-a4-167.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-umbreon-a3b-77",
+    "name": "Umbreon Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/umbreon-a3b-77.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/umbreon-a3b-77.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-treecko-b3-156",
+    "name": "Treecko Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/treecko-b3-156.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/treecko-b3-156.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-piplup-b3b-71",
+    "name": "Piplup Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/piplup-b3b-71.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/piplup-b3b-71.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-bidoof-a2-177",
+    "name": "Bidoof Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/bidoof-a2-177.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/bidoof-a2-177.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-giratina-ex-a2b-96",
+    "name": "Giratina ex Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/giratina-ex-a2b-96.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/giratina-ex-a2b-96.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-shaymin-a2-159",
+    "name": "Shaymin Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/shaymin-a2-159.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/shaymin-a2-159.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-tepig-b3-161",
+    "name": "Tepig Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/tepig-b3-161.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/tepig-b3-161.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-meloetta-b3-170",
+    "name": "Meloetta Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/meloetta-b3-170.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/meloetta-b3-170.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-sylveon-a3b-76",
+    "name": "Sylveon Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/sylveon-a3b-76.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/sylveon-a3b-76.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-rowlet-a3a-70",
+    "name": "Rowlet Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/rowlet-a3a-70.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/rowlet-a3a-70.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-oricorio-b3-166",
+    "name": "Oricorio Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/oricorio-b3-166.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/oricorio-b3-166.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-oricorio-b2-161",
+    "name": "Oricorio Background 3",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/oricorio-b2-161.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/oricorio-b2-161.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-oricorio-a3-165",
+    "name": "Oricorio Background 4",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/oricorio-a3-165.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/oricorio-a3-165.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-lycanroc-ex-a3a-85",
+    "name": "Lycanroc ex Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/lycanroc-ex-a3a-85.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/lycanroc-ex-a3a-85.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-scorbunny-b2-162",
+    "name": "Scorbunny Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/scorbunny-b2-162.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/scorbunny-b2-162.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-sobble-b3-203",
+    "name": "Sobble Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/sobble-b3-203.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/sobble-b3-203.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-morpeko-b2b-73",
+    "name": "Morpeko Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/morpeko-b2b-73.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/morpeko-b2b-73.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-fuecoco-b2a-94",
+    "name": "Fuecoco Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/fuecoco-b2a-94.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/fuecoco-b2a-94.webp",
+    "publishedAt": "2026-11-22"
+  },
+  {
+    "id": "pokeforge-mega-mewtwo-x-ex-c1-185",
+    "name": "Mega Mewtwo X ex Background 2",
+    "price": 1200,
+    "desktopUrl": "/public/images/shop/backgrounds/mega-mewtwo-x-ex-c1-185.webp",
+    "mobileUrl": "/public/images/shop/backgrounds/mega-mewtwo-x-ex-c1-185.webp",
+    "publishedAt": "2026-11-22"
   }
 ]

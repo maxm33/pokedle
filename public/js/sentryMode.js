@@ -1,16 +1,18 @@
 import { auth } from "./auth.js";
+import { getPokemonDisplayName } from "./pokemonNames.js";
 
-let feedback = document.getElementById("sentry-feedback");
-let optionsContainer = document.getElementById("sentry-options");
-let audio = document.getElementById("sentry-audio");
-let feedbackAudio = document.getElementById("sentry-feedback-audio");
-let muteButton = document.getElementById("sentry-mute");
+const feedback = document.getElementById("sentry-feedback");
+const optionsContainer = document.getElementById("sentry-options");
+const audio = document.getElementById("sentry-audio");
+const feedbackAudio = document.getElementById("sentry-feedback-audio");
+const muteButton = document.getElementById("sentry-mute");
 
 let totalScore = 0;
 let sessionFailed = 0;
 let sentrySessionID = null;
 let currentChallenge = null;
 let countdownInterval = null;
+let nextChallengeTimeout = null;
 
 if (muteButton && audio) {
   // restore state from localStorage
@@ -25,10 +27,8 @@ if (muteButton && audio) {
     muteButton.setAttribute("aria-pressed", "false");
   }
 
-  if (audio) {
-    audio.volume = 0.5;
-    audio.play().catch(() => {});
-  }
+  audio.volume = 0.5;
+  audio.play().catch(() => {});
   muteButton.addEventListener("click", () => {
     const muted = !audio.muted;
     setAudioMuted(muted);
@@ -40,6 +40,10 @@ if (muteButton && audio) {
 
 async function loadChallenge(resetSession = false) {
   try {
+    if (nextChallengeTimeout !== null) {
+      window.clearTimeout(nextChallengeTimeout);
+      nextChallengeTimeout = null;
+    }
     if (resetSession) sentrySessionID = null;
     const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
     const url = sentrySessionID
@@ -80,7 +84,7 @@ function renderChallenge() {
   if (failuresEl) failuresEl.textContent = `X: ${sessionFailed}/3`;
   optionsContainer.textContent = "";
   currentChallenge.options.forEach((option) => {
-    let pokemonDisplayName = getPokemonDisplayName(option);
+    const pokemonDisplayName = getPokemonDisplayName(option);
     const button = document.createElement("button");
     button.className = "sentry-option";
     button.dataset.option = option;
@@ -102,13 +106,6 @@ function renderChallenge() {
     button.addEventListener("click", () => submitGuess(option));
     optionsContainer.appendChild(button);
   });
-
-  function getPokemonDisplayName(pokemonName) {
-    return pokemonName
-      .replace("Farfetchd", "Farfetch'd")
-      .replace("NidoranF", "Nidoran♀")
-      .replace("NidoranM", "Nidoran♂");
-  }
 }
 
 function startCountdown(duration) {
@@ -170,7 +167,7 @@ async function submitGuess(option) {
       playFeedbackSound("correct");
       if (feedback) feedback.textContent = `Correct! +${result.score} points.`;
       disableOptions();
-      setTimeout(() => loadChallenge(false), 1500);
+      nextChallengeTimeout = window.setTimeout(() => loadChallenge(false), 1500);
     } else {
       if (selectedBtn) selectedBtn.classList.add("sentry-wrong");
       if (correctBtn) correctBtn.classList.add("sentry-correct");
@@ -197,7 +194,7 @@ function handleFailure(failures = sessionFailed + 1) {
       overlay.setAttribute("aria-hidden", "false");
     }
   } else {
-    setTimeout(() => loadChallenge(false), 1500);
+    nextChallengeTimeout = window.setTimeout(() => loadChallenge(false), 1500);
   }
 }
 

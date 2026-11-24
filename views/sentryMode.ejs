@@ -1,101 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <link rel="icon" href="/public/images/icons/favicon.ico" />
-    <link rel="stylesheet" href="/public/stylesheets/style.css" />
-    <link rel="preconnect" href="https://www.gstatic.com" />
-    <link
-      rel="preload"
-      as="script"
-      href="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
-    />
-    <link
-      rel="manifest"
-      type="application/manifest+json"
-      href="/public/app.webmanifest"
-    />
-    <meta name="viewport" content="initial-scale=1, width=device-width" />
-    <meta
-      name="description"
-      content="Guess the pokémon's footprint quickly! Based on the Pokémon Mystery Dungeon series mini-game."
-    />
-    <title>Pokédle - Sentry Duty</title>
-  </head>
+  <%- include("partials/head", {
+    title: "Pokédle - Sentry Duty",
+    description: "Guess the pokémon's footprint quickly! Based on the Pokémon Mystery Dungeon series mini-game.",
+    modules: ["base", "profile", "game", "profile-account", "responsive", "sentry"],
+    preconnect: true
+  }) %>
   <body
     class="sentry-page"
     style="--page-background-image: url(&quot;<%= bg %>&quot;)"
   >
-    <div id="topnav" role="banner">
-      <div id="credits">
-        <p id="author">
-          Created by <a href="https://github.com/maxm33">maxm33</a>
-        </p>
-        <img
-          alt=""
-          src="/public/images/misc/github-mark.webp"
-          width="20px"
-          height="20px"
-        />
+        <%- include("partials/topnav") %>
+    <aside
+      id="game-mode-nav"
+      class="game-mode-nav is-collapsed fadeIn"
+      aria-label="Game modes"
+    >
+      <div id="game-mode-nav-panel" class="game-mode-nav-panel">
+        <h2>Modes</h2>
+        <div class="game-mode-nav-slots">
+          <div class="game-mode-item">
+            <a
+              class="game-mode-link"
+              href="/classic"
+              aria-label="Classic"
+              title="Classic"
+            >
+              <img
+                src="/public/images/misc/pokedle-logo.webp"
+                alt=""
+                aria-hidden="true"
+              />
+            </a>
+            <span class="game-mode-label">Classic</span>
+          </div>
+          <div class="game-mode-item">
+            <a
+              class="game-mode-link sentry-mode-link"
+              href="/sentry"
+              aria-label="Sentry Duty"
+              title="Sentry Duty"
+            >
+              <img
+                class="game-mode-sentry-frame"
+                src="/public/images/sentry/footprint-grate-frame.png"
+                alt=""
+                aria-hidden="true"
+              />
+              <img
+                class="game-mode-sentry-footprint"
+                src="/public/images/sentry/footprints/Groudon.png"
+                alt=""
+                aria-hidden="true"
+              />
+            </a>
+            <span class="game-mode-label">Sentry Duty</span>
+          </div>
+        </div>
       </div>
-      <div
-        id="auth-loading"
-        class="auth-loading"
-        role="status"
-        aria-live="polite"
-      >
-        <span class="profile-loader" aria-hidden="true"></span>
-        <span>Checking authentication...</span>
-      </div>
-      <div id="buttons-container">
-        <button id="login-button" class="topnav-buttons">
-          <img
-            id="login-img"
-            alt=""
-            src="/public/images/misc/login.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-        <button
-          id="shop-button"
-          class="topnav-buttons"
-          type="button"
-          aria-label="Shop"
-          title="Shop"
-        >
-          <img
-            alt=""
-            src="/public/images/misc/shop.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-        <button id="ranking-button" class="topnav-buttons">
-          <img
-            alt=""
-            src="/public/images/misc/ranking.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-        <button id="pokedex-button" class="topnav-buttons">
-          <img
-            alt=""
-            src="/public/images/misc/pokedex.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-        <button id="profile-button" class="topnav-buttons">
-          <img
-            alt=""
-            src="/public/images/misc/profile.webp"
-            width="35px"
-            height="35px"
-          />
-        </button>
-      </div>
-    </div>
+      <button
+        id="game-mode-nav-toggle"
+        class="game-mode-nav-toggle"
+        type="button"
+        aria-controls="game-mode-nav-panel"
+        aria-expanded="false"
+        aria-label="Expand game modes"
+        title="Expand game modes"
+      ><span aria-hidden="true">‹</span></button>
+    </aside>
     <div id="container" role="main">
       <div id="logo-container">
         <div id="logo">
@@ -109,53 +81,92 @@
         </div>
         <div id="mode">Sentry Duty</div>
       </div>
-      <div id="mode-switch" class="fadeIn">
-        <a class="mode-link" href="/classic">Play Classic Mode</a>
+      <div id="mode-switch" class="fadeIn" aria-hidden="true"></div>
+      <div
+        id="event-notifications"
+        class="event-notification-carousel"
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="Notifications"
+        hidden
+      >
+        <div class="event-notification-controls">
+          <button
+            id="event-notification-previous"
+            class="event-notification-arrow"
+            type="button"
+            aria-label="Previous notification"
+            hidden
+          >
+            &lt;
+          </button>
+          <div
+            id="event-notification-swiper"
+            class="event-notification-swiper"
+            tabindex="0"
+          ></div>
+          <button
+            id="event-notification-next"
+            class="event-notification-arrow"
+            type="button"
+            aria-label="Next notification"
+            hidden
+          >
+            &gt;
+          </button>
+        </div>
+        <div
+          id="event-notification-indicators"
+          class="event-notification-indicators"
+          role="group"
+          aria-label="Choose notification"
+          hidden
+        ></div>
       </div>
       <div id="sentry-status" class="fadeIn">
         <h2 id="sentry-title" class="fadeIn">Guess the footprint quickly!</h2>
         <div id="sentry-feedback" class="fadeIn">Whose foot is this?</div>
       </div>
-      <div id="sentry-footprint-container" class="fadeIn">
-        <div
-          id="sentry-failures-count"
-          class="sentry-grate-stat sentry-top-left"
-          title="Failures"
-        >
-          X: 0/3
+      <div id="sentry-game-layout">
+        <div id="sentry-footprint-container" class="fadeIn">
+          <div
+            id="sentry-failures-count"
+            class="sentry-grate-stat sentry-top-left"
+            title="Failures"
+          >
+            X: 0/3
+          </div>
+          <button
+            id="sentry-mute"
+            class="sentry-grate-stat sentry-top-mid fadeIn"
+            aria-pressed="false"
+            title="Mute / Unmute"
+          >
+            🔊
+          </button>
+          <div
+            id="sentry-score-count"
+            class="sentry-grate-stat sentry-top-right"
+            title="Score"
+          >
+            0
+          </div>
+          <div id="sentry-timer-bar-container">
+            <div id="sentry-timer-bar"></div>
+          </div>
+          <img id="sentry-footprint" alt="" />
+          <div id="sentry-overlay" aria-hidden="true"></div>
         </div>
-        <button
-          id="sentry-mute"
-          class="sentry-grate-stat sentry-top-mid fadeIn"
-          aria-pressed="false"
-          title="Mute / Unmute"
-        >
-          🔊
-        </button>
-        <div
-          id="sentry-score-count"
-          class="sentry-grate-stat sentry-top-right"
-          title="Score"
-        >
-          0
-        </div>
-        <div id="sentry-timer-bar-container">
-          <div id="sentry-timer-bar"></div>
-        </div>
-        <img id="sentry-footprint" alt="" />
-        <div id="sentry-overlay" aria-hidden="true"></div>
+        <div id="sentry-options" class="sentry-options fadeIn"></div>
       </div>
       <audio id="sentry-audio" loop preload="auto">
         <source src="/public/audio/sentry_duty_ost.mp3" type="audio/mpeg" />
       </audio>
       <audio id="sentry-feedback-audio" preload="auto"></audio>
-      <div id="sentry-options" class="sentry-options fadeIn"></div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script
-      type="module"
-      src="/public/js/sentryMode.js?v=<%= encodeURIComponent(appVersion) %>"
-    ></script>
+    <%- include("partials/page-modules", {
+      modules: ["rankingNotifications", "sentryMode", "gameModeNavigation"],
+    }) %>
   </body>
 </html>
