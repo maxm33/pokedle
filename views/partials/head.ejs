@@ -1,4 +1,51 @@
 <head>
+  <meta name="app-version" content="<%= encodeURIComponent(appVersion) %>" />
+  <script>
+    try {
+      const appVersion = document
+        .querySelector('meta[name="app-version"]')
+        ?.getAttribute("content");
+      const cacheVersionKey = "pokedle.cache.app-version";
+      if (appVersion && localStorage.getItem(cacheVersionKey) !== appVersion) {
+        const preservedKeys = new Set([
+          cacheVersionKey,
+          "pokedle.music-player.volume",
+          "sentry-muted",
+          "pokedleShopFavorites",
+        ]);
+        const preservedPrefixes = ["pokedleProfilePresets:"];
+        const preservedValues = new Map();
+        for (let index = 0; index < localStorage.length; index += 1) {
+          const key = localStorage.key(index);
+          if (
+            key &&
+            (preservedKeys.has(key) ||
+              preservedPrefixes.some((prefix) => key.startsWith(prefix)))
+          ) {
+            preservedValues.set(key, localStorage.getItem(key));
+          }
+        }
+        localStorage.clear();
+        sessionStorage.clear();
+        preservedValues.forEach((value, key) => localStorage.setItem(key, value));
+        localStorage.setItem(cacheVersionKey, appVersion);
+      }
+    } catch (error) {
+      console.error("Could not invalidate application caches.", error);
+    }
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/service-worker.js?v=<%= encodeURIComponent(appVersion) %>", {
+            scope: "/",
+            updateViaCache: "none",
+          })
+          .catch((error) => {
+            console.error("Could not register the service worker.", error);
+          });
+      });
+    }
+  </script>
   <link rel="icon" href="/public/images/icons/favicon.ico" />
   <% if (
     typeof includeAuthState === "undefined" ||

@@ -1,3 +1,5 @@
+import { APP_CACHE_PREFIX } from "./appCache.js";
+
 const player = document.getElementById("music-player");
 
 if (player) {
@@ -50,6 +52,7 @@ if (player) {
   const oakDanceCycleCount = 3;
   const playbackStorageKey = "pokedle.music-player";
   const volumeStorageKey = "pokedle.music-player.volume";
+  const playlistStorageKey = `${APP_CACHE_PREFIX}music-playlist`;
   const oakDanceVictoryGameIdStorageKey = "pokedle.classic-victory-game-id";
   const savedPlaybackState = readPlaybackState();
 
@@ -146,6 +149,38 @@ if (player) {
       localStorage.setItem(volumeStorageKey, volumeSlider.value);
     } catch (error) {
       console.error("Could not save the music player volume.", error);
+    }
+  }
+
+  function readCachedPlaylist() {
+    try {
+      const savedPlaylist = localStorage.getItem(playlistStorageKey);
+      if (!savedPlaylist) {
+        return null;
+      }
+
+      const playlist = JSON.parse(savedPlaylist);
+      return Array.isArray(playlist) &&
+        playlist.every(
+          (track) =>
+            track &&
+            typeof track.filename === "string" &&
+            typeof track.title === "string" &&
+            typeof track.album === "string",
+        )
+        ? playlist
+        : null;
+    } catch (error) {
+      console.error("Could not restore the music playlist metadata.", error);
+      return null;
+    }
+  }
+
+  function saveCachedPlaylist(playlist) {
+    try {
+      localStorage.setItem(playlistStorageKey, JSON.stringify(playlist));
+    } catch (error) {
+      console.error("Could not save the music playlist metadata.", error);
     }
   }
 
@@ -545,12 +580,28 @@ if (player) {
   }
 
   async function loadTracks() {
-    const response = await fetch("/audio/playlist");
-    if (!response.ok) {
-      throw new Error(`Playlist request failed with status ${response.status}`);
-    }
+    tracks = readCachedPlaylist();
+    if (!tracks) {
+      const response = await fetch("/audio/playlist");
+      if (!response.ok) {
+        throw new Error(`Playlist request failed with status ${response.status}`);
+      }
 
-    tracks = await response.json();
+      tracks = await response.json();
+      if (
+        !Array.isArray(tracks) ||
+        !tracks.every(
+          (track) =>
+            track &&
+            typeof track.filename === "string" &&
+            typeof track.title === "string" &&
+            typeof track.album === "string",
+        )
+      ) {
+        throw new Error("Playlist response has an invalid format");
+      }
+      saveCachedPlaylist(tracks);
+    }
     shuffledTracks = savedPlaybackState
       ? restorePlaylist(tracks, savedPlaybackState)
       : shuffleTracks(tracks);

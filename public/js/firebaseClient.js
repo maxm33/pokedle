@@ -11,33 +11,10 @@ function showAuthError(message) {
 }
 
 async function syncAppVersion() {
-  const appVersionCacheTtlMs = 24 * 60 * 60 * 1000;
-  const expiresAtKey = "pokedleAppVersionExpiresAt";
-  const storedVersion = localStorage.getItem("pokedleAppVersion");
-  const expiresAt = Number(localStorage.getItem(expiresAtKey));
-  const storedVersionIsFresh =
-    storedVersion &&
-    Number.isFinite(expiresAt) &&
-    expiresAt > Date.now();
-
-  if (storedVersionIsFresh) {
-    axios.defaults.headers.common["X-Client-Version"] = storedVersion;
-    return;
-  }
-
   try {
-    const response = await axios.get("/app/version", {
-      headers: storedVersionIsFresh
-        ? { "X-Client-Version": storedVersion }
-        : {},
-    });
+    const response = await axios.get("/app/version");
     const version = response.data?.version;
     if (!version) return;
-    localStorage.setItem("pokedleAppVersion", version);
-    localStorage.setItem(
-      expiresAtKey,
-      String(Date.now() + appVersionCacheTtlMs),
-    );
     axios.defaults.headers.common["X-Client-Version"] = version;
   } catch (error) {
     console.error("Could not synchronize the app version:", error);

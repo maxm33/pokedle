@@ -1,12 +1,13 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 import "./retryPolicy.js";
+import { APP_CACHE_PREFIX } from "./appCache.js";
 import { auth } from "./auth.js";
 import {
   getClosestNotificationIndex,
   renderNotificationIndicators,
 } from "./notificationCarousel.js";
 
-const seenStorageKey = "rankingNotificationSeenIds";
+const seenStorageKey = `${APP_CACHE_PREFIX}ranking-notification-seen-ids`;
 let seenNotificationIds = new Set();
 try {
   const storedIds = JSON.parse(localStorage.getItem(seenStorageKey) || "[]");

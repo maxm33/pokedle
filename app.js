@@ -43,6 +43,79 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/service-worker.js", (_, res) => {
+  res.set({
+    "Cache-Control": "no-store",
+    "Content-Type": "application/javascript; charset=utf-8",
+  });
+  res.send(`
+const APP_VERSION = ${JSON.stringify(appVersion)};
+const STATIC_CACHE = \`pokedle-static-\${APP_VERSION}\`;
+const CACHE_PREFIX = "pokedle-";
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(self.skipWaiting());
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    (async () => {
+      const cacheNames = await caches.keys();
+      await Promise.all(
+        cacheNames
+          .filter(
+            (name) =>
+              name.startsWith(CACHE_PREFIX) &&
+              name !== STATIC_CACHE,
+          )
+          .map((name) => caches.delete(name)),
+      );
+      await self.clients.claim();
+    })(),
+  );
+});
+
+self.addEventListener("fetch", (event) => {
+  const request = event.request;
+  if (request.method !== "GET") return;
+
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return;
+
+  const isAppAsset =
+    url.pathname.startsWith("/public/") ||
+    url.pathname.startsWith("/vendor/") ||
+    url.pathname.startsWith("/audio/");
+  const isNavigation =
+    request.mode === "navigate";
+
+  if (!isAppAsset && !isNavigation) return;
+
+  event.respondWith(
+    (async () => {
+      try {
+        const networkRequest =
+          isAppAsset
+            ? new Request(request, { cache: "no-store" })
+            : new Request(request, { cache: "no-store" });
+        const response = await fetch(networkRequest);
+        if (response.ok) {
+          const cache = await caches.open(STATIC_CACHE);
+          await cache.put(request, response.clone());
+        }
+        return response;
+      } catch (error) {
+        const cache = await caches.open(STATIC_CACHE);
+        const cached = await cache.match(request);
+        if (cached) return cached;
+        throw error;
+      }
+    })(),
+  );
+});
+`);
+});
+
 // Client app version check, ignores cache policies if not synchronized with server's
 app.use((req, res, next) => {
   const clientVersion = req.headers["x-client-version"];
@@ -193,6 +266,7 @@ async function readMp3Album(filePath) {
 let audioPlaylistPromise;
 app.get("/audio/playlist", async (_, res, next) => {
   try {
+    res.setHeader("Cache-Control", "no-store");
     if (!audioPlaylistPromise) {
       audioPlaylistPromise = (async () => {
         const audioDirectory = path.join(__dirname, "public", "audio");
