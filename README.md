@@ -1,6 +1,8 @@
 # Pokédle
 
-When the project was still in its early-stages, it was meant to be just a simple web application for Web Application Development course. Sometimes, I do extend it and make it a more complex experience, whenever ideas come to the mind and free time is available.
+When the project was still in its early-stages, it was meant to be just a simple web application for Web Application Development course.<br>
+
+Sometimes, I do extend it and make it a more complex experience, whenever ideas come to the mind and free time is available.
 
 <br>
 
@@ -11,7 +13,6 @@ When the project was still in its early-stages, it was meant to be just a simple
   - [V1.1.0](#v110)
   - [V1.5.6](#v156)
   - [V1.6.0](#v160)
-  - [V1.7.1](#v171)
   - [V1.8.0](#v180)
   - [V1.8.5](#v185)
   - [V1.9.0](#v190)
@@ -23,15 +24,17 @@ When the project was still in its early-stages, it was meant to be just a simple
 ## V1.0.0
 
 Pokédle is a game inspired by Wordle and LoLdle.<br>
-The goal of this game is to guess a secret pokémon, which changes daily.<br>
+The goal of this game is to guess a secret pokémon, which changes daily.
 
 All pokémons are represented by features such as `habitat` where they live, their `colors`, `types`, `evolution stage` (both the stage level and whether that stage is the last one of its evolution line) and `generation`.<br>
-Based on each guess made, you will be given `colored hints` on each of these categories in relation to the secret pokémon ones.<br>
-Such hints will help you figure out what is the secret pokémon by looking at their colors:<br>
 
-- `green` is an `exact match` on that same category of the secret pokémon;<br>
-- `yellow` is a `partial match` (meaning there are multiple values and one of them is correct);<br>
-- `red` means there's `no match` at all.<br>
+Based on each guess made, you will be given `colored hints` on each of these categories in relation to the secret pokémon ones.<br>
+
+These hints will help you figure out what is the secret pokémon by looking at their colors:
+
+- `green` is an `exact match` on that same category of the secret pokémon;
+- `yellow` is a `partial match` (meaning there are multiple values and one of them is correct);
+- `red` means there's `no match` at all.
 
 <br>
 
@@ -46,9 +49,9 @@ Visit Pokédle [here](https://pokedle.onrender.com/) and have fun guessing 'em a
 
 ## V1.1.0
 
-A new minor update has been implemented:<br>
+A new minor update has been implemented:
 
-- granted the admin privileges to server-side for `Firestore Cloud Storage` access through the `Firebase Admin SDK` module, allowing a simple and secure implementation of the `Firebase Security Rules`;<br>
+- granted the admin privileges to server-side for `Firestore Cloud Storage` access through the `Firebase Admin SDK` module, allowing a simple and secure implementation of the `Firebase Security Rules`;
 
 - moved `possibly-sensible data` to the hosting site using environment variables and secret files.
 
@@ -56,23 +59,23 @@ A new minor update has been implemented:<br>
 
 ## V1.5.6
 
-A new update has been implemented:<br>
+A new update has been implemented:
 
-- added `2nd, 3rd, 4th and 5th generation of pokémons`;<br>
+- added `2nd, 3rd, 4th and 5th generation of pokémons`;
 
-- implemented the server-side verification of `Firebase ID Tokens` for sensible requests, enhancing the security;<br>
+- implemented the server-side verification of `Firebase ID Tokens` for sensible requests, enhancing the security;
 
-- improved `data consistency` both on client-side and server-side;<br>
+- improved `data consistency` both on client-side and server-side;
 
-- improved the `rendering` of guesses;<br>
+- improved the `rendering` of guesses;
 
-- restructured the `API endpoints` to create a more intuitive hierarchical order;<br>
+- restructured the `API endpoints` to create a more intuitive hierarchical order;
 
-- improved server-side `error handling`;<br>
+- improved server-side `error handling`;
 
-- implemented a `background randomizer`;<br>
+- implemented a `background randomizer`;
 
-- added more `backgrounds` for both PC and mobile resolutions;<br>
+- added more `backgrounds` for both PC and mobile resolutions;
 
 - renamed the only mode currently available to `Classic` in prevision of new future modes.
 
@@ -80,37 +83,31 @@ A new update has been implemented:<br>
 
 ## V1.6.0
 
-A new minor update has been implemented:<br>
+A new minor update has been implemented:
 
-- restyled the `user interface`;<br>
+- restyled the `user interface`;
 
 - modularized the handling of `authentication` on client-side.
 
 <br>
 
-## V1.7.1
-
-A new minor update has been implemented:<br>
-
-- added new mode `Sentry Duty`, based on the mini-game of Pokémon Mystery Dungeon 2;
-
-- added new `logo` image;<br>
-
-- added new `GameBoy-like pokémon font`.
-
-<br>
-
 ## V1.8.0
 
-A new update has been implemented:<br>
-
-- added `shiny pokémons`;
+A new update has been implemented:
 
 - restyled the `pokédex` view;
 
 - restyled the `Sentry Duty` mode view;
 
 - restyled the old `guess button`, from now on it is referred to as the `ball button`;
+
+- added new mode `Sentry Duty`, based on the mini-game of Pokémon Mystery Dungeon 2;
+
+- added `shiny pokémons`;
+
+- added new `logo` image;
+
+- added new `GameBoy-like pokémon font`;
 
 - added a few new game-like animations to the `ball button`;
 
@@ -132,7 +129,7 @@ A new update has been implemented:<br>
 
 ## V1.8.5
 
-A new minor update has been implemented:<br>
+A new minor update has been implemented:
 
 - unified `rankings` of the two available modes into one;
 
@@ -152,17 +149,19 @@ A new minor update has been implemented:<br>
 
 - added `monthly rankings` for both game modes, with a reset of the `rankings` at the end of each month;
 
-- added `rewards` to the first three trainers in each monthly ranking and `real-time notifications` when you get surpassed in any ranking.
+- added `rewards` to the first five trainers in each monthly ranking.
 
 <br>
 
 ## V1.9.0
 
-A new minor update has been implemented:<br>
+A new minor update has been implemented:
 
 - restyled the desktop interface across all pages;
 
 - restyled the `previous-next` infobox and `autocomplete` textbar;
+
+- added `DJ Pika`, the mascot that supports you with iconic Pokémon bangers;
 
 - added a `mode sidebar` for faster navigation;
 

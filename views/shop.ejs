@@ -2,7 +2,7 @@
 <html lang="en">
   <%- include("partials/head", {
     title: "PokéShop",
-    modules: ["base", "shop", "profile-account", "responsive"]
+    modules: ["base", "shop", "profile-account", "responsive", "music-player"]
   }) %>
   <body
     style="--page-background-image: url(&quot;<%= bg %>&quot;)"
@@ -288,7 +288,7 @@
       </svg>
     </button>
     <%- include("partials/page-modules", {
-      modules: ["auth", "shop"],
+      modules: ["auth", "shop", "musicPlayer"],
     }) %>
   </body>
 </html>

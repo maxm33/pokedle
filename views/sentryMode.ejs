@@ -3,7 +3,15 @@
   <%- include("partials/head", {
     title: "Pokédle - Sentry Duty",
     description: "Guess the pokémon's footprint quickly! Based on the Pokémon Mystery Dungeon series mini-game.",
-    modules: ["base", "profile", "game", "profile-account", "responsive", "sentry"],
+    modules: [
+      "base",
+      "profile",
+      "game",
+      "profile-account",
+      "responsive",
+      "sentry",
+      "music-player",
+    ],
     preconnect: true
   }) %>
   <body
@@ -166,7 +174,12 @@
     </div>
 
     <%- include("partials/page-modules", {
-      modules: ["rankingNotifications", "sentryMode", "gameModeNavigation"],
+      modules: [
+        "rankingNotifications",
+        "sentryMode",
+        "gameModeNavigation",
+        "musicPlayer",
+      ],
     }) %>
   </body>
 </html>

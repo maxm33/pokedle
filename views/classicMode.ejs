@@ -3,7 +3,15 @@
   <%- include("partials/head", {
     title: "Pokédle - Classic",
     description: "Pokédle is a game heavily inspired by Wordle and LoLdle, in which you have to guess the daily secret pokémon.",
-    modules: ["base", "profile", "game", "classic", "profile-account", "responsive"],
+    modules: [
+      "base",
+      "profile",
+      "game",
+      "classic",
+      "profile-account",
+      "responsive",
+      "music-player",
+    ],
     preconnect: true
   }) %>
   <body style="--page-background-image: url(&quot;<%= bg %>&quot;)">
@@ -289,7 +297,12 @@
       </div>
     </div>
     <%- include("partials/page-modules", {
-      modules: ["rankingNotifications", "classicMode", "gameModeNavigation"],
+      modules: [
+        "rankingNotifications",
+        "classicMode",
+        "gameModeNavigation",
+        "musicPlayer",
+      ],
     }) %>
   </body>
 </html>

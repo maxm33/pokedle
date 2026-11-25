@@ -22,16 +22,36 @@ if (muteButton && audio) {
   if (shouldMute) {
     muteButton.textContent = "🔇";
     muteButton.setAttribute("aria-pressed", "true");
+    document.dispatchEvent(new Event("pokedle:sentry-audio-disabled"));
   } else {
     muteButton.textContent = "🔊";
     muteButton.setAttribute("aria-pressed", "false");
   }
 
   audio.volume = 0.5;
-  audio.play().catch(() => {});
+  if (!shouldMute) {
+    audio.play().catch(() => {});
+  }
+  audio.addEventListener("play", () => {
+    document.dispatchEvent(
+      new CustomEvent("pokedle:exclusive-audio-play", { detail: audio }),
+    );
+  });
+  document.addEventListener("pokedle:exclusive-audio-play", (event) => {
+    if (event.detail !== audio) {
+      audio.pause();
+      setAudioMuted(true);
+      muteButton.textContent = "🔇";
+      muteButton.setAttribute("aria-pressed", "true");
+      localStorage.setItem("sentry-muted", "true");
+    }
+  });
   muteButton.addEventListener("click", () => {
     const muted = !audio.muted;
     setAudioMuted(muted);
+    if (!muted) {
+      audio.play().catch(() => {});
+    }
     muteButton.textContent = muted ? "🔇" : "🔊";
     muteButton.setAttribute("aria-pressed", muted ? "true" : "false");
     localStorage.setItem("sentry-muted", muted ? "true" : "false");

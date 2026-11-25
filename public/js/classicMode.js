@@ -45,6 +45,11 @@ axios
       animateFadeIn,
       sendNotification,
     });
+    document.dispatchEvent(
+      new CustomEvent("pokedle:classic-game-ready", {
+        detail: { gameId: classicState.getGameID() },
+      }),
+    );
     updateClassicEventNotifications(res.data[3], res.data[4], res.data[5]);
     stateLoading.hidden = true;
   })
@@ -124,6 +129,11 @@ async function submitGuess(guess, inputElement = textbar) {
 }
 
 function onVictory(tries, pokemon, shiny, pokedollarsEarned) {
+  document.dispatchEvent(
+    new CustomEvent("pokedle:classic-victory", {
+      detail: { gameId: classicState.getGameID() },
+    }),
+  );
   showClassicVictory({
     tries,
     pokemon,

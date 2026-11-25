@@ -2,7 +2,7 @@
 <html lang="en">
   <%- include("partials/head", {
     title: "Pokédex",
-    modules: ["base", "pokedex", "responsive"]
+    modules: ["base", "pokedex", "responsive", "music-player"]
   }) %>
   <body
     style="--page-background-image: url(&quot;<%= bg %>&quot;)"
@@ -103,7 +103,7 @@
       src="/public/js/pokedexEffects.js?v=<%= encodeURIComponent(appVersion) %>"
     ></script>
     <%- include("partials/page-modules", {
-      modules: ["auth"],
+      modules: ["auth", "musicPlayer"],
     }) %>
     <script>
       window.pokedexHistory =

@@ -2,7 +2,14 @@
 <html lang="en">
   <%- include("partials/head", {
     title: "Profile",
-    modules: ["base", "profile", "sentry", "profile-account", "responsive"]
+    modules: [
+      "base",
+      "profile",
+      "sentry",
+      "profile-account",
+      "responsive",
+      "music-player",
+    ]
   }) %>
   <body
     class="profile-page<%= hasCustomBackground ? ' profile-has-custom-background' : ''%>"
@@ -163,7 +170,7 @@
       </div>
     </div>
     <%- include("partials/page-modules", {
-      modules: ["auth"],
+      modules: ["auth", "musicPlayer"],
     }) %>
     <script
       type="module"

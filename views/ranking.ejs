@@ -2,7 +2,7 @@
 <html lang="en">
   <%- include("partials/head", {
     title: "Rankings",
-    modules: ["base", "ranking", "responsive"]
+    modules: ["base", "ranking", "responsive", "music-player"]
   }) %>
   <body class="ranking-page" style="--page-background-image: url(&quot;<%= bg %>&quot;)">
         <%- include("partials/topnav") %>
@@ -169,7 +169,7 @@
       </div>
     </div>
     <%- include("partials/page-modules", {
-      modules: ["rankingTabs", "auth"],
+      modules: ["rankingTabs", "auth", "musicPlayer"],
     }) %>
   </body>
 </html>
