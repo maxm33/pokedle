@@ -4,8 +4,9 @@ const player = document.getElementById("music-player");
 
 if (player) {
   const primaryAudio = document.getElementById("music-audio");
+  primaryAudio.preload = "metadata";
   const preloadAudio = new Audio();
-  preloadAudio.preload = "auto";
+  preloadAudio.preload = "metadata";
   const audioElements = [primaryAudio, preloadAudio];
   let audio = primaryAudio;
   const panel = document.getElementById("music-player-panel");
@@ -46,7 +47,10 @@ if (player) {
   let animatedMascotSource = mascotImage.src;
   let frozenMascotSource = "";
   let mascotIsAnimating = false;
-  const animatedOakDanceSource = oakDanceImage.src;
+  const animatedOakDanceSource = new URL(
+    oakDanceImage.dataset.src,
+    document.baseURI,
+  ).href;
   let frozenOakDanceSource = "";
   const oakDanceCycleDurationMs = 5000;
   const oakDanceCycleCount = 3;
@@ -271,7 +275,10 @@ if (player) {
 
   function setOakDanceAnimation(animate) {
     if (animate) {
-      if (oakDanceImage.src !== animatedOakDanceSource) {
+      if (
+        oakDance.classList.contains("is-visible") &&
+        oakDanceImage.src !== animatedOakDanceSource
+      ) {
         oakDanceImage.src = animatedOakDanceSource;
       }
       return;
@@ -310,6 +317,8 @@ if (player) {
 
     oakDance.classList.remove("is-visible");
     oakDance.setAttribute("aria-hidden", "true");
+    oakDanceImage.removeAttribute("src");
+    frozenOakDanceSource = "";
   }
 
   function resetOakDance() {
