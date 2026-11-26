@@ -146,6 +146,16 @@ app.get("/vendor/axios.min.js", (req, res, next) => {
   );
 });
 
+app.get("/vendor/axios.min.js.map", (req, res, next) => {
+  res.sendFile(
+    `${axiosBundlePath}.map`,
+    { maxAge: "1y", immutable: true },
+    (err) => {
+      if (err) next(err);
+    },
+  );
+});
+
 const applyAssetCacheHeaders = (res, maxAge) => {
   res.setHeader("Cache-Control", `public, max-age=${maxAge}, must-revalidate`);
 };
