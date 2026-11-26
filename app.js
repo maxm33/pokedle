@@ -85,6 +85,7 @@ self.addEventListener("fetch", (event) => {
     url.pathname.startsWith("/public/") ||
     url.pathname.startsWith("/vendor/") ||
     url.pathname.startsWith("/audio/");
+  const isAudioAsset = url.pathname.startsWith("/public/audio/");
   const isNavigation =
     request.mode === "navigate";
 
@@ -92,12 +93,58 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(
     (async () => {
+      if (isAudioAsset) {
+        const headers = new Headers(request.headers);
+        headers.delete("range");
+        const audioRequest = new Request(request, {
+          headers,
+          cache: "no-store",
+        });
+        let cache;
+        try {
+          cache = await caches.open(STATIC_CACHE);
+          const cached = await cache.match(audioRequest);
+          if (cached) return cached;
+        } catch (error) {
+          console.error("Could not read cached audio.", error);
+        }
+
+        const response = await fetch(audioRequest);
+        if (response.ok && response.status === 200 && cache) {
+          try {
+            await cache.put(audioRequest, response.clone());
+          } catch (error) {
+            console.error("Could not cache audio.", error);
+          }
+        }
+        return response;
+      }
+
+      if (isAppAsset) {
+        let cache;
+        try {
+          cache = await caches.open(STATIC_CACHE);
+          const cached = await cache.match(request);
+          if (cached) return cached;
+        } catch (error) {
+          console.error("Could not read cached app asset.", error);
+        }
+
+        const response = await fetch(new Request(request, { cache: "no-store" }));
+        if (response.ok && cache) {
+          try {
+            await cache.put(request, response.clone());
+          } catch (error) {
+            console.error("Could not cache app asset.", error);
+          }
+        }
+        return response;
+      }
+
       try {
-        const networkRequest =
-          isAppAsset
-            ? new Request(request, { cache: "no-store" })
-            : new Request(request, { cache: "no-store" });
-        const response = await fetch(networkRequest);
+        const response = await fetch(
+          new Request(request, { cache: "no-store" }),
+        );
         if (response.ok) {
           const cache = await caches.open(STATIC_CACHE);
           await cache.put(request, response.clone());
