@@ -3,7 +3,8 @@ import { auth } from "./auth.js";
 import {
   getProfilePresetSlotCount,
   getProfilePresetStorageKey,
-  normalizeProfilePresets,
+  readProfilePresets,
+  writeProfilePresets,
 } from "./profilePresetStorage.js";
 
 const sidebar = document.getElementById("profile-presets");
@@ -19,10 +20,10 @@ let presets = Array(slotCount).fill(null);
 let operationPending = false;
 
 function readPresets() {
-  const storedPresets = window.localStorage.getItem(storageKey);
-  if (storedPresets === null) return Array(slotCount).fill(null);
-
-  return normalizeProfilePresets(JSON.parse(storedPresets));
+  const storedPresets = readProfilePresets(profileId);
+  return storedPresets === null
+    ? Array(slotCount).fill(null)
+    : storedPresets;
 }
 
 function getCompanionImageUrl(companionId) {
@@ -33,13 +34,7 @@ function getCompanionImageUrl(companionId) {
 }
 
 function writePresets() {
-  try {
-    window.localStorage.setItem(storageKey, JSON.stringify(presets));
-    return true;
-  } catch (error) {
-    console.error("Could not save profile configurations:", error);
-    return false;
-  }
+  return writeProfilePresets(profileId, presets);
 }
 
 function renderPresets() {

@@ -75,7 +75,7 @@ function registerUserRoutes(app, dependencies) {
     let authenticatedUid;
     try {
       authenticatedUid = await verifyAuthToken(auth, token);
-    } catch (err) {
+    } catch (_) {
       return res.status(401).send({ error: "Invalid authentication token" });
     }
 

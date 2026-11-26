@@ -2,6 +2,7 @@ import {
   getClosestNotificationIndex,
   renderNotificationIndicators,
 } from "./notificationCarousel.js";
+import { STORAGE_KEYS } from "./storageKeys.js";
 
 export function initializeClassicEventNotifications() {
   const eventNotification = document.getElementById("event-notification");
@@ -30,7 +31,7 @@ export function initializeClassicEventNotifications() {
   let eventNotificationAutoAdvance;
   let eventNotificationPointerInteraction = false;
   const rankingEventNotifications = [];
-  const eventNotificationDismissalStorageKey = "eventNotificationDismissals";
+  const eventNotificationDismissalStorageKey = STORAGE_KEYS.eventDismissals;
 
   function getEventNotificationDate() {
     const dateParts = Object.fromEntries(

@@ -1,13 +1,13 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-import "./retryPolicy.js";
-import { APP_CACHE_PREFIX } from "./appCache.js";
+import { getNotificationRetryDelay } from "./retryPolicy.js";
+import { STORAGE_KEYS } from "./storageKeys.js";
 import { auth } from "./auth.js";
 import {
   getClosestNotificationIndex,
   renderNotificationIndicators,
 } from "./notificationCarousel.js";
 
-const seenStorageKey = `${APP_CACHE_PREFIX}ranking-notification-seen-ids`;
+const seenStorageKey = STORAGE_KEYS.rankingSeenIds;
 let seenNotificationIds = new Set();
 try {
   const storedIds = JSON.parse(localStorage.getItem(seenStorageKey) || "[]");
@@ -236,9 +236,7 @@ onAuthStateChanged(
         }
         if (controller.signal.aborted) return;
         const retryDelay =
-          globalThis.NotificationRetryPolicy.getNotificationRetryDelay(
-            retryAttempt,
-          );
+          getNotificationRetryDelay(retryAttempt);
         if (document.visibilityState === "hidden") {
           await new Promise((resolve) => window.setTimeout(resolve, 1000));
           continue;

@@ -10,6 +10,7 @@ import {
   initializeAuthRateLimit,
 } from "./authRateLimit.js";
 import { initializeProfileNameEditor } from "./profileNameEditor.js";
+import { STORAGE_KEYS } from "./storageKeys.js";
 
 export { auth };
 
@@ -38,7 +39,7 @@ loginButton?.addEventListener("click", async () => {
         const until = Date.now() + retryAfterMs;
 
         try {
-          localStorage.setItem(ACCOUNT_RATE_LIMIT_STORAGE_KEY, String(until));
+          localStorage.setItem(STORAGE_KEYS.accountRateLimit, String(until));
         } catch (storageError) {
           console.error("Failed to save account rate limit state:", storageError);
         }
@@ -68,7 +69,7 @@ loginButton?.addEventListener("click", async () => {
   try {
     await signOut(auth);
     try {
-      sessionStorage.setItem("pokedleAuthState", "signed-out");
+      sessionStorage.setItem(STORAGE_KEYS.authState, "signed-out");
     } catch (error) {
       console.error("Failed to cache navigation state:", error);
     }

@@ -1,5 +1,6 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 import { animateFadeIn } from "./uiAnimations.js";
+import { STORAGE_KEYS } from "./storageKeys.js";
 
 export function initializeAuthNavigation(auth) {
   const logImage = document.getElementById("login-img");
@@ -24,7 +25,7 @@ export function initializeAuthNavigation(auth) {
       displayedAuthState = authState;
       document.documentElement.dataset.authState = authState;
       try {
-        sessionStorage.setItem("pokedleAuthState", authState);
+        sessionStorage.setItem(STORAGE_KEYS.authState, authState);
       } catch (error) {
         console.error("Failed to cache navigation state:", error);
       }

@@ -1,0 +1,512 @@
+[
+  {
+    "filename": "1-01. Opening.mp3",
+    "title": "Opening",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-02. Theme Of Pallet Town.mp3",
+    "title": "Theme Of Pallet Town",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-04. Oak's Laboratory.mp3",
+    "title": "Oak's Laboratory",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-04. Twinleaf Town (Day).mp3",
+    "title": "Twinleaf Town (Day)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "1-05. Littleroot Town.mp3",
+    "title": "Littleroot Town",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "1-06. Birch Pokémon Lab.mp3",
+    "title": "Birch Pokémon Lab",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "1-06. Road to Viridian City – From Pallet.mp3",
+    "title": "Road to Viridian City – From Pallet",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-06. Welcome to the World of Pokémon!.mp3",
+    "title": "Welcome to the World of Pokémon!",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "1-08. Nuvema Town.mp3",
+    "title": "Nuvema Town",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "1-09. Battle! (Cheren  -  Bianca).mp3",
+    "title": "Battle! (Cheren  -  Bianca)",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "1-09. Theme Of Pewter City.mp3",
+    "title": "Theme Of Pewter City",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-11. Battle! (Wild Pokémon).mp3",
+    "title": "Battle! (Wild Pokémon)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "1-12. Juniper Pokémon Lab.mp3",
+    "title": "Juniper Pokémon Lab",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "1-12. Viridian Forest.mp3",
+    "title": "Viridian Forest",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-13. Come With Me.mp3",
+    "title": "Come With Me",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-15. Battle (VS Trainer).mp3",
+    "title": "Battle (VS Trainer)",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-16. Battle! (Wild Pokémon).mp3",
+    "title": "Battle! (Wild Pokémon)",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "1-17. Battle! (Trainer Battle).mp3",
+    "title": "Battle! (Trainer Battle)",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "1-17. Mt. Moon.mp3",
+    "title": "Mt. Moon",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-18. Road to Cerulean – From Mt. Moon.mp3",
+    "title": "Road to Cerulean – From Mt. Moon",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-18. The Pokémon Lab.mp3",
+    "title": "The Pokémon Lab",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "1-19. Accumula Town.mp3",
+    "title": "Accumula Town",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "1-19. Theme Of Cerulean City.mp3",
+    "title": "Theme Of Cerulean City",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-20. Petalburg City.mp3",
+    "title": "Petalburg City",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "1-20. Pokémon Gym.mp3",
+    "title": "Pokémon Gym",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-21. To Bill's House – From Cerulean.mp3",
+    "title": "To Bill's House – From Cerulean",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-23. Theme Of Vermillion City.mp3",
+    "title": "Theme Of Vermillion City",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-25. Battle! (Team Aqua - Team Magma).mp3",
+    "title": "Battle! (Team Aqua - Team Magma)",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "1-25. Road to Lavender Town – From Vermillion.mp3",
+    "title": "Road to Lavender Town – From Vermillion",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-26. Battle! (Trainer).mp3",
+    "title": "Battle! (Trainer)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "1-27. Rustboro City.mp3",
+    "title": "Rustboro City",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "1-28. Battle (VS Gym Leader).mp3",
+    "title": "Battle (VS Gym Leader)",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-30. Battle! (Trainer).mp3",
+    "title": "Battle! (Trainer)",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "1-31. Theme Of Lavender Town.mp3",
+    "title": "Theme Of Lavender Town",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-32. Pokémon Tower.mp3",
+    "title": "Pokémon Tower",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-33. Theme of Celadon City.mp3",
+    "title": "Theme of Celadon City",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-35. Cycling.mp3",
+    "title": "Cycling",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "1-37. Battle! (Rival).mp3",
+    "title": "Battle! (Rival)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "1-38. Battle! (Team Plasma).mp3",
+    "title": "Battle! (Team Plasma)",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "1-42. Victory Road.mp3",
+    "title": "Victory Road",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-43. Last Battle (VS Rival).mp3",
+    "title": "Last Battle (VS Rival)",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-44. Hall of Fame.mp3",
+    "title": "Hall of Fame",
+    "album": "Pokémon Red & Green Complete Sound Collection"
+  },
+  {
+    "filename": "1-46. Mt. Chimney.mp3",
+    "title": "Mt. Chimney",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "1-49. Pokémon Gym.mp3",
+    "title": "Pokémon Gym",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "1-50. Battle! (Gym Leader).mp3",
+    "title": "Battle! (Gym Leader)",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "1-52. Nacrene City.mp3",
+    "title": "Nacrene City",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "1-55. Battle! (Gym Leader).mp3",
+    "title": "Battle! (Gym Leader)",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "2-01. Pokémon Gym.mp3",
+    "title": "Pokémon Gym",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "2-02. Battle! (Gym Leader).mp3",
+    "title": "Battle! (Gym Leader)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "2-02. Skyarrow Bridge.mp3",
+    "title": "Skyarrow Bridge",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "2-03. Castelia City.mp3",
+    "title": "Castelia City",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "2-07. Floaroma Town (Day).mp3",
+    "title": "Floaroma Town (Day)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "2-07. Lilycove City.mp3",
+    "title": "Lilycove City",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "2-08. Nimbasa City.mp3",
+    "title": "Nimbasa City",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "2-09. Bicycle.mp3",
+    "title": "Bicycle",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "2-11. Battle! (Brendan-May).mp3",
+    "title": "Battle! (Brendan-May)",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "2-13. Battle! (N).mp3",
+    "title": "Battle! (N)",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "2-13. Battle! (Team Galactic).mp3",
+    "title": "Battle! (Team Galactic)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "2-17. Battle! (Battle Subway).mp3",
+    "title": "Battle! (Battle Subway)",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "2-20. Battle! (Team Galactic Commander).mp3",
+    "title": "Battle! (Team Galactic Commander)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "2-22. Battle! (Team Aqua-Team Magma Leaders).mp3",
+    "title": "Battle! (Team Aqua-Team Magma Leaders)",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "2-24. The Underground.mp3",
+    "title": "The Underground",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "2-26. Bicycle.mp3",
+    "title": "Bicycle",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "2-29. Battle! (Super-Ancient Pokémon).mp3",
+    "title": "Battle! (Super-Ancient Pokémon)",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "2-31. Hearthome City (Day).mp3",
+    "title": "Hearthome City (Day)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "2-38. Battle! (Regirock-Regice-Registeel).mp3",
+    "title": "Battle! (Regirock-Regice-Registeel)",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "2-39. The Trick House.mp3",
+    "title": "The Trick House",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "2-42. Victory Road.mp3",
+    "title": "Victory Road",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "2-43. Driftveil City.mp3",
+    "title": "Driftveil City",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "2-45. Battle! (Elite Four).mp3",
+    "title": "Battle! (Elite Four)",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "2-47. Battle! (Steven).mp3",
+    "title": "Battle! (Steven)",
+    "album": "Pokémon Ruby & Sapphire Super Music Collection"
+  },
+  {
+    "filename": "2-50. Mistralton City.mp3",
+    "title": "Mistralton City",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "3-01. Icirrus City.mp3",
+    "title": "Icirrus City",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "3-04. Dragonspiral Tower.mp3",
+    "title": "Dragonspiral Tower",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "3-04. Solaceon Town (Day).mp3",
+    "title": "Solaceon Town (Day)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "3-10. Battle! (Legendary Pokémon).mp3",
+    "title": "Battle! (Legendary Pokémon)",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "3-22. Canalave City (Day).mp3",
+    "title": "Canalave City (Day)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "3-22. Victory Road.mp3",
+    "title": "Victory Road",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "3-24. The Pokémon League.mp3",
+    "title": "The Pokémon League",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "3-25. Battle! (Elite Four).mp3",
+    "title": "Battle! (Elite Four)",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "3-28. N's Castle.mp3",
+    "title": "N's Castle",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "3-30. Battle! (Team Galactic Boss).mp3",
+    "title": "Battle! (Team Galactic Boss)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "3-32. Battle! (Reshiram  -  Zekrom).mp3",
+    "title": "Battle! (Reshiram  -  Zekrom)",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "3-33. Decisive Battle! (N).mp3",
+    "title": "Decisive Battle! (N)",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "3-35. Battle! (Ghetsis).mp3",
+    "title": "Battle! (Ghetsis)",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "4-01. Mt. Coronet.mp3",
+    "title": "Mt. Coronet",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "4-05. Battle! (Dialga  -  Palkia).mp3",
+    "title": "Battle! (Dialga  -  Palkia)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "4-06. Lake Caverns.mp3",
+    "title": "Lake Caverns",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "4-07. Battle! (Azelf  -  Mesprit  -  Uxie).mp3",
+    "title": "Battle! (Azelf  -  Mesprit  -  Uxie)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "4-08. Sunyshore City (Day).mp3",
+    "title": "Sunyshore City (Day)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "4-13. Battle Tower.mp3",
+    "title": "Battle Tower",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "4-17. Battle! (Legendary Pokémon).mp3",
+    "title": "Battle! (Legendary Pokémon)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "4-21. Victory Road.mp3",
+    "title": "Victory Road",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "4-25. Decisive Battle! (Pokémon League).mp3",
+    "title": "Decisive Battle! (Pokémon League)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "4-27. Battle! (Elite Four).mp3",
+    "title": "Battle! (Elite Four)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "4-29. Champion Cynthia.mp3",
+    "title": "Champion Cynthia",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "4-29. Final Battle! (World Championships).mp3",
+    "title": "Final Battle! (World Championships)",
+    "album": "Pokémon Black & Pokémon White"
+  },
+  {
+    "filename": "4-30. Battle! (Champion).mp3",
+    "title": "Battle! (Champion)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "4-32. Hall of Fame.mp3",
+    "title": "Hall of Fame",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "5-17. Battle! (Giratina).mp3",
+    "title": "Battle! (Giratina)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "5-30. Battle! (Frontier Brain).mp3",
+    "title": "Battle! (Frontier Brain)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  },
+  {
+    "filename": "5-34. Battle! (Arceus).mp3",
+    "title": "Battle! (Arceus)",
+    "album": "Pokémon Diamond & Pokémon Pearl"
+  }
+]

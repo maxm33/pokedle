@@ -1,4 +1,5 @@
 import { pokemons } from "./pokemons.js";
+import { STORAGE_KEYS } from "./storageKeys.js";
 import { auth } from "./auth.js";
 import { getPokemonDisplayName, getPokemonSlug } from "./pokemonNames.js";
 import {
@@ -34,7 +35,7 @@ async function revealTodaysPokemon(history) {
   await auth.authStateReady();
   try {
     const guestId = localStorage
-      .getItem("userID")
+      .getItem(STORAGE_KEYS.classicUserId)
       ?.replace(/^["']|["']$/g, "");
     const token = auth.currentUser
       ? await auth.currentUser.getIdToken()

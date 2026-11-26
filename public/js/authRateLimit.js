@@ -1,4 +1,6 @@
-export const ACCOUNT_RATE_LIMIT_STORAGE_KEY = "pokedleAccountRateLimitUntil";
+import { STORAGE_KEYS } from "./storageKeys.js";
+
+export const ACCOUNT_RATE_LIMIT_STORAGE_KEY = STORAGE_KEYS.accountRateLimit;
 const accountRateLimitWindowMs = 60 * 60 * 1000;
 
 export function initializeAuthRateLimit(loginButton) {

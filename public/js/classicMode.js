@@ -38,13 +38,18 @@ const userID = classicState.getUserID();
 axios
   .get("/classic/state")
   .then((res) => {
-    manageGameState(res.data[0], res.data[1], {
+    const classicClock = manageGameState(res.data[0], res.data[1], {
       classicState,
       timer,
       titles: containertitles,
       animateFadeIn,
       sendNotification,
     });
+    window.addEventListener(
+      "pagehide",
+      () => classicClock?.destroy(),
+      { once: true },
+    );
     document.dispatchEvent(
       new CustomEvent("pokedle:classic-game-ready", {
         detail: { gameId: classicState.getGameID() },

@@ -7,7 +7,17 @@
   "author": "Massimo Monai (https://github.com/maxm33)",
   "license": "MIT",
   "scripts": {
-    "start": "node ./bin/www"
+    "prestart": "npm run assets:playlist && npm run assets:companions && npm run assets:manifest",
+    "start": "node ./bin/www",
+    "test": "node --test test/*.test.js",
+    "check": "node scripts/check_syntax.js",
+    "lint": "eslint app.js lib routes scripts test eslint.config.js",
+    "assets:manifest": "node scripts/generate_asset_manifest.js",
+    "assets:playlist": "node scripts/generate_playlist.js",
+    "assets:companions": "node scripts/generate_companion_catalog.js",
+    "assets:check": "node scripts/check_assets.js",
+    "assets:audio:dry-run": "node scripts/optimize_audio.js",
+    "assets:audio": "node scripts/optimize_audio.js --apply"
   },
   "dependencies": {
     "axios": "^1.21.1",
@@ -22,5 +32,9 @@
   },
   "overrides": {
     "tmp": "^0.2.7"
+  },
+  "devDependencies": {
+    "eslint": "^10.15.0",
+    "supertest": "^7.1.4"
   }
 }

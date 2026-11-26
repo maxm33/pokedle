@@ -19,63 +19,7 @@
     style="--page-background-image: url(&quot;<%= bg %>&quot;)"
   >
         <%- include("partials/topnav") %>
-    <aside
-      id="game-mode-nav"
-      class="game-mode-nav is-collapsed fadeIn"
-      aria-label="Game modes"
-    >
-      <div id="game-mode-nav-panel" class="game-mode-nav-panel">
-        <h2>Modes</h2>
-        <div class="game-mode-nav-slots">
-          <div class="game-mode-item">
-            <a
-              class="game-mode-link"
-              href="/classic"
-              aria-label="Classic"
-              title="Classic"
-            >
-              <img
-                src="/public/images/misc/pokedle-logo.webp"
-                alt=""
-                aria-hidden="true"
-              />
-            </a>
-            <span class="game-mode-label">Classic</span>
-          </div>
-          <div class="game-mode-item">
-            <a
-              class="game-mode-link sentry-mode-link"
-              href="/sentry"
-              aria-label="Sentry Duty"
-              title="Sentry Duty"
-            >
-              <img
-                class="game-mode-sentry-frame"
-                src="/public/images/sentry/footprint-grate-frame.png"
-                alt=""
-                aria-hidden="true"
-              />
-              <img
-                class="game-mode-sentry-footprint"
-                src="/public/images/sentry/footprints/Groudon.png"
-                alt=""
-                aria-hidden="true"
-              />
-            </a>
-            <span class="game-mode-label">Sentry Duty</span>
-          </div>
-        </div>
-      </div>
-      <button
-        id="game-mode-nav-toggle"
-        class="game-mode-nav-toggle"
-        type="button"
-        aria-controls="game-mode-nav-panel"
-        aria-expanded="false"
-        aria-label="Expand game modes"
-        title="Expand game modes"
-      ><span aria-hidden="true">‹</span></button>
-    </aside>
+    <%- include("partials/game-mode-nav") %>
     <div id="container" role="main">
       <div id="logo-container">
         <div id="logo">

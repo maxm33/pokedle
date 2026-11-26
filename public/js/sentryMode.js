@@ -1,5 +1,6 @@
 import { auth } from "./auth.js";
 import { getPokemonDisplayName } from "./pokemonNames.js";
+import { STORAGE_KEYS } from "./storageKeys.js";
 
 const feedback = document.getElementById("sentry-feedback");
 const optionsContainer = document.getElementById("sentry-options");
@@ -16,7 +17,7 @@ let nextChallengeTimeout = null;
 
 if (muteButton && audio) {
   // restore state from localStorage
-  const stored = localStorage.getItem("sentry-muted");
+  const stored = localStorage.getItem(STORAGE_KEYS.sentryMuted);
   const shouldMute = stored === "true";
   setAudioMuted(shouldMute);
   if (shouldMute) {
@@ -43,7 +44,7 @@ if (muteButton && audio) {
       setAudioMuted(true);
       muteButton.textContent = "🔇";
       muteButton.setAttribute("aria-pressed", "true");
-      localStorage.setItem("sentry-muted", "true");
+      localStorage.setItem(STORAGE_KEYS.sentryMuted, "true");
     }
   });
   muteButton.addEventListener("click", () => {
@@ -54,7 +55,7 @@ if (muteButton && audio) {
     }
     muteButton.textContent = muted ? "🔇" : "🔊";
     muteButton.setAttribute("aria-pressed", muted ? "true" : "false");
-    localStorage.setItem("sentry-muted", muted ? "true" : "false");
+    localStorage.setItem(STORAGE_KEYS.sentryMuted, muted ? "true" : "false");
   });
 }
 

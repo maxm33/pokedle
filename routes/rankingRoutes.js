@@ -1,4 +1,6 @@
-const { getBearerToken, verifyAuthToken } = require("../lib/authTokens");
+const {
+  createRequiredAuthMiddleware,
+} = require("./authMiddleware");
 
 function registerRankingRoutes(app, dependencies) {
   const {
@@ -65,60 +67,60 @@ function registerRankingRoutes(app, dependencies) {
     }
   });
 
-  app.get("/notifications/stream", async (req, res) => {
-    const token = getBearerToken(req);
-    if (!token) return res.status(401).end();
-    const seenIds =
-      typeof req.query.seen === "string"
-        ? new Set(
-            req.query.seen
-              .split(",")
-              .filter((id) => id.length > 0 && id.length <= 128),
-          )
-        : new Set();
+  app.get(
+    "/notifications/stream",
+    createRequiredAuthMiddleware(auth),
+    async (req, res) => {
+      const seenIds =
+        typeof req.query.seen === "string"
+          ? new Set(
+              req.query.seen
+                .split(",")
+                .filter((id) => id.length > 0 && id.length <= 128),
+            )
+          : new Set();
 
-    let uid;
-    try {
-      uid = await verifyAuthToken(auth, token);
-    } catch (err) {
-      return res.status(401).end();
-    }
+      const uid = req.authenticatedUid;
 
-    res.set({
-      "Cache-Control": "no-cache, no-transform",
-      Connection: "keep-alive",
-      "Content-Type": "text/event-stream",
-      "X-Accel-Buffering": "no",
-    });
-    res.flushHeaders();
-    const send = (notification) => {
-      if (!res.writableEnded)
-        res.write(`data: ${JSON.stringify(notification)}\n\n`);
-    };
-    const query = firestore
-      .collection("users")
-      .doc(uid)
-      .collection(rankingNotificationCollection)
-      .orderBy("createdAt", "desc")
-      .limit(20);
-    const unsubscribe = query.onSnapshot(
-      (snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          if (change.type === "added" && !seenIds.has(change.doc.id))
-            send({ id: change.doc.id, ...change.doc.data() });
-        });
-      },
-      (err) => {
-        console.error("Ranking notification stream failed:", err);
-        res.end();
-      },
-    );
-    const heartbeat = setInterval(() => res.write(": keep-alive\n\n"), 25000);
-    res.on("close", () => {
-      clearInterval(heartbeat);
-      unsubscribe();
-    });
-  });
+      res.set({
+        "Cache-Control": "no-cache, no-transform",
+        Connection: "keep-alive",
+        "Content-Type": "text/event-stream",
+        "X-Accel-Buffering": "no",
+      });
+      res.flushHeaders();
+      const send = (notification) => {
+        if (!res.writableEnded)
+          res.write(`data: ${JSON.stringify(notification)}\n\n`);
+      };
+      const query = firestore
+        .collection("users")
+        .doc(uid)
+        .collection(rankingNotificationCollection)
+        .orderBy("createdAt", "desc")
+        .limit(20);
+      const unsubscribe = query.onSnapshot(
+        (snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === "added" && !seenIds.has(change.doc.id))
+              send({ id: change.doc.id, ...change.doc.data() });
+          });
+        },
+        (err) => {
+          console.error("Ranking notification stream failed:", err);
+          res.end();
+        },
+      );
+      const heartbeat = setInterval(
+        () => res.write(": keep-alive\n\n"),
+        25000,
+      );
+      res.on("close", () => {
+        clearInterval(heartbeat);
+        unsubscribe();
+      });
+    },
+  );
 }
 
 module.exports = registerRankingRoutes;

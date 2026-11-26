@@ -512,3 +512,12 @@ html[data-account-rate-limited="true"] #login-button {
 #subtitle {
   font-size: 1.3em;
 }
+:root {
+  --pokedle-primary-green: #8cff66;
+  --pokedle-primary-red: #ff6666;
+  --pokedle-panel-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.25);
+  --pokedle-panel-radius: 0.5rem;
+  --pokedle-transition-fast: 150ms ease;
+  --pokedle-transition-medium: 300ms ease;
+}
+

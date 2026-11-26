@@ -34,7 +34,9 @@ function registerSentryRoutes(app, dependencies) {
     try {
       const challengeID = req.body.challengeID;
       const selected = req.body.selected;
-      const challenge = state.sentryChallenges[challengeID];
+      const challenge = state.redisGameState
+        ? await state.redisGameState.getSentryChallenge(challengeID)
+        : state.sentryChallenges[challengeID];
 
       if (!challenge || challenge.processing) {
         res.status(410);
@@ -42,7 +44,9 @@ function registerSentryRoutes(app, dependencies) {
         return;
       }
 
-      const session = state.sentrySessions.get(challenge.sessionID);
+      const session = state.redisGameState
+        ? await state.redisGameState.getSentrySession(challenge.sessionID)
+        : state.sentrySessions.get(challenge.sessionID);
       if (
         !session ||
         session.currentChallengeID !== challengeID ||
@@ -67,6 +71,8 @@ function registerSentryRoutes(app, dependencies) {
       bindGuestSessionToUser(session, authenticatedUid);
 
       challenge.processing = true;
+      if (state.redisGameState)
+        await state.redisGameState.setSentryChallenge(challengeID, challenge);
       const elapsedMs = Date.now() - challenge.startTime;
       const timedOut = elapsedMs > sentryDurationMs;
       const correct =
@@ -96,17 +102,31 @@ function registerSentryRoutes(app, dependencies) {
             gameOver,
           );
       } catch (err) {
-        cancelChallengeProcessing(state, challenge);
+        if (state.redisGameState) {
+          challenge.processing = false;
+          await state.redisGameState.setSentryChallenge(challengeID, challenge);
+        } else {
+          cancelChallengeProcessing(state, challenge);
+        }
         throw err;
       }
 
-      delete state.sentryChallenges[challengeID];
+      if (state.redisGameState) {
+        await state.redisGameState.deleteSentryChallenge(challengeID);
+      } else {
+        delete state.sentryChallenges[challengeID];
+      }
       session.currentChallengeID = null;
       session.totalScore = totalScore;
       session.rounds = rounds;
       session.failures = failures;
       session.gameOver = gameOver;
       session.expiresAt = Date.now() + sentrySessionTtlMs;
+      if (state.redisGameState)
+        await state.redisGameState.setSentrySession(
+          challenge.sessionID,
+          session,
+        );
       res.status(200);
       res.send({
         correct: correct,
@@ -141,21 +161,37 @@ function registerSentryRoutes(app, dependencies) {
       }
 
       const now = Date.now();
-      expireSentrySessions({ state, now });
+      if (!state.redisGameState)
+        expireSentrySessions({ state, now });
 
       let sessionID = req.query.sessionID;
       let session;
       if (sessionID == null) {
         sessionID = randomUUID();
-        session = createSentrySession({
-          state,
-          sessionId: sessionID,
-          authenticatedUid,
-          sentrySessionTtlMs,
-          now,
-        });
+        if (state.redisGameState) {
+          session = {
+            uid: authenticatedUid,
+            totalScore: 0,
+            failures: 0,
+            rounds: 0,
+            gameOver: false,
+            currentChallengeID: null,
+            expiresAt: now + sentrySessionTtlMs,
+          };
+          await state.redisGameState.setSentrySession(sessionID, session);
+        } else {
+          session = createSentrySession({
+            state,
+            sessionId: sessionID,
+            authenticatedUid,
+            sentrySessionTtlMs,
+            now,
+          });
+        }
       } else {
-        session = state.sentrySessions.get(sessionID);
+        session = state.redisGameState
+          ? await state.redisGameState.getSentrySession(sessionID)
+          : state.sentrySessions.get(sessionID);
         if (!session) return res.status(410).send({ error: "Session expired" });
         if (session.uid && session.uid !== authenticatedUid)
           return res.status(401).send({ error: "Authentication required" });
@@ -168,11 +204,25 @@ function registerSentryRoutes(app, dependencies) {
           .send({ error: "Game over; start a new session" });
 
       if (session.currentChallengeID) {
-        const previousChallenge = beginChallengeProcessing(state, session);
+        const previousChallenge = state.redisGameState
+          ? await state.redisGameState.getSentryChallenge(
+              session.currentChallengeID,
+            )
+          : beginChallengeProcessing(state, session);
         if (!previousChallenge)
           return res
             .status(409)
             .send({ error: "Challenge is being processed" });
+        if (previousChallenge.processing)
+          return res
+            .status(409)
+            .send({ error: "Challenge is being processed" });
+        previousChallenge.processing = true;
+        if (state.redisGameState)
+          await state.redisGameState.setSentryChallenge(
+            session.currentChallengeID,
+            previousChallenge,
+          );
         const rounds = session.rounds + 1;
         const failures = session.failures + 1;
         const gameOver = failures >= sentryFailureLimit;
@@ -186,11 +236,23 @@ function registerSentryRoutes(app, dependencies) {
               gameOver,
             );
         } catch (err) {
-          cancelChallengeProcessing(state, previousChallenge);
+          if (state.redisGameState) {
+            previousChallenge.processing = false;
+            await state.redisGameState.setSentryChallenge(
+              session.currentChallengeID,
+              previousChallenge,
+            );
+          } else cancelChallengeProcessing(state, previousChallenge);
           throw err;
         }
 
-        delete state.sentryChallenges[session.currentChallengeID];
+        if (state.redisGameState) {
+          await state.redisGameState.deleteSentryChallenge(
+            session.currentChallengeID,
+          );
+        } else {
+          delete state.sentryChallenges[session.currentChallengeID];
+        }
         session.currentChallengeID = null;
         session.rounds = rounds;
         session.failures = failures;

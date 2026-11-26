@@ -16,7 +16,6 @@ function registerClassicRoutes(app, dependencies) {
     classicGetCurrentDate,
     classicShouldResetStreak,
     classicGetActiveBall,
-    classicGetStreakBall,
     state: routeState,
   } = dependencies;
 
@@ -71,15 +70,20 @@ function registerClassicRoutes(app, dependencies) {
       if (authenticatedUid) {
         playerState = await mergeClassicGuestState(authenticatedUid, guestId);
       } else {
-        playerState = routeState.classicPlayerStates.get(playerId);
-        if (!playerState) {
+        playerState = routeState.redisGameState
+          ? await routeState.redisGameState.getClassicPlayer(
+              routeState.classicGameID,
+              playerId,
+            )
+          : routeState.classicPlayerStates.get(playerId);
+        if (!playerState)
           playerState = {
             guesses: new Map(),
             winner: false,
             pendingWinner: null,
           };
+        if (!routeState.redisGameState)
           routeState.classicPlayerStates.set(playerId, playerState);
-        }
       }
 
       const existingGuess = playerState.guesses.get(guess.name);
@@ -132,8 +136,19 @@ function registerClassicRoutes(app, dependencies) {
             }
             entry.result = result;
             playerState.winner = true;
-            if (!routeState.classicWinners.includes(playerId))
+            if (routeState.redisGameState) {
+              await routeState.redisGameState.setClassicPlayer(
+                routeState.classicGameID,
+                playerId,
+                playerState,
+              );
+              await routeState.redisGameState.markClassicWinner(
+                routeState.classicGameID,
+                playerId,
+              );
+            } else if (!routeState.classicWinners.includes(playerId)) {
               routeState.classicWinners.push(playerId);
+            }
             return result;
           } catch (err) {
             playerState.guesses.delete(guess.name);
@@ -146,6 +161,16 @@ function registerClassicRoutes(app, dependencies) {
         await playerState.pendingWinner;
       } else {
         playerState.guesses.set(guess.name, { tries, result, pending: null });
+      }
+      if (
+        routeState.redisGameState &&
+        !result[2]
+      ) {
+        await routeState.redisGameState.setClassicPlayer(
+          routeState.classicGameID,
+          playerId,
+          playerState,
+        );
       }
       res.status(200).send(result);
     } catch (err) {
@@ -192,11 +217,15 @@ function registerClassicRoutes(app, dependencies) {
           : null;
 
       // If the requesting player has won today, reveal the Pokémon
-      if (
-        playerId &&
-        routeState.classicWinners.includes(playerId) &&
-        routeState.classicCurrentPokemon
-      ) {
+      const hasWon = playerId
+        ? routeState.redisGameState
+          ? await routeState.redisGameState.isClassicWinner(
+              routeState.classicGameID,
+              playerId,
+            )
+          : routeState.classicWinners.includes(playerId)
+        : false;
+      if (hasWon && routeState.classicCurrentPokemon) {
         res.status(200).send({ pokemon: routeState.classicCurrentPokemon.name });
       } else {
         res.status(403).send({ error: "User has not won today's game" });
@@ -214,7 +243,7 @@ function registerClassicRoutes(app, dependencies) {
     let authenticatedUid;
     try {
       authenticatedUid = await verifyAuthToken(auth, token);
-    } catch (err) {
+    } catch (_) {
       return res.status(401).send({ error: "Invalid authentication token" });
     }
 
@@ -256,10 +285,25 @@ function registerClassicRoutes(app, dependencies) {
         await mergeClassicGuestState(authenticatedUid, req.params.uid);
       }
 
-      const canPlay =
-        !routeState.classicWinners.includes(`guest:${req.params.uid}`) &&
-        (!authenticatedUid ||
-          !routeState.classicWinners.includes(`user:${authenticatedUid}`));
+      let canPlay;
+      if (routeState.redisGameState) {
+        const guestWon = await routeState.redisGameState.isClassicWinner(
+          routeState.classicGameID,
+          `guest:${req.params.uid}`,
+        );
+        const userWon = authenticatedUid
+          ? await routeState.redisGameState.isClassicWinner(
+              routeState.classicGameID,
+              `user:${authenticatedUid}`,
+            )
+          : false;
+        canPlay = !guestWon && !userWon;
+      } else {
+        canPlay =
+          !routeState.classicWinners.includes(`guest:${req.params.uid}`) &&
+          (!authenticatedUid ||
+            !routeState.classicWinners.includes(`user:${authenticatedUid}`));
+      }
       res.status(200).send(canPlay);
     } catch (err) {
       console.error(err);

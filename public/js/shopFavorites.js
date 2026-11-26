@@ -1,4 +1,6 @@
-const STORAGE_KEY = "pokedleShopFavorites";
+import { STORAGE_KEYS } from "./storageKeys.js";
+
+const STORAGE_KEY = STORAGE_KEYS.shopFavorites;
 const ITEM_TYPES = new Set(["background", "overlay", "companion", "boost"]);
 
 export function readShopFavorites() {

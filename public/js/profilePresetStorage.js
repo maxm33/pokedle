@@ -1,3 +1,5 @@
+import { getProfilePresetStorageKey as getStorageKey } from "./storageKeys.js";
+
 const presetFieldByItemType = {
   background: "backgroundId",
   overlay: "overlayId",
@@ -5,7 +7,7 @@ const presetFieldByItemType = {
 };
 
 export function getProfilePresetStorageKey(profileId) {
-  return `pokedleProfilePresets:${profileId}`;
+  return getStorageKey(profileId);
 }
 
 export function getProfilePresetSlotCount() {
@@ -41,17 +43,37 @@ export function normalizeProfilePresets(storedPresets) {
   });
 }
 
+export function readProfilePresets(profileId) {
+  const key = getProfilePresetStorageKey(profileId);
+  try {
+    const storedPresets = window.localStorage.getItem(key);
+    if (storedPresets === null) return null;
+    return normalizeProfilePresets(JSON.parse(storedPresets));
+  } catch (error) {
+    console.error("Could not read profile configurations:", error);
+    return null;
+  }
+}
+
+export function writeProfilePresets(profileId, presets) {
+  const key = getProfilePresetStorageKey(profileId);
+  try {
+    const normalizedPresets = normalizeProfilePresets(presets);
+    window.localStorage.setItem(key, JSON.stringify(normalizedPresets));
+    return true;
+  } catch (error) {
+    console.error("Could not save profile configurations:", error);
+    return false;
+  }
+}
+
 export function removeSavedProfilePresetsForItem(profileId, type, itemId) {
   if (!Object.prototype.hasOwnProperty.call(presetFieldByItemType, type))
     return false;
   const presetField = presetFieldByItemType[type];
 
-  const key = getProfilePresetStorageKey(profileId);
-  const storedPresets = window.localStorage.getItem(key);
-  if (storedPresets === null) return false;
-
-  let presets = JSON.parse(storedPresets);
-  presets = normalizeProfilePresets(presets);
+  const presets = readProfilePresets(profileId);
+  if (presets === null) return false;
 
   let removed = false;
   const updatedPresets = presets.map((preset) => {
@@ -67,7 +89,8 @@ export function removeSavedProfilePresetsForItem(profileId, type, itemId) {
     return preset;
   });
 
-  if (removed)
-    window.localStorage.setItem(key, JSON.stringify(updatedPresets));
+  if (removed) {
+    if (!writeProfilePresets(profileId, updatedPresets)) return false;
+  }
   return removed;
 }

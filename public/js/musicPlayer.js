@@ -1,4 +1,4 @@
-import { APP_CACHE_PREFIX } from "./appCache.js";
+import { STORAGE_KEYS } from "./storageKeys.js";
 
 const player = document.getElementById("music-player");
 
@@ -50,10 +50,10 @@ if (player) {
   let frozenOakDanceSource = "";
   const oakDanceCycleDurationMs = 5000;
   const oakDanceCycleCount = 3;
-  const playbackStorageKey = "pokedle.music-player";
-  const volumeStorageKey = "pokedle.music-player.volume";
-  const playlistStorageKey = `${APP_CACHE_PREFIX}music-playlist`;
-  const oakDanceVictoryGameIdStorageKey = "pokedle.classic-victory-game-id";
+  const playbackStorageKey = STORAGE_KEYS.musicPlayback;
+  const volumeStorageKey = STORAGE_KEYS.musicVolume;
+  const playlistStorageKey = STORAGE_KEYS.musicPlaylist;
+  const oakDanceVictoryGameIdStorageKey = STORAGE_KEYS.oakDanceVictoryGameId;
   const savedPlaybackState = readPlaybackState();
 
   function updatePlayButton() {
@@ -207,13 +207,16 @@ if (player) {
 
   function playAudio() {
     const targetAudio = audio;
+    const loadId = trackLoadId;
     targetAudio.play().catch((error) => {
-      console.error("Music playback could not start.", error);
-      if (audio === targetAudio) {
-        isAudioPlaying = false;
-        updatePlayButton();
-        updateMascotPlaybackState();
+      if (audio !== targetAudio || loadId !== trackLoadId) {
+        return;
       }
+
+      console.error("Music playback could not start.", error);
+      isAudioPlaying = false;
+      updatePlayButton();
+      updateMascotPlaybackState();
       savePlaybackState(true);
     });
   }
@@ -503,7 +506,13 @@ if (player) {
         pendingTrackMetadataHandler,
       );
     }
-    pendingTrackMetadataHandler = () => {
+    const metadataHandler = () => {
+      targetAudio.removeEventListener("loadedmetadata", metadataHandler);
+      if (pendingTrackMetadataHandler === metadataHandler) {
+        pendingTrackMetadataHandler = null;
+        pendingTrackMetadataAudio = null;
+      }
+
       if (
         loadId !== trackLoadId ||
         audio !== targetAudio ||
@@ -512,12 +521,6 @@ if (player) {
         return;
       }
 
-      targetAudio.removeEventListener(
-        "loadedmetadata",
-        pendingTrackMetadataHandler,
-      );
-      pendingTrackMetadataHandler = null;
-      pendingTrackMetadataAudio = null;
       const duration = targetAudio.duration;
       const seekTime =
         resumeTime > 0 && Number.isFinite(duration)
@@ -532,16 +535,18 @@ if (player) {
       }
       preloadNextTrack();
     };
+    pendingTrackMetadataHandler = metadataHandler;
     pendingTrackMetadataAudio = targetAudio;
-    targetAudio.addEventListener("loadedmetadata", pendingTrackMetadataHandler);
+    targetAudio.addEventListener("loadedmetadata", metadataHandler);
     targetAudio.volume = Number(volumeSlider.value);
     targetAudio.muted = isMuted;
     const absoluteSource = new URL(source, document.baseURI).href;
     if (targetAudio.src !== absoluteSource || targetAudio.error) {
+      targetAudio.pause();
       targetAudio.src = source;
       targetAudio.load();
     } else if (targetAudio.readyState >= 1) {
-      pendingTrackMetadataHandler();
+      metadataHandler();
     }
     savePlaybackState(true, resumeTime);
   }
@@ -679,7 +684,7 @@ if (player) {
 
   audioElements.forEach((audioElement) => {
     audioElement.addEventListener("ended", () => {
-      if (audioElement !== audio) {
+      if (audioElement !== audio || !audioElement.ended) {
         return;
       }
 
@@ -692,7 +697,11 @@ if (player) {
       }
     });
     audioElement.addEventListener("play", () => {
-      if (audioElement !== audio) {
+      if (
+        audioElement !== audio ||
+        audioElement.paused ||
+        audioElement.ended
+      ) {
         return;
       }
 
@@ -705,26 +714,34 @@ if (player) {
       savePlaybackState(true);
     });
     audioElement.addEventListener("playing", () => {
-      if (audioElement === audio) {
-        isAudioPlaying = true;
-        updatePlayButton();
-        updateMascotPlaybackState();
+      if (
+        audioElement !== audio ||
+        audioElement.paused ||
+        audioElement.ended
+      ) {
+        return;
       }
+
+      isAudioPlaying = true;
+      updatePlayButton();
+      updateMascotPlaybackState();
     });
     audioElement.addEventListener("pause", () => {
-      if (audioElement === audio) {
-        isAudioPlaying = false;
-        updateMascotPlaybackState();
-        if (!audioElement.ended) {
-          updatePlayButton();
-        }
+      if (audioElement !== audio || !audioElement.paused || audioElement.ended) {
+        return;
       }
+
+      isAudioPlaying = false;
+      updateMascotPlaybackState();
+      updatePlayButton();
     });
     audioElement.addEventListener("waiting", () => {
-      if (audioElement === audio) {
-        isAudioPlaying = false;
-        updateMascotPlaybackState();
+      if (audioElement !== audio || audioElement.paused || audioElement.ended) {
+        return;
       }
+
+      isAudioPlaying = false;
+      updateMascotPlaybackState();
     });
     audioElement.addEventListener("timeupdate", () => {
       if (audioElement !== audio) {

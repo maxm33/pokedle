@@ -1,3 +1,5 @@
+import { STORAGE_KEYS } from "./storageKeys.js";
+
 export class ClassicAppState {
   guesses = [];
   rendered = [];
@@ -14,16 +16,16 @@ export class ClassicAppState {
     window.localStorage.setItem(key, JSON.stringify(value));
   }
   getUserID() {
-    return this.readStorage("userID");
+    return this.readStorage(STORAGE_KEYS.classicUserId);
   }
   setUserID(id) {
-    this.writeStorage("userID", id);
+    this.writeStorage(STORAGE_KEYS.classicUserId, id);
   }
   getGameID() {
-    return this.readStorage("gameID");
+    return this.readStorage(STORAGE_KEYS.classicGameId);
   }
   setGameID(id) {
-    this.writeStorage("gameID", id);
+    this.writeStorage(STORAGE_KEYS.classicGameId, id);
   }
   getTries() {
     this.refreshState();
@@ -38,13 +40,13 @@ export class ClassicAppState {
   }
   refreshState(force = false) {
     if (this.stateLoaded && !force) return;
-    const state = this.readStorage("state");
+    const state = this.readStorage(STORAGE_KEYS.classicState);
     if (state != null) this.guesses = state;
     else this.guesses = [];
     this.stateLoaded = true;
   }
   removeState() {
-    window.localStorage.removeItem("state");
+    window.localStorage.removeItem(STORAGE_KEYS.classicState);
     this.guesses = [];
     this.rendered = [];
     this.stateLoaded = false;
@@ -52,7 +54,7 @@ export class ClassicAppState {
   addGuess(guess) {
     this.refreshState(true);
     this.guesses.unshift(guess);
-    window.localStorage.setItem("state", JSON.stringify(this.guesses));
+    window.localStorage.setItem(STORAGE_KEYS.classicState, JSON.stringify(this.guesses));
     this.renderGuess(this.guesses[0]);
   }
   renderGuess(guess) {

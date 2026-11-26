@@ -13,13 +13,13 @@ export function manageGameState(
     animateFadeIn(titles, "1.5s");
   classicState.renderState();
 
-  window.setInterval(() => {
+  const guessSyncInterval = window.setInterval(() => {
     if (classicState.notRendered() && classicState.getTries() > 0)
       animateFadeIn(titles, "1.5s");
     classicState.renderStateDiff();
   }, 60000);
 
-  window.setTimeout(() => {
+  const resetTimeout = window.setTimeout(() => {
     sendNotification("A new Pokémon is waiting for you!");
     classicState.removeState();
     window.location.reload();
@@ -31,7 +31,7 @@ export function manageGameState(
   let minutes = Math.floor(remainingSecondsAfterHours / 60);
   let seconds = remainingSecondsAfterHours % 60;
 
-  window.setInterval(() => {
+  const countdownInterval = window.setInterval(() => {
     if (hours <= 0 && minutes <= 0 && seconds <= 0) return;
     if (hours >= 1 && minutes === 0 && seconds === 0) {
       hours--;
@@ -55,4 +55,12 @@ export function manageGameState(
       timer.textContent = formattedTime;
     }
   }, 1000);
+
+  return {
+    destroy() {
+      window.clearInterval(guessSyncInterval);
+      window.clearTimeout(resetTimeout);
+      window.clearInterval(countdownInterval);
+    },
+  };
 }
